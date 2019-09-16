@@ -9,20 +9,22 @@ import (
 )
 
 type LaboKitBuyAt struct {
-	Company         string
-	CompanyImageURL string
-	Href            string
-	Target          string
-	URL             *url.URL
+	Company          string   `json:"company"`
+	CompanyImageHref string   `json:"company_image_href"`
+	CompanyImageURL  *url.URL `json:"company_image_URL"`
+	Href             string   `json:"href"`
+	Target           string   `json:"target"`
+	URL              *url.URL `json:"URL"`
 }
 
 func NewLaboKitBuyAt(s *goquery.Selection) *LaboKitBuyAt {
 	return &LaboKitBuyAt{
-		Company:         parseLaboKitBuyAtCompany(s),
-		CompanyImageURL: parseLaboKitBuyAtCompayImageURL(s),
-		Href:            parseLaboKitBuyAtHref(s),
-		Target:          parseLaboKitBuyAtTarget(s),
-		URL:             parseLaboKitBuyAtURL(s)}
+		Company:          parseLaboKitBuyAtCompany(s),
+		CompanyImageHref: parseLaboKitBuyAtCompayImageHref(s),
+		CompanyImageURL:  parseLaboKitBuyAtCompanyImageURL(s),
+		Href:             parseLaboKitBuyAtHref(s),
+		Target:           parseLaboKitBuyAtTarget(s),
+		URL:              parseLaboKitBuyAtURL(s)}
 }
 
 func parseLaboKitBuyAtCompany(s *goquery.Selection) string {
@@ -32,7 +34,7 @@ func parseLaboKitBuyAtCompany(s *goquery.Selection) string {
 	return strings.ToUpper(substring)
 }
 
-func parseLaboKitBuyAtCompayImageURL(s *goquery.Selection) string {
+func parseLaboKitBuyAtCompayImageHref(s *goquery.Selection) string {
 	attribute := s.Find("img").AttrOr("src", "NIL")
 	if ok := attribute != "NIL"; ok != true {
 		return attribute
@@ -40,6 +42,15 @@ func parseLaboKitBuyAtCompayImageURL(s *goquery.Selection) string {
 	substring := strings.TrimSpace(attribute)
 	substring = strings.ReplaceAll(substring, "../", "")
 	return fmt.Sprintf("https://labo.nintendo.com/%s", substring)
+}
+
+func parseLaboKitBuyAtCompanyImageURL(s *goquery.Selection) *url.URL {
+	attribute := s.Find("img").AttrOr("src", "NIL")
+	URL, err := url.Parse(attribute)
+	if err != nil {
+		return new(url.URL)
+	}
+	return URL
 }
 
 func parseLaboKitBuyAtHref(s *goquery.Selection) string {
