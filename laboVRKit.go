@@ -9,33 +9,35 @@ import (
 )
 
 type LaboVRKit struct {
-	Available       bool            `json:"available"`
-	BuyAt           []*LaboKitBuyAt `json:"buy_at"`
-	BoxImageHref    string          `json:"box_image_href"`
-	BoxImageURL     *url.URL        `json:"box_image_URL"`
-	BoxImageSrcSet  []interface{}   `json:"box_image_srcset"`
-	Compatibility   []interface{}   `json:"compatibility"`
-	HeroImageHref   string          `json:"hero_image_href"`
-	HeroImageURL    *url.URL        `json:"hero_image_URL"`
-	HeroImageSrcSet []interface{}   `json:"hero_image_srcset"`
-	KitContents     interface{}     `json:"kit_contents"`
-	KitFeatures     []interface{}   `json:"kit_features"`
-	Projects        []interface{}   `json:"projects"`
-	Overview        string          `json:"overview"`
-	Quotes          []interface{}   `json:"quotes"`
-	VRPlaza         interface{}     `json:"VR_plaza"`
+	Available       bool             `json:"available"`
+	BuyAt           []*LaboKitBuyAt  `json:"buy_at"`
+	BoxImageHref    string           `json:"box_image_href"`
+	BoxImageSrcSet  []*LaboKitImgSrc `json:"box_image_srcset"`
+	BoxImageURL     *url.URL         `json:"box_image_URL"`
+	Compatibility   []interface{}    `json:"compatibility"`
+	HeroImageHref   string           `json:"hero_image_href"`
+	HeroImageURL    *url.URL         `json:"hero_image_URL"`
+	HeroImageSrcSet []interface{}    `json:"hero_image_srcset"`
+	KitContents     interface{}      `json:"kit_contents"`
+	KitFeatures     []interface{}    `json:"kit_features"`
+	Projects        []interface{}    `json:"projects"`
+	Overview        string           `json:"overview"`
+	Quotes          []interface{}    `json:"quotes"`
+	VRPlaza         interface{}      `json:"VR_plaza"`
 }
 
 func NewLaboVRKit(d *goquery.Document) *LaboVRKit {
 
 	return &LaboVRKit{
-		Available:    scrapeLaboVRKitAvailable(d),
-		BuyAt:        scrapeLaboVRKitBuyAt(d),
-		BoxImageHref: scrapeLaboVRKitBoxImageHref(d)}
+		Available:      scrapeLaboVRKitAvailable(d),
+		BuyAt:          scrapeLaboVRKitBuyAt(d),
+		BoxImageHref:   scrapeLaboVRKitBoxImageHref(d),
+		BoxImageSrcSet: scrapeLaboVRKitBoxImageSrcSet(d),
+		BoxImageURL:    scrapeLaboVRKitBoxImageURL(d)}
 }
 
 func scrapeLaboVRKitAvailable(d *goquery.Document) bool {
-	ok := false
+	var ok bool
 	CSS := "div.kit-overview h2.tenor"
 	s := (d.Find(CSS).First())
 	if s.Length() == 0 {
@@ -58,19 +60,46 @@ func scrapeLaboVRKitBuyAt(d *goquery.Document) []*LaboKitBuyAt {
 }
 
 func scrapeLaboVRKitBoxImageHref(d *goquery.Document) string {
-	CSS := "div.kit-description__packshot img[src]"
+	CSS := "div.kit-description__packshot img"
 	attribute := d.Find(CSS).AttrOr("src", "NIL")
 	if ok := attribute != "NIL"; ok != true {
 		return attribute
 	}
 	substring := strings.TrimSpace(attribute)
 	substring = strings.ReplaceAll(substring, "../", "")
-	return fmt.Sprintf("https://labo.nintendo.com/%s", substring)
+	return fmt.Sprintf("%s/%s", nintendoLaboURL, substring)
 }
 
-func scrapeLaboVRKitBoxImageURL(d *goquery.Document) {}
+func scrapeLaboVRKitBoxImageSrcSet(d *goquery.Document) []*LaboKitImgSrc {
+	laboKitImgSrcSet := []*LaboKitImgSrc{}
+	CSS := "div.kit-description__packshot img"
+	attribute, ok := d.Find(CSS).Attr("srcset")
+	if ok != true {
+		return laboKitImgSrcSet
+	}
+	attribute = strings.TrimSpace(attribute)
+	for _, attr := range strings.Split(attribute, ",") {
+		laboKitImgSrc := NewLaboKitImgSrc(attr)
+		if ok := laboKitImgSrc != nil; ok != true {
+			continue
+		}
+		laboKitImgSrcSet = append(laboKitImgSrcSet, laboKitImgSrc)
+	}
+	return laboKitImgSrcSet
+}
 
-func scrapeLaboVRKitBoxImageSrcSet(d *goquery.Document) {}
+func scrapeLaboVRKitBoxImageURL(d *goquery.Document) *url.URL {
+	CSS := "div.kit-description__packshot img"
+	attribute, ok := d.Find(CSS).Attr("src")
+	if ok != true {
+		return &url.URL{}
+	}
+	URL, err := url.Parse(attribute)
+	if err != nil {
+		return &url.URL{}
+	}
+	return URL
+}
 
 func scrapeLaboVRKitCompatibility(d *goquery.Document) {}
 
