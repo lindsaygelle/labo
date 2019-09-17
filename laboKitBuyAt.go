@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/url"
+	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -41,14 +42,14 @@ func parseLaboKitBuyAtCompayImageHref(s *goquery.Selection) string {
 	}
 	substring := strings.TrimSpace(attribute)
 	substring = strings.ReplaceAll(substring, "../", "")
-	return fmt.Sprintf("https://labo.nintendo.com/%s", substring)
+	return fmt.Sprintf("%s/%s", nintendoLaboURL, substring)
 }
 
 func parseLaboKitBuyAtCompanyImageURL(s *goquery.Selection) *url.URL {
 	attribute := s.Find("img").AttrOr("src", "NIL")
 	URL, err := url.Parse(attribute)
 	if err != nil {
-		return new(url.URL)
+		return &url.URL{}
 	}
 	return URL
 }
@@ -62,6 +63,7 @@ func parseLaboKitBuyAtHref(s *goquery.Selection) string {
 func parseLaboKitBuyAtTarget(s *goquery.Selection) string {
 	attribute := s.AttrOr("target", "NIL")
 	substring := strings.TrimSpace(attribute)
+	substring = regexp.MustCompile(`[^a-zA-Z]+`).ReplaceAllString(substring, "")
 	return strings.ToUpper(substring)
 }
 
@@ -69,7 +71,7 @@ func parseLaboKitBuyAtURL(s *goquery.Selection) *url.URL {
 	attribute := s.AttrOr("href", "NIL")
 	URL, err := url.Parse(attribute)
 	if err != nil {
-		return new(url.URL)
+		return &url.URL{}
 	}
 	return URL
 }
