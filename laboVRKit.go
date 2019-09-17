@@ -60,8 +60,8 @@ func scrapeLaboVRKitBuyAt(d *goquery.Document) []*LaboKitBuyAt {
 }
 
 func scrapeLaboVRKitBoxImageHref(d *goquery.Document) string {
-	CSS := "div.kit-description__packshot img"
-	attribute := d.Find(CSS).AttrOr("src", "NIL")
+	CSS := "div.kit-description__packshot img[data-src]"
+	attribute := d.Find(CSS).AttrOr("data-src", "NIL")
 	if ok := attribute != "NIL"; ok != true {
 		return attribute
 	}
@@ -72,8 +72,8 @@ func scrapeLaboVRKitBoxImageHref(d *goquery.Document) string {
 
 func scrapeLaboVRKitBoxImageSrcSet(d *goquery.Document) []*LaboKitImgSrc {
 	laboKitImgSrcSet := []*LaboKitImgSrc{}
-	CSS := "div.kit-description__packshot img"
-	attribute, ok := d.Find(CSS).Attr("srcset")
+	CSS := "div.kit-description__packshot img[data-srcset]"
+	attribute, ok := d.Find(CSS).Attr("data-srcset")
 	if ok != true {
 		return laboKitImgSrcSet
 	}
@@ -89,8 +89,8 @@ func scrapeLaboVRKitBoxImageSrcSet(d *goquery.Document) []*LaboKitImgSrc {
 }
 
 func scrapeLaboVRKitBoxImageURL(d *goquery.Document) *url.URL {
-	CSS := "div.kit-description__packshot img"
-	attribute, ok := d.Find(CSS).Attr("src")
+	CSS := "div.kit-description__packshot img[data-src]"
+	attribute, ok := d.Find(CSS).Attr("data-src")
 	if ok != true {
 		return &url.URL{}
 	}
