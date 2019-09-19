@@ -1,11 +1,6 @@
-package main
+package labo
 
 import (
-	"fmt"
-	"net/http"
-	"time"
-
-	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/text/currency"
 )
 
@@ -26,6 +21,7 @@ type KitCustomization struct {
 }
 
 type KitVR struct {
+	Plaza interface{}
 }
 
 type Feature struct {
@@ -36,27 +32,9 @@ type Feature struct {
 	Video       Video
 }
 
-type Image struct {
-	Alt    string
-	Format string
-	Size   int
-	Src    string
-}
-
-type Materials struct {
-	Image Image
-	Parts []Part
-}
-
 type Overview struct {
 	Description string
 	Video       Video
-}
-
-type Part struct {
-	Amount int
-	Name   string
-	Size   string
 }
 
 type Price struct {
@@ -90,27 +68,3 @@ type ToyCon struct {
 }
 
 type Video struct{}
-
-const nintendoLaboURL string = "https://labo.nintendo.com"
-
-func main() {
-	c := (&http.Client{Timeout: time.Second * 10})
-	req, err := http.NewRequest(http.MethodGet, (nintendoLaboURL + "/kits/vr-kit/"), nil)
-	if err != nil {
-		panic(err)
-	}
-	res, err := c.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	if res.StatusCode != http.StatusOK {
-		panic(res.Status)
-	}
-	doc, err := goquery.NewDocumentFromResponse(res)
-	if err != nil {
-		panic(err)
-	}
-	laboVRKit := NewLaboVRKit(doc)
-
-	fmt.Println(laboVRKit.BoxImageURL.Hostname())
-}
