@@ -51,7 +51,7 @@ func NewPart(s *goquery.Selection) (*Part, error) {
 	name := regexp.MustCompile(`\s{2,}`).ReplaceAllString(substring, "")
 	name = strings.TrimSpace(name)
 	name = strings.ToUpper(name)
-	substring = regexp.MustCompile("[0-9]+").FindString(contents)
+	substring = regexp.MustCompile(`[0-9]+`).FindString(contents)
 	if ok := (len(substring) > 0); ok {
 		amount, _ = strconv.Atoi(substring)
 	}

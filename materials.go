@@ -31,7 +31,7 @@ func NewMaterials(s *goquery.Selection) (*Materials, error) {
 	if ok := (imageSelection.Length() > 0); !ok {
 		return nil, fmt.Errorf("goquery.Selection is empty")
 	}
-	image, err := NewImage(s)
+	image, err := NewImage(imageSelection)
 	if err != nil {
 		return nil, err
 	}
