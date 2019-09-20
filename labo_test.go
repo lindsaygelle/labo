@@ -19,4 +19,8 @@ func TestLabo(t *testing.T) {
 	materials, err := labo.NewMaterials(doc.Find(".contents .right-column"))
 
 	fmt.Println(materials, err)
+
+	for _, v := range materials.Image.Variants {
+		fmt.Println(v)
+	}
 }
