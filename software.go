@@ -31,10 +31,12 @@ func NewSoftware(s *goquery.Selection) (*Software, error) {
 		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
 	}
 	imageSelection := s.Find(softwareImageCSSSelector)
+	fmt.Println(imageSelection.Attr("data-src"))
 	if ok := (s.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, imageSelection)
 	}
 	image, err := NewImage(s)
+	fmt.Println(err)
 	if err != nil {
 		return nil, err
 	}

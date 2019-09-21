@@ -16,13 +16,11 @@ func TestLabo(t *testing.T) {
 		panic(err)
 	}
 
-	materials, err := labo.NewMaterials(doc.Find(".contents .right-column"))
+	kit, err := labo.NewKit(doc.Find("body"))
 
-	fmt.Println(materials, err)
-
-	fmt.Println(materials.Image)
-
-	for _, v := range materials.Image.Variants {
-		fmt.Println(v)
+	if err != nil {
+		panic(err)
 	}
+
+	fmt.Println(kit.Software)
 }

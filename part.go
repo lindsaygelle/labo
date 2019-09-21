@@ -64,22 +64,22 @@ func NewPart(s *goquery.Selection) (*Part, error) {
 	}
 	substring = strings.TrimSpace(substring)
 	substring = strings.TrimSuffix(substring, "x")
-	substring = regexp.MustCompile(`\(.+\)`).ReplaceAllString(substring, "")
-	name := regexpReplaceSequenceWhitespace.ReplaceAllString(substring, "")
+	substring = regexpMatchParenthesis.ReplaceAllString(substring, "")
+	name := regexpMatchSequenceWhitespace.ReplaceAllString(substring, "")
 	name = strings.TrimSpace(name)
 	name = strings.ToUpper(name)
-	substring = regexp.MustCompile(`[0-9]+`).FindString(contents)
+	substring = regexpMatchNumeric.FindString(contents)
 	if ok := (len(substring) > 0); ok {
 		amount, _ = strconv.Atoi(substring)
 	}
 	substring = regexpPartFindSize.FindString(contents)
 	if ok := (len(substring) > 0); ok {
-		substring = regexpReplaceNonAlpha.ReplaceAllString(substring, "")
+		substring = regexpMatchNonAlpha.ReplaceAllString(substring, "")
 		size = strings.ToUpper(substring)
 	}
 	substring = regexpPartFindColor.FindString(contents)
 	if ok := (len(substring) > 0); ok {
-		substring = regexpReplaceNonAlpha.ReplaceAllString(substring, "")
+		substring = regexpMatchNonAlpha.ReplaceAllString(substring, "")
 		color = strings.ToUpper(substring)
 	}
 	substring = regexpPartFindSpares.FindString(contents)

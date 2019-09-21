@@ -16,22 +16,11 @@ const (
 )
 
 var (
-	regexpReplaceNonAlpha           = regexp.MustCompile(`\W`)
-	regexpReplaceSequenceWhitespace = regexp.MustCompile(`\s{2,}`)
+	regexpMatchNonAlpha           = regexp.MustCompile(`\W`)
+	regexpMatchNumeric            = regexp.MustCompile(`[0-9]+`)
+	regexpMatchParenthesis        = regexp.MustCompile(`\(.+\)`)
+	regexpMatchSequenceWhitespace = regexp.MustCompile(`\s{2,}`)
 )
-
-type Kit struct {
-	Href      string
-	ID        string
-	Materials Materials
-	Name      string
-	Overview  Overview
-	Projects  []Project
-	Price     Price
-	Retailers []Retailer
-	Software  Software
-	ToyCons   []ToyCon
-}
 
 type KitCustomization struct {
 }
