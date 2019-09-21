@@ -16,12 +16,10 @@ const (
 )
 
 const (
-	errorImageGoQueryNil      string = "argument goquery.Selection pointer cannot be nil"
 	errorImageEmptyAttrAlt    string = "argument (*%p) does not contain an alt attribute"
 	errorImageEmptyAttrSrc    string = "argument (*%p) does not contain a src attribute"
 	errorImageEmptyAttrSrcSet string = "argument (*%p) does not contain a src-set attribute"
 	errorImageEmptyFileExt    string = "argument (*%p) does not contain a file extension"
-	errorImageEmptyHTMLNodes  string = "argument (*%p) does not contain a collection of HTML elements"
 )
 
 const (
@@ -66,10 +64,10 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 		ok bool
 	)
 	if ok = (s != nil); !ok {
-		return nil, fmt.Errorf(errorImageGoQueryNil)
+		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
 	if ok = (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorImageEmptyHTMLNodes, s)
+		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
 	}
 	alt = s.AttrOr(imageAttrAlt, defaultImageAttrAlt)
 	alt = strings.ToUpper(alt)

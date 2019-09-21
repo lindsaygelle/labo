@@ -5,6 +5,11 @@ import (
 )
 
 const (
+	errorGoQuerySelectionNil           string = "argument *goquery.Selection cannot be nil"
+	errorGoQuerySlectionEmptyHTMLNodes string = "argument (*%p) does not contain a collection of HTML elements"
+)
+
+const (
 	laboRootURL string = "https://labo.nintendo.com"
 )
 
