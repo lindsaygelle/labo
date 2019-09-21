@@ -7,9 +7,9 @@ import (
 )
 
 const (
+	materialsImageCSSSelector string = ".kit-contents picture img"
 	materialsPartsCSSSelector string = ".contents-content ul li"
 	materialsRootCSSSelector  string = ".contents .right-column"
-	materialsImageCSSSelector string = ".kit-contents picture img"
 )
 
 // Materials is a representation of the parts required to build a Nintendo Labo ToyCon.

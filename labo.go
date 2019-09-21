@@ -1,16 +1,23 @@
 package labo
 
 import (
+	"regexp"
+
 	"golang.org/x/text/currency"
 )
 
 const (
-	errorGoQuerySelectionNil           string = "argument *goquery.Selection cannot be nil"
 	errorGoQuerySlectionEmptyHTMLNodes string = "argument (*%p) does not contain a collection of HTML elements"
+	errorGoQuerySelectionNil           string = "argument *goquery.Selection cannot be nil"
 )
 
 const (
 	laboRootURL string = "https://labo.nintendo.com"
+)
+
+var (
+	regexpReplaceNonAlpha           = regexp.MustCompile(`\W`)
+	regexpReplaceSequenceWhitespace = regexp.MustCompile(`\s{2,}`)
 )
 
 type Kit struct {
@@ -64,16 +71,9 @@ type Retailer struct {
 	Name string
 }
 
-type Software struct {
-	Image Image
-	Video Video
-}
-
 type ToyCon struct {
 	Description string
 	Features    []Feature
 	Image       Image
 	Name        string
 }
-
-type Video struct{}

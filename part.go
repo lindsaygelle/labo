@@ -9,6 +9,24 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const (
+	defaultPartAmount int    = 1
+	defaultPartColor  string = "NIL"
+	defaultPartSize   string = "STANDARD"
+)
+
+const (
+	errorPartEmptyText     string = "argument (*%p) does not contain text nodes"
+	errorPartEmptyPartName string = "argument (*%p) does not contain a part name"
+)
+
+var (
+	regexpPartFindColor    = regexp.MustCompile(`(\(blue|gray|orange|red\))`)
+	regexpPartFindPartName = regexp.MustCompile(`^[^0-9]+`)
+	regexpPartFindSize     = regexp.MustCompile(`(\(small|medium|large\))`)
+	regexpPartFindSpares   = regexp.MustCompile(`\+\s{1}spares`)
+)
+
 // Part is a struct that represents the building component uses to complete
 // a Nintendo Labo ToyCon kit.
 type Part struct {
@@ -24,48 +42,47 @@ type Part struct {
 // the contents of the HTML element contents and attempts to parse the required
 // and optional fields that describes a Nintendo Labo kit part.
 func NewPart(s *goquery.Selection) (*Part, error) {
-	const (
-		defaultColor string = "NIL"
-		defaultSize  string = "STANDARD"
-	)
+	if ok := (s != nil); !ok {
+		return nil, fmt.Errorf(errorGoQuerySelectionNil)
+	}
+	if ok := (s.Length() > 0); !ok {
+		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
+	}
 	var (
-		amount = 1
-		color  = defaultColor
-		size   = defaultSize
+		amount = defaultPartAmount
+		color  = defaultPartColor
+		size   = defaultPartSize
 		spares = false
 	)
-	if ok := (s.Length() > 0); !ok {
-		return nil, fmt.Errorf("goquery.Selection is empty")
-	}
 	contents := strings.TrimSpace(s.Text())
 	if ok := (len(contents) > 0); !ok {
-		return nil, fmt.Errorf("goquery.Selection does not contain text")
+		return nil, fmt.Errorf(errorPartEmptyText, s)
 	}
-	substring := regexp.MustCompile(`^[^0-9]+`).FindString(contents)
+	substring := regexpPartFindPartName.FindString(contents)
 	if ok := (len(substring) > 0); !ok {
-		return nil, fmt.Errorf("goquery.Selection does not contain a valid part name")
+		return nil, fmt.Errorf(errorPartEmptyPartName, s)
 	}
 	substring = strings.TrimSpace(substring)
 	substring = strings.TrimSuffix(substring, "x")
 	substring = regexp.MustCompile(`\(.+\)`).ReplaceAllString(substring, "")
-	name := regexp.MustCompile(`\s{2,}`).ReplaceAllString(substring, "")
+	name := regexpReplaceSequenceWhitespace.ReplaceAllString(substring, "")
 	name = strings.TrimSpace(name)
 	name = strings.ToUpper(name)
 	substring = regexp.MustCompile(`[0-9]+`).FindString(contents)
 	if ok := (len(substring) > 0); ok {
 		amount, _ = strconv.Atoi(substring)
 	}
-	substring = regexp.MustCompile(`(\(small|medium|large\))`).FindString(contents)
+	substring = regexpPartFindSize.FindString(contents)
 	if ok := (len(substring) > 0); ok {
-		substring = regexp.MustCompile(`\W`).ReplaceAllString(substring, "")
+		substring = regexpReplaceNonAlpha.ReplaceAllString(substring, "")
 		size = strings.ToUpper(substring)
 	}
-	substring = regexp.MustCompile(`(\(blue|gray|orange|red\))`).FindString(contents)
+	substring = regexpPartFindColor.FindString(contents)
 	if ok := (len(substring) > 0); ok {
-		substring = regexp.MustCompile(`\W`).ReplaceAllString(substring, "")
+		substring = regexpReplaceNonAlpha.ReplaceAllString(substring, "")
 		color = strings.ToUpper(substring)
 	}
-	substring = regexp.MustCompile(`\+\s{1}spares`).FindString(contents)
+	substring = regexpPartFindSpares.FindString(contents)
 	if ok := (len(substring) > 0); ok {
 		spares = true
 	}
