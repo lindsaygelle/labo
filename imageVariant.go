@@ -9,7 +9,7 @@ import (
 
 const (
 	errorImageVariantEmptyAttr           string = "argument (%s) attributes cannot be empty"
-	errorImageVariantEmptyExt            string = "argument (%s) file extension cannot be empty"
+	errorImageVariantEmptyFileExt        string = "argument (%s) file extension cannot be empty"
 	errorImageVariantEmptySrc            string = "argument (%s) src substring cannot be empty"
 	errorImageVariantEmptyString         string = "argument string cannot be empty"
 	errorImageVariantIncorrectSubstrings string = "argument (%s) cannot be split into required substring"
@@ -18,14 +18,19 @@ const (
 	errorImageVariantNoFileExtension     string = "argument (%s) does not contain a file extension"
 )
 
+var (
+	regexpImageVariantReplaceAt = regexp.MustCompile(`\D`)
+)
+
+// ImageVariant is a alternate version of a image resource.
 type ImageVariant struct {
 	At     string
 	Format string
 	Src    string
 	Units  string
-	Value  string
 }
 
+// NewImageVariant is a constructor function that instantiates a new ImageVariant pointer.
 func NewImageVariant(s string) (*ImageVariant, error) {
 	var (
 		at     string
@@ -52,14 +57,16 @@ func NewImageVariant(s string) (*ImageVariant, error) {
 	if ok := (len(s2) > 0); !ok {
 		return nil, fmt.Errorf(errorImageVariantEmptyAttr, s2)
 	}
-	at = regexp.MustCompile(`\D`).ReplaceAllString(s2, "")
-	units = strings.ToUpper(strings.Replace(s2, at, "", 1))
+	at = regexpImageVariantReplaceAt.ReplaceAllString(s2, "")
 	format = filepath.Ext(s1)
-	format = regexp.MustCompile(`\W`).ReplaceAllString(format, "")
+	format = regexpImageReplaceFileExt.ReplaceAllString(format, "")
 	if ok := (len(format) > 0); !ok {
-		return nil, fmt.Errorf(errorImageVariantEmptyExt, format)
+		return nil, fmt.Errorf(errorImageVariantEmptyFileExt, s1)
 	}
 	format = strings.ToUpper(format)
+	src = regexpImageReplaceFolderAlias.ReplaceAllString(s1, "")
+	src = fmt.Sprintf("%s/%s", laboRootURL, src)
+	units = strings.ToUpper(strings.Replace(s2, at, "", 1))
 	imageVariant := ImageVariant{
 		At:     at,
 		Format: format,

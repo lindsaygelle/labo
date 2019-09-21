@@ -4,6 +4,10 @@ import (
 	"golang.org/x/text/currency"
 )
 
+const (
+	laboRootURL string = "https://labo.nintendo.com"
+)
+
 type Kit struct {
 	Href      string
 	ID        string

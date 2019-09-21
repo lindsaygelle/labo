@@ -20,6 +20,8 @@ func TestLabo(t *testing.T) {
 
 	fmt.Println(materials, err)
 
+	fmt.Println(materials.Image)
+
 	for _, v := range materials.Image.Variants {
 		fmt.Println(v)
 	}
