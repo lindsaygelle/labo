@@ -57,7 +57,7 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
 	if ok = (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	alt = s.AttrOr(attrAlt, defaultImageAttrAlt)
 	alt = strings.ToUpper(alt)

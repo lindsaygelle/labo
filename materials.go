@@ -28,11 +28,11 @@ func NewMaterials(s *goquery.Selection) (*Materials, error) {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
 	if ok := (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	partsSelection := s.Find(materialsPartsCSSSelector)
 	if ok := (partsSelection.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, partsSelection)
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, partsSelection)
 	}
 	partsSelection.Each(func(i int, s *goquery.Selection) {
 		part, err := NewPart(s)
@@ -43,7 +43,7 @@ func NewMaterials(s *goquery.Selection) (*Materials, error) {
 	})
 	imageSelection := s.Find(materialsImageCSSSelector)
 	if ok := (imageSelection.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, imageSelection)
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, imageSelection)
 	}
 	image, err := NewImage(imageSelection)
 	if err != nil {

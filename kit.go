@@ -10,17 +10,18 @@ const (
 	kitRetailersCSSSelector string = ".retailers ul li"
 )
 
+// Kit is a struct that is the entirety of a Nintendo Labo Toy Con kit.
 type Kit struct {
 	Href      string
 	ID        string
 	Materials *Materials
 	Name      string
-	Overview  Overview
-	Projects  []Project
+	Overview  *Overview
+	Projects  []*Project
 	Price     Price
 	Retailers []*Retailer
 	Software  *Software
-	ToyCons   []ToyCon
+	ToyCons   []*ToyCon
 }
 
 func NewKit(s *goquery.Selection) (*Kit, error) {
@@ -28,7 +29,7 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
 	if ok := (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	var (
 		retailers []*Retailer
@@ -43,7 +44,6 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 	}
 	retailersSelection.Each(func(i int, s *goquery.Selection) {
 		retailer, err := NewRetailer(s)
-		fmt.Println(err)
 		if err != nil {
 			return
 		}

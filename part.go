@@ -46,7 +46,7 @@ func NewPart(s *goquery.Selection) (*Part, error) {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
 	if ok := (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	var (
 		amount = defaultPartAmount

@@ -20,8 +20,8 @@ const (
 )
 
 const (
-	errorGoQuerySlectionEmptyHTMLNodes string = "argument (*%p) does not contain a collection of HTML elements"
-	errorGoQuerySelectionNil           string = "argument *goquery.Selection cannot be nil"
+	errorGoQuerySelectionEmptyHTMLNodes string = "argument (*%p) does not contain a collection of HTML elements"
+	errorGoQuerySelectionNil            string = "argument *goquery.Selection cannot be nil"
 )
 
 const (
@@ -52,11 +52,6 @@ type Feature struct {
 	Icon        Image
 	Image       Image
 	Title       string
-	Video       Video
-}
-
-type Overview struct {
-	Description string
 	Video       Video
 }
 

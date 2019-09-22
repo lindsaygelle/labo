@@ -32,7 +32,7 @@ func NewRetailer(s *goquery.Selection) (*Retailer, error) {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
 	if ok := (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	var (
 		href   string
@@ -42,7 +42,7 @@ func NewRetailer(s *goquery.Selection) (*Retailer, error) {
 	)
 	hrefSelection := s.Find(retailerAnchorCSSSelector)
 	if ok := (hrefSelection.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, hrefSelection)
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, hrefSelection)
 	}
 	href, ok := hrefSelection.Attr(attrHref)
 	if !ok {

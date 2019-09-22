@@ -28,7 +28,7 @@ func NewSoftware(s *goquery.Selection) (*Software, error) {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
 	if ok := (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	image, err := NewImage(s.Find(softwareImageCSSSelector))
 	if err != nil {
