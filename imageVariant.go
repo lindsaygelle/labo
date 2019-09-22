@@ -59,12 +59,12 @@ func NewImageVariant(s string) (*ImageVariant, error) {
 	}
 	at = regexpImageVariantReplaceAt.ReplaceAllString(s2, "")
 	format = filepath.Ext(s1)
-	format = regexpImageReplaceFileExt.ReplaceAllString(format, "")
+	format = regexpImageMatchFileExt.ReplaceAllString(format, "")
 	if ok := (len(format) > 0); !ok {
 		return nil, fmt.Errorf(errorImageVariantEmptyFileExt, s1)
 	}
 	format = strings.ToUpper(format)
-	src = regexpImageReplaceFolderAlias.ReplaceAllString(s1, "")
+	src = regexpImageMatchFolder.ReplaceAllString(s1, "")
 	src = fmt.Sprintf("%s/%s", laboRootURL, src)
 	units = strings.ToUpper(strings.Replace(s2, at, "", 1))
 	imageVariant := ImageVariant{

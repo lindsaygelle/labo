@@ -37,8 +37,8 @@ const (
 )
 
 var (
-	regexpImageReplaceFileExt     = regexp.MustCompile(`\W`)
-	regexpImageReplaceFolderAlias = regexp.MustCompile(`\.{2}\/`)
+	regexpImageMatchFileExt = regexp.MustCompile(`\W`)
+	regexpImageMatchFolder  = regexp.MustCompile(`\.{2}\/`)
 )
 
 // Image is a image resource that contains a related image for Nintendo Labo.
@@ -84,12 +84,12 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 		return nil, fmt.Errorf(errorImageEmptyAttrSrcSet, s)
 	}
 	format = filepath.Ext(src)
-	format = regexpImageReplaceFileExt.ReplaceAllString(format, "")
+	format = regexpImageMatchFileExt.ReplaceAllString(format, "")
 	if ok = (len(format) > 0); !ok {
 		return nil, fmt.Errorf(errorImageEmptyFileExt, s)
 	}
 	format = strings.ToUpper(format)
-	src = regexpImageReplaceFolderAlias.ReplaceAllString(src, "")
+	src = regexpImageMatchFolder.ReplaceAllString(src, "")
 	src = fmt.Sprintf("%s/%s", laboRootURL, src)
 	if _, ok = s.Attr(imageAttrSrcSet); ok {
 		srcset, _ = s.Attr(imageAttrSrc)
@@ -97,13 +97,10 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 	if _, ok = s.Attr(imageAttrDataSrcSet); ok && (len(srcset) == 0) {
 		srcset, _ = s.Attr(imageAttrDataSrcSet)
 	}
-	if ok = (len(srcset) > 0); !ok {
-		return nil, fmt.Errorf(errorImageEmptyAttrSrcSet, s)
-	}
 	for _, src := range strings.Split(srcset, ",") {
 		imageVariant, err := NewImageVariant(src)
 		if err != nil {
-			panic(err)
+			continue
 		}
 		variants = append(variants, imageVariant)
 	}

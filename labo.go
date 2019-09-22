@@ -7,8 +7,18 @@ import (
 )
 
 const (
+	attrHref   string = "href"
+	attrTarget string = "target"
+)
+
+const (
 	errorGoQuerySlectionEmptyHTMLNodes string = "argument (*%p) does not contain a collection of HTML elements"
 	errorGoQuerySelectionNil           string = "argument *goquery.Selection cannot be nil"
+)
+
+const (
+	errorEmptyAttrClass string = "argument (*%p) does not contain an class attribute"
+	errorEmptyHrefAlt   string = "argument (*%p) does not contain an href attribute"
 )
 
 const (
@@ -52,12 +62,6 @@ type Project struct {
 	Image       Image
 	Name        string
 	Screenshots []Image
-}
-
-type Retailer struct {
-	Href string
-	Logo Image
-	Name string
 }
 
 type ToyCon struct {

@@ -23,4 +23,6 @@ func TestLabo(t *testing.T) {
 	}
 
 	fmt.Println(kit.Software)
+
+	fmt.Println(kit.Retailers)
 }
