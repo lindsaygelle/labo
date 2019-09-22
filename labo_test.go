@@ -22,6 +22,8 @@ func TestLabo(t *testing.T) {
 		panic(err)
 	}
 
+	fmt.Println(kit.Overview)
+
 	fmt.Println(kit.Software)
 
 	fmt.Println(kit.Retailers)

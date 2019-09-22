@@ -12,6 +12,7 @@ const (
 
 // Kit is a struct that is the entirety of a Nintendo Labo Toy Con kit.
 type Kit struct {
+	BoxImage  *Image
 	Href      string
 	ID        string
 	Materials *Materials
@@ -36,12 +37,10 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 	)
 	var (
 		materials, _ = NewMaterials(s.Find(materialsRootCSSSelector))
+		overview, _  = NewOverview(s.Find(overviewRootCSSSelector))
 		software, _  = NewSoftware(s.Find(softwareRootCSSSelector))
 	)
 	retailersSelection := s.Find(kitRetailersCSSSelector)
-	if ok := (retailersSelection.Length() > 0); !ok {
-
-	}
 	retailersSelection.Each(func(i int, s *goquery.Selection) {
 		retailer, err := NewRetailer(s)
 		if err != nil {
@@ -51,6 +50,7 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 	})
 	kit := Kit{
 		Materials: materials,
+		Overview:  overview,
 		Retailers: retailers,
 		Software:  software}
 	return &kit, nil
