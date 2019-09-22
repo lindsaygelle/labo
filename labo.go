@@ -59,10 +59,3 @@ type Project struct {
 	Name        string
 	Screenshots []Image
 }
-
-type ToyCon struct {
-	Description string
-	Features    []Feature
-	Image       Image
-	Name        string
-}
