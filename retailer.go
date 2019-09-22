@@ -56,7 +56,7 @@ func NewRetailer(s *goquery.Selection) (*Retailer, error) {
 	if err != nil {
 		return nil, err
 	}
-	name, ok = s.Attr("class")
+	name, ok = s.Attr(attrClass)
 	if !ok {
 		return nil, fmt.Errorf(errorEmptyAttrClass, s)
 	}

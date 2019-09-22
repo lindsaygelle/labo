@@ -26,16 +26,6 @@ const (
 	imageBase64Prefix string = "data:image"
 )
 
-const (
-	imageAttrAlt        string = "alt"
-	imageAttrDataSizes  string = "data-sizes"
-	imageAttrDataSrc    string = "data-src"
-	imageAttrDataSrcSet string = "data-srcset"
-	imageAttrSizes      string = "sizes"
-	imageAttrSrc        string = "src"
-	imageAttrSrcSet     string = "srcset"
-)
-
 var (
 	regexpImageMatchFileExt = regexp.MustCompile(`\W`)
 	regexpImageMatchFolder  = regexp.MustCompile(`\.{2}\/`)
@@ -69,15 +59,15 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 	if ok = (s.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySlectionEmptyHTMLNodes, s)
 	}
-	alt = s.AttrOr(imageAttrAlt, defaultImageAttrAlt)
+	alt = s.AttrOr(attrAlt, defaultImageAttrAlt)
 	alt = strings.ToUpper(alt)
-	src, ok = s.Attr(imageAttrSrc)
+	src, ok = s.Attr(attrSrc)
 	if !ok {
 		return nil, fmt.Errorf(errorImageEmptyAttrSrc, s)
 	}
 	ok = strings.HasPrefix(src, imageBase64Prefix)
-	if _, exists := s.Attr(imageAttrDataSrc); ok && exists {
-		src, _ = s.Attr(imageAttrDataSrc)
+	if _, exists := s.Attr(attrDataSrc); ok && exists {
+		src, _ = s.Attr(attrDataSrc)
 	}
 	ok = strings.HasPrefix(src, imageBase64Prefix)
 	if ok {
@@ -91,11 +81,11 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 	format = strings.ToUpper(format)
 	src = regexpImageMatchFolder.ReplaceAllString(src, "")
 	src = fmt.Sprintf("%s/%s", laboRootURL, src)
-	if _, ok = s.Attr(imageAttrSrcSet); ok {
-		srcset, _ = s.Attr(imageAttrSrc)
+	if _, ok = s.Attr(attrSrcSet); ok {
+		srcset, _ = s.Attr(attrSrc)
 	}
-	if _, ok = s.Attr(imageAttrDataSrcSet); ok && (len(srcset) == 0) {
-		srcset, _ = s.Attr(imageAttrDataSrcSet)
+	if _, ok = s.Attr(attrDataSrcSet); ok && (len(srcset) == 0) {
+		srcset, _ = s.Attr(attrDataSrcSet)
 	}
 	for _, src := range strings.Split(srcset, ",") {
 		imageVariant, err := NewImageVariant(src)
@@ -104,9 +94,9 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 		}
 		variants = append(variants, imageVariant)
 	}
-	sizes, ok = s.Attr(imageAttrSizes)
-	if _, exists := s.Attr(imageAttrDataSizes); !ok && exists {
-		sizes = s.AttrOr(imageAttrDataSizes, defaultImageAttrSizes)
+	sizes, ok = s.Attr(attrSizes)
+	if _, exists := s.Attr(attrDataSizes); !ok && exists {
+		sizes = s.AttrOr(attrDataSizes, defaultImageAttrSizes)
 	}
 	sizes = strings.ToUpper(sizes)
 	image := Image{

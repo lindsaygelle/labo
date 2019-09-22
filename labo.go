@@ -7,8 +7,16 @@ import (
 )
 
 const (
-	attrHref   string = "href"
-	attrTarget string = "target"
+	attrAlt        string = "alt"
+	attrClass      string = "class"
+	attrDataSizes  string = "data-sizes"
+	attrDataSrc    string = "data-src"
+	attrDataSrcSet string = "data-srcset"
+	attrHref       string = "href"
+	attrSizes      string = "sizes"
+	attrSrc        string = "src"
+	attrSrcSet     string = "srcset"
+	attrTarget     string = "target"
 )
 
 const (
