@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
-
 	"github.com/gellel/labo"
 )
 
@@ -21,6 +20,10 @@ func TestLabo(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(kit)
+
+	fmt.Println(kit.BoxImage)
 
 	fmt.Println(kit.Overview)
 

@@ -2,8 +2,6 @@ package labo
 
 import (
 	"regexp"
-
-	"golang.org/x/text/currency"
 )
 
 const (
@@ -53,11 +51,6 @@ type Feature struct {
 	Image       Image
 	Title       string
 	Video       Video
-}
-
-type Price struct {
-	Amount   float64
-	Currency currency.Unit
 }
 
 type Project struct {
