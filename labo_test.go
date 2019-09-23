@@ -30,4 +30,10 @@ func TestLabo(t *testing.T) {
 	fmt.Println(kit.Software)
 
 	fmt.Println(kit.Retailers)
+
+	fmt.Println(kit.ToyCons)
+
+	for _, toycon := range kit.ToyCons {
+		fmt.Println(toycon)
+	}
 }

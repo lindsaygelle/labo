@@ -33,6 +33,7 @@ const (
 
 var (
 	regexpMatchNonAlpha           = regexp.MustCompile(`\W`)
+	regexpMatchLineBreaks         = regexp.MustCompile(`\n`)
 	regexpMatchNumeric            = regexp.MustCompile(`[0-9]+`)
 	regexpMatchParenthesis        = regexp.MustCompile(`\(.+\)`)
 	regexpMatchSequenceWhitespace = regexp.MustCompile(`\s{2,}`)

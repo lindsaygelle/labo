@@ -12,7 +12,7 @@ const (
 	kitNameCSSSelector      string = "h1.visually-hidden"
 	kitRetailersCSSSelector string = "div.retailers ul li"
 	kitPriceCSSSelector     string = "p.price"
-	kitToyConCSSSelector    string = "div.toy-con-area .toy-con"
+	kitToyConCSSSelector    string = "section.toy-con-area .toy-con"
 )
 
 // Kit is a struct that is the entirety of a Nintendo Labo Toy Con kit.
@@ -40,6 +40,7 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 	var (
 		name      string
 		retailers []*Retailer
+		toyCons   []*ToyCon
 	)
 	var (
 		boxImage, _  = NewImage(s.Find(kitBoxImageCSSSelector))
@@ -63,7 +64,11 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 	})
 	toyConSelection := s.Find(kitToyConCSSSelector)
 	toyConSelection.Each(func(i int, s *goquery.Selection) {
-		fmt.Println(i)
+		toyCon, err := NewToyCon(s)
+		if err != nil {
+			return
+		}
+		toyCons = append(toyCons, toyCon)
 	})
 	kit := Kit{
 		BoxImage:  boxImage,
@@ -72,6 +77,7 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 		Overview:  overview,
 		Price:     price,
 		Retailers: retailers,
-		Software:  software}
+		Software:  software,
+		ToyCons:   toyCons}
 	return &kit, nil
 }
