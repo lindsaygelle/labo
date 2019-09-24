@@ -2,6 +2,7 @@ package labo
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -39,12 +40,12 @@ func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
 	if ok := (descriptionSelection.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, descriptionSelection)
 	}
-	description = descriptionSelection.Text()
+	description = strings.TrimSpace(descriptionSelection.Text())
 	titleSelection := c.Find(".header span")
 	if ok := (titleSelection.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, titleSelection)
 	}
-	title = titleSelection.Text()
+	title = strings.ToUpper(titleSelection.Text())
 	feature := Feature{
 		Description: description,
 		Icon:        icon,

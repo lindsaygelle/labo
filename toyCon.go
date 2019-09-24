@@ -13,6 +13,10 @@ const (
 )
 const (
 	toyConDescriptionCSSSelector string = ".left-column .toy-con-sub-header"
+	toyConFeatureRootCSSSelector string = ".toy-con-slider"
+	toyConFeatureS1CSSSelector   string = ".slider-pagination li"
+	toyConFeatureS2CSSSelector   string = ".slider-content > div"
+	toyConFeatureS3CSSSelector   string = ".caption-content > div"
 	toyConIconCSSSelector        string = ".icon img"
 	toyConImageCSSSelector       string = ".main-image picture img"
 	toyConNameCSSSelector        string = ".left-column .toy-con-header"
@@ -41,6 +45,7 @@ func NewToyCon(s *goquery.Selection) (*ToyCon, error) {
 	}
 	var (
 		description string
+		features    []*Feature
 		icon        *Image
 		image       *Image
 		name        string
@@ -62,6 +67,7 @@ func NewToyCon(s *goquery.Selection) (*ToyCon, error) {
 		description = strings.TrimSpace(descriptionSelection.Text())
 		description = regexpMatchLineBreaks.ReplaceAllString(description, " ")
 		description = regexpMatchSequenceWhitespace.ReplaceAllString(description, "")
+		description = strings.ToUpper(description)
 	}
 	image, _ = NewImage(s.Find(toyConImageCSSSelector))
 	icon, _ = NewImage(s.Find(toyConIconCSSSelector))
@@ -70,13 +76,12 @@ func NewToyCon(s *goquery.Selection) (*ToyCon, error) {
 		verbose = strings.TrimSpace(verboseSelection.Text())
 		verbose = regexpMatchLineBreaks.ReplaceAllString(verbose, " ")
 		verbose = regexpMatchSequenceWhitespace.ReplaceAllString(verbose, "")
+		verbose = strings.ToUpper(verbose)
 	}
-	features := []*Feature{}
-
-	s.Find(".toy-con-slider").First().Each(func(i int, s *goquery.Selection) {
-		s1 := s.Find(".slider-pagination li")
-		s2 := s.Find(".slider-content > div")
-		s3 := s.Find(".caption-content > div")
+	s.Find(toyConFeatureRootCSSSelector).First().Each(func(i int, s *goquery.Selection) {
+		s1 := s.Find(toyConFeatureS1CSSSelector)
+		s2 := s.Find(toyConFeatureS2CSSSelector)
+		s3 := s.Find(toyConFeatureS3CSSSelector)
 		s1.Each(func(i int, _ *goquery.Selection) {
 			featue, err := NewFeature(s1.Eq(i), s2.Eq(i), s3.Eq(i))
 			if err != nil {
@@ -85,7 +90,6 @@ func NewToyCon(s *goquery.Selection) (*ToyCon, error) {
 			features = append(features, featue)
 		})
 	})
-
 	toyCon := ToyCon{
 		Description: description,
 		Features:    features,
