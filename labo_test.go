@@ -22,21 +22,4 @@ func TestLabo(t *testing.T) {
 	}
 
 	fmt.Println(kit)
-
-	fmt.Println(kit.BoxImage)
-
-	fmt.Println(kit.Overview)
-
-	fmt.Println(kit.Software)
-
-	fmt.Println(kit.Retailers)
-
-	fmt.Println(kit.ToyCons)
-
-	for _, toycon := range kit.ToyCons {
-		//fmt.Println(toycon)
-		for _, f := range toycon.Features {
-			fmt.Println(f)
-		}
-	}
 }

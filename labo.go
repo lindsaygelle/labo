@@ -45,10 +45,3 @@ type KitCustomization struct {
 type KitVR struct {
 	Plaza interface{}
 }
-
-type Project struct {
-	Icon        Image
-	Image       Image
-	Name        string
-	Screenshots []Image
-}

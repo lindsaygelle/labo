@@ -10,8 +10,9 @@ import (
 const (
 	kitBoxImageCSSSelector  string = "div.packshot picture img"
 	kitNameCSSSelector      string = "h1.visually-hidden"
-	kitRetailersCSSSelector string = "div.retailers ul li"
 	kitPriceCSSSelector     string = "p.price"
+	kitProjectsCSSSelector  string = ".toycon-container .toycon-tag"
+	kitRetailersCSSSelector string = "div.retailers ul li"
 	kitToyConCSSSelector    string = "section.toy-con-area .toy-con"
 )
 
@@ -39,6 +40,7 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 	}
 	var (
 		name      string
+		projects  []*Project
 		retailers []*Retailer
 		toyCons   []*ToyCon
 	)
@@ -49,6 +51,14 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 		software, _  = NewSoftware(s.Find(softwareRootCSSSelector))
 		price, _     = NewPrice(s.Find(kitPriceCSSSelector))
 	)
+	projectsSelection := s.Find(kitProjectsCSSSelector)
+	projectsSelection.Each(func(i int, s *goquery.Selection) {
+		project, err := NewProject(s)
+		if err != nil {
+			return
+		}
+		projects = append(projects, project)
+	})
 	nameSelection := s.Find(kitNameCSSSelector)
 	if ok := (nameSelection.Length() > 0); ok {
 		name = strings.TrimSpace(nameSelection.Text())
@@ -76,6 +86,7 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 		Name:      name,
 		Overview:  overview,
 		Price:     price,
+		Projects:  projects,
 		Retailers: retailers,
 		Software:  software,
 		ToyCons:   toyCons}
