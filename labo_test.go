@@ -34,6 +34,9 @@ func TestLabo(t *testing.T) {
 	fmt.Println(kit.ToyCons)
 
 	for _, toycon := range kit.ToyCons {
-		fmt.Println(toycon)
+		//fmt.Println(toycon)
+		for _, f := range toycon.Features {
+			fmt.Println(f)
+		}
 	}
 }

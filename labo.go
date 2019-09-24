@@ -46,14 +46,6 @@ type KitVR struct {
 	Plaza interface{}
 }
 
-type Feature struct {
-	Description string
-	Icon        Image
-	Image       Image
-	Title       string
-	Video       Video
-}
-
 type Project struct {
 	Icon        Image
 	Image       Image
