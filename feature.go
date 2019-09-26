@@ -7,13 +7,15 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Feature is a struct that details a unique feature that the Nintendo Labo ToyCon supports.
 type Feature struct {
 	Description string
 	Icon        *Image
 	Title       string
-	Video       Video
+	Video       *Video
 }
 
+// NewFeature is a constructor function that instantiates a new Feature struct pointer.
 func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
 	var (
 		description string

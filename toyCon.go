@@ -27,6 +27,7 @@ var (
 	regexpToyConMatchToyCon = regexp.MustCompile(`Toy-Con`)
 )
 
+// ToyCon is a struct that contains the details about a Nintendo Labo ToyCon.
 type ToyCon struct {
 	Description string
 	Features    []*Feature
@@ -36,6 +37,7 @@ type ToyCon struct {
 	Verbose     string
 }
 
+// NewToyCon is a constructor function that instantiates a new ToyCon struct pointer.
 func NewToyCon(s *goquery.Selection) (*ToyCon, error) {
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)

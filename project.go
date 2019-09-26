@@ -6,6 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Project is a Nintendo Labo Toy Con Kit that is bundled with the Nintendo Labo Kit.
 type Project struct {
 	Icon        *Image
 	Image       *Image
@@ -13,6 +14,7 @@ type Project struct {
 	Screenshots []*Image
 }
 
+// NewProject is a constructor function that instantiates a new Project struct pointer.
 func NewProject(s *goquery.Selection) (*Project, error) {
 	var (
 		name        string

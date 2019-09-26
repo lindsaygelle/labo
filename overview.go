@@ -17,11 +17,13 @@ const (
 	overviewVideoCSSSelector       string = ".content[data-id]"
 )
 
+// Overview is a struct that gives a short textual overview (with an optional Video) about a Nintendo Labo Kit.
 type Overview struct {
 	Description string
 	Video       *Video
 }
 
+// NewOverview is a constructor function that instantiates a new Overview struct pointer.
 func NewOverview(s *goquery.Selection) (*Overview, error) {
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)

@@ -16,7 +16,7 @@ const (
 	kitToyConCSSSelector    string = "section.toy-con-area .toy-con"
 )
 
-// Kit is a struct that is the entirety of a Nintendo Labo Toy Con kit.
+// Kit is a struct that details the specifics of a Nintendo Labo Kit. Each Kit is the building block for a Labo kit.
 type Kit struct {
 	BoxImage  *Image
 	Href      string
