@@ -20,16 +20,16 @@ type Materials struct {
 
 // NewMaterials is a constructor function that instantiates and returns a new Materials pointer.
 func NewMaterials(s *goquery.Selection) (*Materials, error) {
-	var (
-		image *Image
-		parts []*Part
-	)
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
 	if ok := (s.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
+	var (
+		image *Image
+		parts []*Part
+	)
 	partsSelection := s.Find(materialsPartsCSSSelector)
 	if ok := (partsSelection.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, partsSelection)

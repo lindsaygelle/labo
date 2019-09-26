@@ -37,7 +37,8 @@ func NewPrice(s *goquery.Selection) (*Price, error) {
 		return nil, fmt.Errorf(errorPriceEmptyPrice, s)
 	}
 	substring = strings.TrimSpace(substring)
-	amount, err := strconv.ParseFloat(regexpPriceMatchCurrency.FindString(substring), 64)
+	substring = regexpPriceMatchCurrency.FindString(substring)
+	amount, err := strconv.ParseFloat(substring, 64)
 	if err != nil {
 		return nil, err
 	}

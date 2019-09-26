@@ -24,12 +24,6 @@ type Feature struct {
 
 // NewFeature is a constructor function that instantiates and returns a new Feature struct pointer.
 func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
-	var (
-		description string
-		icon        *Image
-		title       string
-		video       *Video
-	)
 	for _, s := range []*goquery.Selection{a, b, c} {
 		if ok := (s != nil); !ok {
 			return nil, fmt.Errorf(errorGoQuerySelectionNil)
@@ -38,6 +32,12 @@ func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
 			return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 		}
 	}
+	var (
+		description string
+		icon        *Image
+		title       string
+		video       *Video
+	)
 	iconSelection := a.Find(featureIconCSSSelector)
 	if ok := (iconSelection.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, iconSelection)
