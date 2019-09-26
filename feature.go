@@ -7,6 +7,13 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const (
+	featureDescriptionCSSSelector string = ".copy p"
+	featureIconCSSSelector        string = "button picture img"
+	featureTitleCSSSelector       string = ".header span"
+	featureVideoCSSSelector       string = "video"
+)
+
 // Feature is a struct that details a unique feature that the Nintendo Labo ToyCon supports.
 type Feature struct {
 	Description string
@@ -21,6 +28,7 @@ func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
 		description string
 		icon        *Image
 		title       string
+		video       *Video
 	)
 	for _, s := range []*goquery.Selection{a, b, c} {
 		if ok := (s != nil); !ok {
@@ -30,7 +38,7 @@ func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
 			return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 		}
 	}
-	iconSelection := a.Find("button picture img")
+	iconSelection := a.Find(featureIconCSSSelector)
 	if ok := (iconSelection.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, iconSelection)
 	}
@@ -38,19 +46,22 @@ func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
 	if err != nil {
 		return nil, err
 	}
-	descriptionSelection := c.Find(".copy p")
+	descriptionSelection := c.Find(featureDescriptionCSSSelector)
 	if ok := (descriptionSelection.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, descriptionSelection)
 	}
 	description = strings.TrimSpace(descriptionSelection.Text())
-	titleSelection := c.Find(".header span")
+	titleSelection := c.Find(featureTitleCSSSelector)
 	if ok := (titleSelection.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, titleSelection)
 	}
 	title = strings.ToUpper(titleSelection.Text())
+	videoSelection := b.Find(featureVideoCSSSelector)
+	video, _ = NewVideo(videoSelection)
 	feature := Feature{
 		Description: description,
 		Icon:        icon,
-		Title:       title}
+		Title:       title,
+		Video:       video}
 	return &feature, nil
 }

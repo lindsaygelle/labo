@@ -6,6 +6,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const ()
+
 // Project is a unique build project that is bundled with a Nintendo Labo Kit.
 type Project struct {
 	Icon        *Image
