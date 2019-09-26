@@ -15,7 +15,7 @@ type Feature struct {
 	Video       *Video
 }
 
-// NewFeature is a constructor function that instantiates a new Feature struct pointer.
+// NewFeature is a constructor function that instantiates and returns a new Feature struct pointer.
 func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
 	var (
 		description string

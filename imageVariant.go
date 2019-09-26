@@ -30,7 +30,7 @@ type ImageVariant struct {
 	Units  string
 }
 
-// NewImageVariant is a constructor function that instantiates a new ImageVariant pointer.
+// NewImageVariant is a constructor function that instantiates and returns a new ImageVariant pointer.
 func NewImageVariant(s string) (*ImageVariant, error) {
 	var (
 		at     string

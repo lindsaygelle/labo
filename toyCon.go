@@ -28,6 +28,8 @@ var (
 )
 
 // ToyCon is a struct that contains the details about a Nintendo Labo ToyCon.
+// A ToyCon is one of the kit specific projects that can be built with a Nintendo Labo Kit.
+// Each Nintendo Labo kit will come with a unique series of ToyCons.
 type ToyCon struct {
 	Description string
 	Features    []*Feature
@@ -37,7 +39,7 @@ type ToyCon struct {
 	Verbose     string
 }
 
-// NewToyCon is a constructor function that instantiates a new ToyCon struct pointer.
+// NewToyCon is a constructor function that instantiates and returns a new ToyCon struct pointer.
 func NewToyCon(s *goquery.Selection) (*ToyCon, error) {
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)

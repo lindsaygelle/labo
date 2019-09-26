@@ -12,13 +12,13 @@ const (
 	softwareVideoCSSSelector string = ".software-video"
 )
 
-// Software is
+// Software is a struct that contains a brief overview about the software provided with a Nintendo Labo Kit.
 type Software struct {
 	Image *Image
 	Video *Video
 }
 
-// NewSoftware is a constructor function the instantiates a new Software pointer.
+// NewSoftware is a constructor function that instantiates and returns a new Software pointer.
 func NewSoftware(s *goquery.Selection) (*Software, error) {
 	var (
 		image *Image

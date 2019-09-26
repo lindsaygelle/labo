@@ -23,7 +23,7 @@ type Overview struct {
 	Video       *Video
 }
 
-// NewOverview is a constructor function that instantiates a new Overview struct pointer.
+// NewOverview is a constructor function that instantiates and returns a new Overview struct pointer.
 func NewOverview(s *goquery.Selection) (*Overview, error) {
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)

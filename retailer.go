@@ -20,6 +20,7 @@ const (
 	retailerLogoCSSSelector   string = "a img"
 )
 
+// Retailer is a struct that details a resource where a Nintendo Labo Kit can be purchased from online.
 type Retailer struct {
 	Href   string
 	Logo   *Image
@@ -27,6 +28,7 @@ type Retailer struct {
 	Target string
 }
 
+// NewRetailer is a constructor function that instantiates and returns a new Retailer struct pointer.
 func NewRetailer(s *goquery.Selection) (*Retailer, error) {
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)

@@ -27,8 +27,7 @@ var (
 	regexpPartFindSpares   = regexp.MustCompile(`\+\s{1}spares`)
 )
 
-// Part is a struct that represents the building component uses to complete
-// a Nintendo Labo ToyCon kit.
+// Part is a struct that represents a unique building component used to complete a Nintendo Labo ToyCon kit.
 type Part struct {
 	Amount int    `json:"amount"`
 	Color  string `json:"color"`

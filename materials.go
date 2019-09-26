@@ -12,13 +12,13 @@ const (
 	materialsRootCSSSelector  string = ".contents .right-column"
 )
 
-// Materials is a representation of the parts required to build a Nintendo Labo ToyCon.
+// Materials is the collection of parts needed to all projects within the Nintendo Labo Kit.
 type Materials struct {
 	Image *Image
 	Parts []*Part
 }
 
-// NewMaterials is a constructor function that instantiates a new Materials pointer.
+// NewMaterials is a constructor function that instantiates and returns a new Materials pointer.
 func NewMaterials(s *goquery.Selection) (*Materials, error) {
 	var (
 		image *Image

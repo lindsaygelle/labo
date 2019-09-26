@@ -18,11 +18,13 @@ var (
 	regexpPriceMatchCurrency = regexp.MustCompile(`([+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?){1}`)
 )
 
+// Price is a struct that expresses the monetary cost for a Nintendo Labo Kit.
 type Price struct {
 	Amount   float64
 	Currency currency.Unit
 }
 
+// NewPrice is a constructor function that instantiates and returns a new Price struct pointer.
 func NewPrice(s *goquery.Selection) (*Price, error) {
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)

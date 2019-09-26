@@ -16,7 +16,7 @@ const (
 	kitToyConCSSSelector    string = "section.toy-con-area .toy-con"
 )
 
-// Kit is a struct that details the specifics of a Nintendo Labo Kit. Each Kit is the building block for a Labo kit.
+// Kit is a struct that details all the unique the specifics of a Nintendo Labo Kit.
 type Kit struct {
 	BoxImage  *Image
 	Href      string
@@ -30,7 +30,7 @@ type Kit struct {
 	ToyCons   []*ToyCon
 }
 
-// NewKit is a constructor function that instantiates a Nintendo Labo Kit struct pointer.
+// NewKit is a constructor function that instantiates and returns a Nintendo Labo Kit struct pointer.
 func NewKit(s *goquery.Selection) (*Kit, error) {
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)

@@ -41,7 +41,7 @@ type Image struct {
 	Variants []*ImageVariant
 }
 
-// NewImage is a constructor function that instantiates a new Image pointer.
+// NewImage is a constructor function that instantiates and returns a new Image pointer.
 func NewImage(s *goquery.Selection) (*Image, error) {
 	var (
 		alt      string
