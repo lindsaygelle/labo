@@ -39,9 +39,6 @@ var (
 	regexpMatchSequenceWhitespace = regexp.MustCompile(`\s{2,}`)
 )
 
-type KitCustomization struct {
-}
-
 type KitVR struct {
 	Plaza interface{}
 }
