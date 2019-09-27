@@ -22,4 +22,16 @@ func TestLabo(t *testing.T) {
 	}
 
 	fmt.Println(kit)
+
+	doc, err = goquery.NewDocument("https://labo.nintendo.com/kits/customization-set/")
+	if err != nil {
+		panic(err)
+	}
+
+	customization, err := labo.NewKitCustomization(doc.Find("body"))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(customization.Materials)
+
 }

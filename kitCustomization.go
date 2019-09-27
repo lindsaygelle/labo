@@ -18,13 +18,15 @@ const (
 	kitCustomizationPriceCSSSelector     string = "div.price .price-card .price"
 )
 
+// KitCustomization is a struct that describes a subset of the Nintendo Labo Kits dedicated to customizing a Nintendo Labo Kit.
 type KitCustomization struct {
 	BoxImage  *Image
 	Href      string
-	Materials []*KitCustomization
+	Materials []*CustomizationPart
 	Price     *Price
 }
 
+// NewKitCustomization is a constructor function that instantiates and returns a new KitCustomization struct pointer.
 func NewKitCustomization(s *goquery.Selection) (*KitCustomization, error) {
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
@@ -35,7 +37,7 @@ func NewKitCustomization(s *goquery.Selection) (*KitCustomization, error) {
 	var (
 		boxImage  *Image
 		href      string
-		materials []*KitCustomization
+		materials []*CustomizationPart
 		price     *Price
 	)
 	imageSelection := s.Find(kitCustomizationBoxImageCSSSelector)
@@ -47,7 +49,13 @@ func NewKitCustomization(s *goquery.Selection) (*KitCustomization, error) {
 		return nil, fmt.Errorf(errorKitCustomizationNoMaterials)
 	}
 	materialsSelection.Each(func(i int, s *goquery.Selection) {
-
+		s.Find(".item").Each(func(j int, s *goquery.Selection) {
+			customizationPart, err := NewCustomizationPart(s)
+			if err != nil {
+				return
+			}
+			materials = append(materials, customizationPart)
+		})
 	})
 	priceSelection := s.Find(kitCustomizationPriceCSSSelector)
 	if ok := (priceSelection.Length() > 0); !ok {
