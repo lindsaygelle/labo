@@ -32,6 +32,6 @@ func TestLabo(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(customization.Materials)
+	fmt.Println(customization)
 
 }

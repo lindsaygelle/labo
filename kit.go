@@ -32,10 +32,15 @@ type Kit struct {
 
 // NewKit is a constructor function that instantiates and returns a Nintendo Labo Kit struct pointer.
 func NewKit(s *goquery.Selection) (*Kit, error) {
-	if ok := (s != nil); !ok {
+	var (
+		ok bool
+	)
+	ok = (s != nil)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
-	if ok := (s.Length() > 0); !ok {
+	ok = (s.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	var (
@@ -60,7 +65,8 @@ func NewKit(s *goquery.Selection) (*Kit, error) {
 		projects = append(projects, project)
 	})
 	nameSelection := s.Find(kitNameCSSSelector)
-	if ok := (nameSelection.Length() > 0); ok {
+	ok = (nameSelection.Length() > 0)
+	if ok {
 		name = strings.TrimSpace(nameSelection.Text())
 		name = strings.ToUpper(name)
 	}

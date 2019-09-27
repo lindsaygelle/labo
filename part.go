@@ -48,41 +48,51 @@ func NewPart(s *goquery.Selection) (*Part, error) {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	var (
+		name string
+		ok   bool
+	)
+	var (
 		amount = defaultPartAmount
 		color  = defaultPartColor
 		size   = defaultPartSize
 		spares = false
 	)
 	contents := strings.TrimSpace(s.Text())
-	if ok := (len(contents) > 0); !ok {
+	ok = (len(contents) > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorPartEmptyText, s)
 	}
 	substring := regexpPartFindPartName.FindString(contents)
-	if ok := (len(substring) > 0); !ok {
+	ok = (len(substring) > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorPartEmptyPartName, s)
 	}
 	substring = strings.TrimSpace(substring)
 	substring = strings.TrimSuffix(substring, "x")
 	substring = regexpMatchParenthesis.ReplaceAllString(substring, "")
-	name := regexpMatchSequenceWhitespace.ReplaceAllString(substring, "")
+	name = regexpMatchSequenceWhitespace.ReplaceAllString(substring, "")
 	name = strings.TrimSpace(name)
 	name = strings.ToUpper(name)
 	substring = regexpMatchNumeric.FindString(contents)
-	if ok := (len(substring) > 0); ok {
+	ok = (len(substring) > 0)
+	if ok {
 		amount, _ = strconv.Atoi(substring)
 	}
 	substring = regexpPartFindSize.FindString(contents)
-	if ok := (len(substring) > 0); ok {
+	ok = (len(substring) > 0)
+	if ok {
 		substring = regexpMatchNonAlpha.ReplaceAllString(substring, "")
 		size = strings.ToUpper(substring)
 	}
 	substring = regexpPartFindColor.FindString(contents)
-	if ok := (len(substring) > 0); ok {
+	ok = (len(substring) > 0)
+	if ok {
 		substring = regexpMatchNonAlpha.ReplaceAllString(substring, "")
 		color = strings.ToUpper(substring)
 	}
 	substring = regexpPartFindSpares.FindString(contents)
-	if ok := (len(substring) > 0); ok {
+	ok = (len(substring) > 0)
+	if ok {
 		spares = true
 	}
 	part := Part{

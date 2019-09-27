@@ -16,6 +16,7 @@ const (
 	kitCustomizationBoxImageCSSSelector  string = "div.packshot picture img"
 	kitCustomizationMaterialsCSSSelector string = "section.contents .row"
 	kitCustomizationPriceCSSSelector     string = "div.price .price-card .price"
+	kitCustomizationOverviewCSSSelector  string = "div.hero-content"
 )
 
 // KitCustomization is a struct that describes a subset of the Nintendo Labo Kits dedicated to customizing a Nintendo Labo Kit.
@@ -23,6 +24,7 @@ type KitCustomization struct {
 	BoxImage  *Image
 	Href      string
 	Materials []*CustomizationPart
+	Overview  *Overview
 	Price     *Price
 }
 
@@ -35,17 +37,24 @@ func NewKitCustomization(s *goquery.Selection) (*KitCustomization, error) {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	var (
+		err error
+		ok  bool
+	)
+	var (
 		boxImage  *Image
 		href      string
 		materials []*CustomizationPart
+		overview  *Overview
 		price     *Price
 	)
 	imageSelection := s.Find(kitCustomizationBoxImageCSSSelector)
 	if ok := (imageSelection.Length() > 0); !ok {
 		return nil, fmt.Errorf(errorKitCustomizationNoBoxImage)
 	}
+	boxImage, err = NewImage(imageSelection)
 	materialsSelection := s.Find(kitCustomizationMaterialsCSSSelector)
-	if ok := (materialsSelection.Length() > 0); !ok {
+	ok = (materialsSelection.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorKitCustomizationNoMaterials)
 	}
 	materialsSelection.Each(func(i int, s *goquery.Selection) {
@@ -57,14 +66,29 @@ func NewKitCustomization(s *goquery.Selection) (*KitCustomization, error) {
 			materials = append(materials, customizationPart)
 		})
 	})
+	overviewSelection := s.Find(kitCustomizationOverviewCSSSelector)
+	ok = (overviewSelection.Length() > 0)
+	if !ok {
+		return nil, err
+	}
+	overview, err = NewOverview(overviewSelection)
+	if err != nil {
+		return nil, err
+	}
 	priceSelection := s.Find(kitCustomizationPriceCSSSelector)
-	if ok := (priceSelection.Length() > 0); !ok {
+	ok = (priceSelection.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorKitCustomizationNoPrice)
+	}
+	price, err = NewPrice(priceSelection)
+	if err != nil {
+		return nil, err
 	}
 	kitCustomization := KitCustomization{
 		BoxImage:  boxImage,
 		Href:      href,
 		Materials: materials,
+		Overview:  overview,
 		Price:     price}
 	return &kitCustomization, nil
 }
