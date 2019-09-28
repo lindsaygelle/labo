@@ -41,42 +41,52 @@ type ToyCon struct {
 
 // NewToyCon is a constructor function that instantiates and returns a new ToyCon struct pointer.
 func NewToyCon(s *goquery.Selection) (*ToyCon, error) {
-	if ok := (s != nil); !ok {
+	var (
+		ok bool
+	)
+	ok = (s != nil)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
-	if ok := (s.Length() > 0); !ok {
+	ok = (s.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	var (
 		description string
 		features    []*Feature
-		icon        *Image
-		image       *Image
 		name        string
 		verbose     string
 	)
+	var (
+		image, _ = NewImage(s.Find(toyConImageCSSSelector))
+		icon, _  = NewImage(s.Find(toyConIconCSSSelector))
+	)
 	nameSelection := s.Find(toyConNameCSSSelector)
-	if ok := (nameSelection.Length() > 0); !ok {
+	ok = (nameSelection.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, nameSelection)
 	}
 	name = nameSelection.Text()
-	if ok := (len(name) > 0); !ok {
+	ok = (len(name) > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorToyConEmptyName, nameSelection)
 	}
 	name = regexpToyConMatchToyCon.ReplaceAllString(name, "")
 	name = strings.TrimSpace(name)
 	name = strings.ToUpper(name)
 	descriptionSelection := s.Find(toyConDescriptionCSSSelector)
-	if ok := (descriptionSelection.Length() > 0); ok {
+	ok = (descriptionSelection.Length() > 0)
+	if ok {
 		description = strings.TrimSpace(descriptionSelection.Text())
 		description = regexpMatchLineBreaks.ReplaceAllString(description, " ")
 		description = regexpMatchSequenceWhitespace.ReplaceAllString(description, "")
 		description = strings.ToUpper(description)
 	}
-	image, _ = NewImage(s.Find(toyConImageCSSSelector))
-	icon, _ = NewImage(s.Find(toyConIconCSSSelector))
+
 	verboseSelection := s.Find(toyConVerboseCSSSelector)
-	if ok := (verboseSelection.Length() > 0); ok {
+	ok = (verboseSelection.Length() > 0)
+	if ok {
 		verbose = strings.TrimSpace(verboseSelection.Text())
 		verbose = regexpMatchLineBreaks.ReplaceAllString(verbose, " ")
 		verbose = regexpMatchSequenceWhitespace.ReplaceAllString(verbose, "")

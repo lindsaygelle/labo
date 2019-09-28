@@ -21,15 +21,20 @@ type Software struct {
 // NewSoftware is a constructor function that instantiates and returns a new Software pointer.
 func NewSoftware(s *goquery.Selection) (*Software, error) {
 	var (
+		ok bool
+	)
+	ok = (s != nil)
+	if !ok {
+		return nil, fmt.Errorf(errorGoQuerySelectionNil)
+	}
+	ok = (s.Length() > 0)
+	if !ok {
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
+	}
+	var (
 		image *Image
 		video *Video
 	)
-	if ok := (s != nil); !ok {
-		return nil, fmt.Errorf(errorGoQuerySelectionNil)
-	}
-	if ok := (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
-	}
 	image, err := NewImage(s.Find(softwareImageCSSSelector))
 	if err != nil {
 		return nil, err
