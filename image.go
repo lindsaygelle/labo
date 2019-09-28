@@ -44,21 +44,24 @@ type Image struct {
 // NewImage is a constructor function that instantiates and returns a new Image pointer.
 func NewImage(s *goquery.Selection) (*Image, error) {
 	var (
+		ok bool
+	)
+	ok = (s != nil)
+	if !ok {
+		return nil, fmt.Errorf(errorGoQuerySelectionNil)
+	}
+	ok = (s.Length() > 0)
+	if !ok {
+		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
+	}
+	var (
 		alt      string
 		format   string
 		sizes    string
 		src      string
 		srcset   string
 		variants []*ImageVariant
-
-		ok bool
 	)
-	if ok = (s != nil); !ok {
-		return nil, fmt.Errorf(errorGoQuerySelectionNil)
-	}
-	if ok = (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
-	}
 	alt = s.AttrOr(attrAlt, defaultImageAttrAlt)
 	alt = strings.ToUpper(alt)
 	src, ok = s.Attr(attrSrc)
@@ -81,10 +84,13 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 	format = strings.ToUpper(format)
 	src = regexpImageMatchFolder.ReplaceAllString(src, "")
 	src = fmt.Sprintf("%s/%s", laboRootURL, src)
-	if _, ok = s.Attr(attrSrcSet); ok {
+	_, ok = s.Attr(attrSrcSet)
+	if ok {
 		srcset, _ = s.Attr(attrSrc)
 	}
-	if _, ok = s.Attr(attrDataSrcSet); ok && (len(srcset) == 0) {
+	_, ok = s.Attr(attrDataSrcSet)
+	ok = (ok && (len(srcset) == 0))
+	if ok {
 		srcset, _ = s.Attr(attrDataSrcSet)
 	}
 	for _, src := range strings.Split(srcset, ",") {
@@ -95,7 +101,9 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 		variants = append(variants, imageVariant)
 	}
 	sizes, ok = s.Attr(attrSizes)
-	if _, exists := s.Attr(attrDataSizes); !ok && exists {
+	_, exists := s.Attr(attrDataSizes)
+	ok = (!ok && exists)
+	if ok {
 		sizes = s.AttrOr(attrDataSizes, defaultImageAttrSizes)
 	}
 	sizes = strings.ToUpper(sizes)

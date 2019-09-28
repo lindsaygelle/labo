@@ -24,11 +24,16 @@ type Feature struct {
 
 // NewFeature is a constructor function that instantiates and returns a new Feature struct pointer.
 func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
+	var (
+		ok bool
+	)
 	for _, s := range []*goquery.Selection{a, b, c} {
-		if ok := (s != nil); !ok {
+		ok = (s != nil)
+		if !ok {
 			return nil, fmt.Errorf(errorGoQuerySelectionNil)
 		}
-		if ok := (s.Length() > 0); !ok {
+		ok = (s.Length() > 0)
+		if !ok {
 			return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 		}
 	}
@@ -39,7 +44,8 @@ func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
 		video       *Video
 	)
 	iconSelection := a.Find(featureIconCSSSelector)
-	if ok := (iconSelection.Length() > 0); !ok {
+	ok = (iconSelection.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, iconSelection)
 	}
 	icon, err := NewImage(iconSelection)
@@ -47,12 +53,14 @@ func NewFeature(a, b, c *goquery.Selection) (*Feature, error) {
 		return nil, err
 	}
 	descriptionSelection := c.Find(featureDescriptionCSSSelector)
-	if ok := (descriptionSelection.Length() > 0); !ok {
+	ok = (descriptionSelection.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, descriptionSelection)
 	}
 	description = strings.TrimSpace(descriptionSelection.Text())
 	titleSelection := c.Find(featureTitleCSSSelector)
-	if ok := (titleSelection.Length() > 0); !ok {
+	ok = (titleSelection.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, titleSelection)
 	}
 	title = strings.ToUpper(titleSelection.Text())

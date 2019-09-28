@@ -9,6 +9,10 @@ import (
 )
 
 const (
+	errorCustomizationPartNoPartImage string = "goquery.Selection (%p) does not contain a part image"
+)
+
+const (
 	customizationPartImageCSSSelector string = "picture img"
 )
 
@@ -21,10 +25,15 @@ type CustomizationPart struct {
 
 // NewCustomizationPart is a constructor function that instantiates and returns a new CustomizationPart struct pointer.
 func NewCustomizationPart(s *goquery.Selection) (*CustomizationPart, error) {
-	if ok := (s != nil); !ok {
+	var (
+		ok bool
+	)
+	ok = (s != nil)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
-	if ok := (s.Length() > 0); !ok {
+	ok = (s.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	var (
@@ -33,15 +42,18 @@ func NewCustomizationPart(s *goquery.Selection) (*CustomizationPart, error) {
 		name   string
 	)
 	imageSelection := s.Find(customizationPartImageCSSSelector)
-	if ok := (imageSelection.Length() > 0); !ok {
-		return nil, fmt.Errorf("")
+	ok = (imageSelection.Length() > 0)
+	if !ok {
+		return nil, fmt.Errorf(errorCustomizationPartNoPartImage, imageSelection)
 	}
 	contents := strings.TrimSpace(s.Text())
-	if ok := (len(contents) > 0); !ok {
+	ok = (len(contents) > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorPartEmptyText, s)
 	}
 	substring := regexpPartFindPartName.FindString(contents)
-	if ok := (len(substring) > 0); !ok {
+	ok = (len(substring) > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorPartEmptyPartName, s)
 	}
 	substring = strings.TrimSpace(substring)
@@ -51,7 +63,8 @@ func NewCustomizationPart(s *goquery.Selection) (*CustomizationPart, error) {
 	name = strings.TrimSpace(name)
 	name = strings.ToUpper(name)
 	substring = regexpMatchNumeric.FindString(contents)
-	if ok := (len(substring) > 0); ok {
+	ok = (len(substring) > 0)
+	if ok {
 		amount, _ = strconv.Atoi(substring)
 	}
 	customizationPart := CustomizationPart{
