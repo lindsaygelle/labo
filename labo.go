@@ -38,7 +38,3 @@ var (
 	regexpMatchParenthesis        = regexp.MustCompile(`\(.+\)`)
 	regexpMatchSequenceWhitespace = regexp.MustCompile(`\s{2,}`)
 )
-
-type KitVR struct {
-	Plaza interface{}
-}

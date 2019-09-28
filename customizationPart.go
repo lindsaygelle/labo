@@ -12,12 +12,14 @@ const (
 	customizationPartImageCSSSelector string = "picture img"
 )
 
+// CustomizationPart is a struct that represents a part available for adding visual customization for a Nintendo Labo Kit.
 type CustomizationPart struct {
 	Amount int
 	Image  *Image
 	Name   string
 }
 
+// NewCustomizationPart is a constructor function that instantiates and returns a new CustomizationPart struct pointer.
 func NewCustomizationPart(s *goquery.Selection) (*CustomizationPart, error) {
 	if ok := (s != nil); !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
