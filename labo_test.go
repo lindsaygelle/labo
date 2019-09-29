@@ -8,11 +8,5 @@ import (
 )
 
 func TestLabo(t *testing.T) {
-
-	robotKit, err := labo.NewRobotKit()
-
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(robotKit.BoxImage.Src)
+	fmt.Println(labo.URL)
 }

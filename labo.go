@@ -30,9 +30,11 @@ const (
 )
 
 const (
-	kitRobot   string = "robot-kit"
-	kitVariety string = "variety-kit"
-	kitVehicle string = "vehicle-kit"
+	kitRobot     string = "robot-kit"
+	kitVariety   string = "variety-kit"
+	kitVehicle   string = "vehicle-kit"
+	kitVR        string = "vr-kit"
+	kitVRStarter string = "vr-starter-kit"
 )
 
 const (
@@ -59,6 +61,16 @@ const (
 	URLVehicleKit string = (URLKits + "/" + kitVehicle)
 )
 
+const (
+	// URLVRKit is the direct URL to the Nintendo Labo VR Kit.
+	URLVRKit string = (URLKits + "/" + kitVR)
+)
+
+const (
+	// URLVRKitStarter is the direct URL to the Nintendo Labo VR Stater KIt.
+	URLVRKitStarter string = (URLKits + "/" + kitVRStarter)
+)
+
 var (
 	client = (&http.Client{})
 )
@@ -72,12 +84,22 @@ var (
 )
 
 var (
-	mapURL = map[string]string{
+	laboKitMap = map[string]string{
 		kitRobot:   URLRobotKit,
 		kitVariety: URLVarietyKit,
 		kitVehicle: URLVehicleKit}
 )
 
+var (
+	laboKitVRMap = map[string]string{
+		kitVR:        URLVRKit,
+		kitVRStarter: URLVRKitStarter}
+)
+
 func GetKit(URL string) (*Kit, error) {
+	return nil, nil
+}
+
+func GetVRKit(URL string) (*KitVR, error) {
 	return nil, nil
 }
