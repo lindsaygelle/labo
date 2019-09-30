@@ -65,7 +65,7 @@ func NewImageVariant(s string) (*ImageVariant, error) {
 	}
 	format = strings.ToUpper(format)
 	src = regexpImageMatchFolder.ReplaceAllString(s1, "")
-	src = fmt.Sprintf("%s/%s", URL, src)
+	src = fmt.Sprintf("%s/%s", laboURL, src)
 	units = strings.ToUpper(strings.Replace(s2, at, "", 1))
 	imageVariant := ImageVariant{
 		At:     at,

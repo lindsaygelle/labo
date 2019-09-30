@@ -1,8 +1,12 @@
 package labo
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
 	"regexp"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 const (
@@ -23,10 +27,14 @@ const (
 	errorGoQuerySelectionEmptyHTMLNodes string = "argument (*%p) does not contain a collection of HTML elements"
 	errorGoQuerySelectionNil            string = "argument *goquery.Selection cannot be nil"
 )
+const (
+	errorURLHost  string = "argument (%s) host is not %s"
+	errorURLMatch string = "argument (%s) is not a supported URL"
+)
 
 const (
-	errorEmptyAttrClass string = "argument (*%p) does not contain an class attribute"
-	errorEmptyHrefAlt   string = "argument (*%p) does not contain an href attribute"
+	errorEmptyAttrClass string = "argument (*%p) does not contain a class attribute"
+	errorEmptyHrefAlt   string = "argument (*%p) does not contain a href attribute"
 )
 
 const (
@@ -38,37 +46,25 @@ const (
 )
 
 const (
-	// URL is homepage for the Nintendo Labo product.
-	URL string = "https://labo.nintendo.com"
+	kitURL string = (laboURL + "/" + "kits")
 )
 
 const (
-	// URLKits is the the path for the current list of Nintendo Labo Kits.
-	URLKits string = URL + "/kits"
+	kitRobotURL     string = (kitURL + "/" + kitRobot)
+	kitVarietyURL   string = (kitURL + "/" + kitVariety)
+	kitVehicleURL   string = (kitURL + "/" + kitVehicle)
+	kitVRURL        string = (kitURL + "/" + kitVR)
+	kitVRStarterURL string = (kitURL + "/" + kitVRStarter)
 )
 
 const (
-	// URLRobotKit is the direct URL to the Nintendo Labo Robot Kit.
-	URLRobotKit string = (URLKits + "/" + kitRobot)
-)
-const (
-	// URLVarietyKit is the direct URL to the Nintendo Labo Variety Kit.
-	URLVarietyKit string = (URLKits + "/" + kitVariety)
+	laboHost string = ("labo" + "." + nintendoHost)
+	laboURL  string = ("https://" + laboHost)
 )
 
 const (
-	// URLVehicleKit is the direct URL to the Nintendo Labo Vehicle Kit.
-	URLVehicleKit string = (URLKits + "/" + kitVehicle)
-)
-
-const (
-	// URLVRKit is the direct URL to the Nintendo Labo VR Kit.
-	URLVRKit string = (URLKits + "/" + kitVR)
-)
-
-const (
-	// URLVRKitStarter is the direct URL to the Nintendo Labo VR Stater KIt.
-	URLVRKitStarter string = (URLKits + "/" + kitVRStarter)
+	nintendoHost string = "nintendo.com"
+	nintendoURL  string = ("https://" + nintendoHost)
 )
 
 var (
@@ -84,22 +80,61 @@ var (
 )
 
 var (
-	laboKitMap = map[string]string{
-		kitRobot:   URLRobotKit,
-		kitVariety: URLVarietyKit,
-		kitVehicle: URLVehicleKit}
+	// RobotKitURL is the Nintendo Labo URL for the Nintendo Labo Robot Kit.
+	RobotKitURL = URL(kitRobotURL)
+)
+var (
+	// VarietyKitURL is the Nintendo Labo URL for the Nintendo Variety Kit.
+	VarietyKitURL = URL(kitVarietyURL)
+)
+var (
+	// VehicleKitURL is the Nintendo Labo URL for the Nintendo Labo Vehicle Kit.
+	VehicleKitURL = URL(kitVehicleURL)
 )
 
 var (
-	laboKitVRMap = map[string]string{
-		kitVR:        URLVRKit,
-		kitVRStarter: URLVRKitStarter}
+	// VRKitURL is the Nintendo Labo URL for the Nintendo Labo VR Kit.
+	VRKitURL = VRURL(kitVRURL)
+)
+var (
+	// VRStarterKitURL is the Nintendo Labo URL for the Nintendo Labo VR Starter Kit.
+	VRStarterKitURL = VRURL(kitVRStarterURL)
 )
 
-func GetKit(URL string) (*Kit, error) {
-	return nil, nil
+func net(URL *url.URL) (*goquery.Document, error) {
+	ok := (URL.Host == laboHost)
+	if !ok {
+		return nil, fmt.Errorf(errorURLHost, URL.Host, laboHost)
+	}
+	req, err := http.NewRequest(http.MethodGet, URL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	return goquery.NewDocumentFromResponse(res)
 }
 
-func GetVRKit(URL string) (*KitVR, error) {
+// GetKit gets a Nintendo Labo Kit from the Nintendo Labo website. Assumes that the provided
+// labo.URL argument contains a defined URL to a valid Nintendo Labo Kit.
+func GetKit(URL URL) (*Kit, error) {
+	u, err := URL.URL()
+	if err != nil {
+		return nil, err
+	}
+	doc, err := net(u)
+	kit, err := NewKit(doc.Find("body"))
+	if err != nil {
+		return nil, err
+	}
+	kit.Href = u.String()
+	return kit, nil
+}
+
+// GetVRKit gets a Nintendo Labo VR Kit from the Nintendo Labo website. Assumes that the provided
+// labo.VRURL argument contains a defined URL to a valid Nintendo Labo VR Kit.
+func GetVRKit(VRURL VRURL) (*KitVR, error) {
 	return nil, nil
 }

@@ -83,7 +83,7 @@ func NewImage(s *goquery.Selection) (*Image, error) {
 	}
 	format = strings.ToUpper(format)
 	src = regexpImageMatchFolder.ReplaceAllString(src, "")
-	src = fmt.Sprintf("%s/%s", URL, src)
+	src = fmt.Sprintf("%s/%s", laboURL, src)
 	_, ok = s.Attr(attrSrcSet)
 	if ok {
 		srcset, _ = s.Attr(attrSrc)
