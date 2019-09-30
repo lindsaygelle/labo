@@ -8,7 +8,7 @@ import (
 )
 
 func TestLabo(t *testing.T) {
-	kit, _ := labo.GetKit(labo.RobotKitURL)
+	kit, _ := labo.GetKit(labo.VehicleKitURL)
 	fmt.Println(kit.BoxImage)
 	fmt.Println(kit.Href)
 	fmt.Println(kit.Materials)

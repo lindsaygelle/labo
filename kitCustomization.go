@@ -29,20 +29,28 @@ type KitCustomization struct {
 }
 
 // NewKitCustomization is a constructor function that instantiates and returns a new KitCustomization struct pointer.
-func NewKitCustomization(s *goquery.Selection) (*KitCustomization, error) {
-	if ok := (s != nil); !ok {
+func NewKitCustomization(d *goquery.Document) (*KitCustomization, error) {
+	var (
+		ok bool
+	)
+	ok = (d != nil)
+	if !ok {
+		return nil, fmt.Errorf(errorGoQueryDocumentNil)
+	}
+	s := d.Find("html")
+	ok = (s != nil)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)
 	}
-	if ok := (s.Length() > 0); !ok {
+	ok = (s.Length() > 0)
+	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
 	}
 	var (
 		err error
-		ok  bool
 	)
 	var (
 		boxImage  *Image
-		href      string
 		materials []*CustomizationPart
 		overview  *Overview
 		price     *Price
@@ -86,7 +94,7 @@ func NewKitCustomization(s *goquery.Selection) (*KitCustomization, error) {
 	}
 	kitCustomization := KitCustomization{
 		BoxImage:  boxImage,
-		Href:      href,
+		Href:      d.Url.String(),
 		Materials: materials,
 		Overview:  overview,
 		Price:     price}

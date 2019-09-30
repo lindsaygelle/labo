@@ -13,10 +13,15 @@ type KitVR struct {
 }
 
 // NewKitVR is a constructor function that instantiates and returns a new KitVR struct pointer.
-func NewKitVR(s *goquery.Selection) (*KitVR, error) {
+func NewKitVR(d *goquery.Document) (*KitVR, error) {
 	var (
 		ok bool
 	)
+	ok = (d != nil)
+	if !ok {
+		return nil, fmt.Errorf(errorGoQueryDocumentNil)
+	}
+	s := d.Find("html")
 	ok = (s != nil)
 	if !ok {
 		return nil, fmt.Errorf(errorGoQuerySelectionNil)

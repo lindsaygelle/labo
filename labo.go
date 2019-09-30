@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -23,6 +24,7 @@ const (
 )
 
 const (
+	errorGoQueryDocumentNil             string = "argument *goquery.Document cannot be nil"
 	errorGoQueryDocumentEmptyHTMLNodes  string = "document (*%p) does not contain a collection of HTML elements"
 	errorGoQuerySelectionEmptyHTMLNodes string = "argument (*%p) does not contain a collection of HTML elements"
 	errorGoQuerySelectionNil            string = "argument *goquery.Selection cannot be nil"
@@ -67,8 +69,13 @@ const (
 	nintendoURL  string = ("https://" + nintendoHost)
 )
 
+const (
+	clientTimeout time.Duration = (time.Second * 10)
+)
+
 var (
-	client = (&http.Client{})
+	client = (&http.Client{
+		Timeout: clientTimeout})
 )
 
 var (
@@ -117,6 +124,17 @@ func net(URL *url.URL) (*goquery.Document, error) {
 	return goquery.NewDocumentFromResponse(res)
 }
 
+// GetCustomizationKIt gets a Nintendo Labo Customization Kit from the Nintendo Labo website. Assumes that the provided
+// labo.URL argument contains a defined URL to a valid Nintendo Labo Customization Kit.
+func GetCustomizationKIt(URL CustomizationURL) (*KitCustomization, error) {
+	u, err := URL.URL()
+	if err != nil {
+		return nil, err
+	}
+	doc, err := net(u)
+	return NewKitCustomization(doc)
+}
+
 // GetKit gets a Nintendo Labo Kit from the Nintendo Labo website. Assumes that the provided
 // labo.URL argument contains a defined URL to a valid Nintendo Labo Kit.
 func GetKit(URL URL) (*Kit, error) {
@@ -125,16 +143,16 @@ func GetKit(URL URL) (*Kit, error) {
 		return nil, err
 	}
 	doc, err := net(u)
-	kit, err := NewKit(doc.Find("body"))
-	if err != nil {
-		return nil, err
-	}
-	kit.Href = u.String()
-	return kit, nil
+	return NewKit(doc)
 }
 
 // GetVRKit gets a Nintendo Labo VR Kit from the Nintendo Labo website. Assumes that the provided
 // labo.VRURL argument contains a defined URL to a valid Nintendo Labo VR Kit.
-func GetVRKit(VRURL VRURL) (*KitVR, error) {
-	return nil, nil
+func GetVRKit(URL VRURL) (*KitVR, error) {
+	u, err := URL.URL()
+	if err != nil {
+		return nil, err
+	}
+	doc, err := net(u)
+	return NewKitVR(doc)
 }
