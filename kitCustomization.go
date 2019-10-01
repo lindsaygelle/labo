@@ -19,7 +19,10 @@ const (
 	kitCustomizationOverviewCSSSelector  string = "div.hero-content"
 )
 
-// KitCustomization is a struct that describes a subset of the Nintendo Labo Kits dedicated to customizing a Nintendo Labo Kit.
+// KitCustomization is a struct that describes that details of a Nintendo Labo Customization Kit.
+// A customization kit does not contain any Nintendo Labo Toy Con parts or software, but can be
+// used in conjunction with any Nintendo Labo Kit to add visual flare to the parts
+// provided in a core Labo kit.
 type KitCustomization struct {
 	BoxImage  *Image
 	Href      string
@@ -28,7 +31,12 @@ type KitCustomization struct {
 	Price     *Price
 }
 
-// NewKitCustomization is a constructor function that instantiates and returns a new KitCustomization struct pointer.
+// NewKitCustomization is a constructor function that instantiates and returns a KitCustomization pointer.
+// The NewKitCustomization function requires a valid goquery.Document pointer that contains a HTML node.
+// When instantiating a new CustomizationKit, the function will attempt to locate and parse all
+// essential struct edges that are found in the CustomizationKit struct.
+// Should a critical component not be found, the function will return a corresponding error that
+// identifies what component is missing from the provided goquery.Document or its nested goquery.Selection(s).
 func NewKitCustomization(d *goquery.Document) (*KitCustomization, error) {
 	var (
 		ok bool
