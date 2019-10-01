@@ -16,7 +16,10 @@ const (
 	kitToyConCSSSelector    string = "section.toy-con-area .toy-con"
 )
 
-// Kit is a struct that details all the unique the specifics of a Nintendo Labo Kit.
+// Kit is a struct that represents the commonly found building block for a Nintendo Labo Kit.
+// Depending on the goquery.Document that is used to generate a Kit, a Kit struct may contain
+// numerous nil pointers where the Labo Kit contents differ from page to page.
+// A Kit should be built from the NewKit constructor function.
 type Kit struct {
 	BoxImage  *Image
 	Href      string
@@ -31,6 +34,10 @@ type Kit struct {
 }
 
 // NewKit is a constructor function that instantiates and returns a Nintendo Labo Kit struct pointer.
+// The NewKit function requires a valid goquery.Document that contains at least a HTML root element.
+// When building a new Kit, the function attempts to locate and parse all essential struct edges that defined a Kit struct.
+// Should a critical component not be found, the function will return a corresponding error that
+// identifies what component is missing from the provided goquery.Document or its nested goquery.Selection.
 func NewKit(d *goquery.Document) (*Kit, error) {
 	var (
 		ok bool
