@@ -2,157 +2,145 @@ package labo
 
 import (
 	"fmt"
-	"net/http"
-	"net/url"
 	"regexp"
-	"time"
-
-	"github.com/PuerkitoBio/goquery"
+	"strings"
 )
 
 const (
-	attrAlt        string = "alt"
-	attrClass      string = "class"
-	attrDataSizes  string = "data-sizes"
-	attrDataSrc    string = "data-src"
-	attrDataSrcSet string = "data-srcset"
-	attrHref       string = "href"
-	attrSizes      string = "sizes"
-	attrSrc        string = "src"
-	attrSrcSet     string = "srcset"
-	attrTarget     string = "target"
+	partAmountOne      string = "one"
+	partAmountTwo      string = "two"
+	partAmountThree    string = "three"
+	partAmountFour     string = "four"
+	partAmountFive     string = "five"
+	partAmountSix      string = "six"
+	partAmountSeven    string = "seven"
+	partAmountEight    string = "eight"
+	partAmountNine     string = "nine"
+	partAmountTen      string = "ten"
+	partAmountEleven   string = "eleven"
+	partAmountTwelve   string = "twelve"
+	partAmountThirteen string = "thirteen"
 )
 
 const (
-	errorGoQueryDocumentNil             string = "argument *goquery.Document cannot be nil"
-	errorGoQueryDocumentEmptyHTMLNodes  string = "document (*%p) does not contain a collection of HTML elements"
-	errorGoQuerySelectionEmptyHTMLNodes string = "argument (*%p) does not contain a collection of HTML elements"
-	errorGoQuerySelectionNil            string = "argument *goquery.Selection cannot be nil"
-)
-const (
-	errorURLHost  string = "argument (%s) host is not %s"
-	errorURLMatch string = "argument (%s) is not a supported URL"
+	partColorBlue   string = "blue"
+	partColorGray   string = "gray"
+	partColorOrange string = "orange"
+	partColorRed    string = "red"
+	partColorYellow string = "yellow"
 )
 
 const (
-	errorEmptyAttrClass string = "argument (*%p) does not contain a class attribute"
-	errorEmptyHrefAlt   string = "argument (*%p) does not contain a href attribute"
+	partGenderFemale string = "female"
+	partGenderMail   string = "mail"
+	partGenderMale   string = "male"
 )
 
 const (
-	kitRobot     string = "robot-kit"
-	kitVariety   string = "variety-kit"
-	kitVehicle   string = "vehicle-kit"
-	kitVR        string = "vr-kit"
-	kitVRStarter string = "vr-starter-kit"
+	partShapeOctagonal string = "octagonal"
+	partShapeSquare    string = "square"
 )
 
 const (
-	kitURL string = (laboURL + "/" + "kits")
-)
-
-const (
-	kitRobotURL     string = (kitURL + "/" + kitRobot)
-	kitVarietyURL   string = (kitURL + "/" + kitVariety)
-	kitVehicleURL   string = (kitURL + "/" + kitVehicle)
-	kitVRURL        string = (kitURL + "/" + kitVR)
-	kitVRStarterURL string = (kitURL + "/" + kitVRStarter)
-)
-
-const (
-	laboHost string = ("labo" + "." + nintendoHost)
-	laboURL  string = ("https://" + laboHost)
-)
-
-const (
-	nintendoHost string = "nintendo.com"
-	nintendoURL  string = ("https://" + nintendoHost)
-)
-
-const (
-	clientTimeout time.Duration = (time.Second * 10)
+	partSizeLarge  string = "large"
+	partSizeMedium string = "medium"
+	partSizeSmall  string = "small"
 )
 
 var (
-	client = (&http.Client{
-		Timeout: clientTimeout})
+	partAmounts = []string{
+		partAmountOne,
+		partAmountTwo,
+		partAmountThree,
+		partAmountFour,
+		partAmountFive,
+		partAmountSix,
+		partAmountSeven,
+		partAmountEight,
+		partAmountNine,
+		partAmountTen,
+		partAmountEleven,
+		partAmountTwelve,
+		partAmountThirteen}
 )
 
 var (
-	regexpMatchNonAlpha           = regexp.MustCompile(`\W`)
-	regexpMatchLineBreaks         = regexp.MustCompile(`\n`)
-	regexpMatchNumeric            = regexp.MustCompile(`[0-9]+`)
-	regexpMatchParenthesis        = regexp.MustCompile(`\(.+\)`)
-	regexpMatchSequenceWhitespace = regexp.MustCompile(`\s{2,}`)
+	partColors = []string{
+		partColorBlue,
+		partColorGray,
+		partColorOrange,
+		partColorRed,
+		partColorYellow}
 )
 
 var (
-	// RobotKitURL is the Nintendo Labo URL for the Nintendo Labo Robot Kit.
-	RobotKitURL = URL(kitRobotURL)
-)
-var (
-	// VarietyKitURL is the Nintendo Labo URL for the Nintendo Variety Kit.
-	VarietyKitURL = URL(kitVarietyURL)
-)
-var (
-	// VehicleKitURL is the Nintendo Labo URL for the Nintendo Labo Vehicle Kit.
-	VehicleKitURL = URL(kitVehicleURL)
+	partSizes = []string{
+		partSizeLarge,
+		partSizeMedium,
+		partSizeSmall}
 )
 
 var (
-	// VRKitURL is the Nintendo Labo URL for the Nintendo Labo VR Kit.
-	VRKitURL = VRURL(kitVRURL)
+	partAmountMap = map[string]int{
+		partAmountOne:      1,
+		partAmountTwo:      2,
+		partAmountThree:    3,
+		partAmountFour:     4,
+		partAmountFive:     5,
+		partAmountSix:      6,
+		partAmountSeven:    7,
+		partAmountEight:    8,
+		partAmountNine:     9,
+		partAmountTen:      10,
+		partAmountEleven:   11,
+		partAmountTwelve:   12,
+		partAmountThirteen: 13}
 )
+
 var (
-	// VRStarterKitURL is the Nintendo Labo URL for the Nintendo Labo VR Starter Kit.
-	VRStarterKitURL = VRURL(kitVRStarterURL)
+	partColorMap = map[string]string{
+		partColorBlue:   strings.ToUpper(partColorBlue),
+		partColorGray:   strings.ToUpper(partColorGray),
+		partColorOrange: strings.ToUpper(partColorOrange),
+		partColorRed:    strings.ToUpper(partColorRed),
+		partColorYellow: strings.ToUpper(partColorYellow)}
 )
 
-func net(URL *url.URL) (*goquery.Document, error) {
-	ok := (URL.Host == laboHost)
-	if !ok {
-		return nil, fmt.Errorf(errorURLHost, URL.Host, laboHost)
-	}
-	req, err := http.NewRequest(http.MethodGet, URL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	return goquery.NewDocumentFromResponse(res)
-}
+var (
+	partGenderMap = map[string]string{
+		partGenderFemale: partGenderFemale,
+		partGenderMail:   partGenderMale,
+		partGenderMale:   partGenderMale}
+)
 
-// GetCustomizationKIt gets a Nintendo Labo Customization Kit from the Nintendo Labo website. Assumes that the provided
-// labo.URL argument contains a defined URL to a valid Nintendo Labo Customization Kit.
-func GetCustomizationKIt(URL CustomizationURL) (*KitCustomization, error) {
-	u, err := URL.URL()
-	if err != nil {
-		return nil, err
-	}
-	doc, err := net(u)
-	return NewKitCustomization(doc)
-}
+var (
+	partAmountExpression = fmt.Sprintf("(?i)(%s)", strings.Join(partAmounts, "|"))
+)
 
-// GetKit gets a Nintendo Labo Kit from the Nintendo Labo website. Assumes that the provided
-// labo.URL argument contains a defined URL to a valid Nintendo Labo Kit.
-func GetKit(URL URL) (*Kit, error) {
-	u, err := URL.URL()
-	if err != nil {
-		return nil, err
-	}
-	doc, err := net(u)
-	return NewKit(doc)
-}
+var (
+	partColorsExpression = fmt.Sprintf("(?i)(%s)", strings.Join(partColors, "|"))
+)
 
-// GetVRKit gets a Nintendo Labo VR Kit from the Nintendo Labo website. Assumes that the provided
-// labo.VRURL argument contains a defined URL to a valid Nintendo Labo VR Kit.
-func GetVRKit(URL VRURL) (*KitVR, error) {
-	u, err := URL.URL()
-	if err != nil {
-		return nil, err
-	}
-	doc, err := net(u)
-	return NewKitVR(doc)
-}
+var (
+	partSizeExpression = fmt.Sprintf("(?i)(%s)", strings.Join(partSizes, "|"))
+)
+
+var (
+	regexpMatchAmount = regexp.MustCompile(partAmountExpression)
+)
+
+var (
+	regexpMatchColor = regexp.MustCompile(partColorsExpression)
+)
+
+var (
+	regexpMatchNumbers = regexp.MustCompile(`(\d+)`)
+)
+
+var (
+	regexpMatchSize = regexp.MustCompile(partSizeExpression)
+)
+
+var (
+	regexpMatchSpares = regexp.MustCompile(`(?i)spares`)
+)
