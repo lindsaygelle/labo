@@ -74,6 +74,19 @@ var (
 )
 
 var (
+	partGenders = []string{
+		partGenderFemale,
+		partGenderMail,
+		partGenderMale}
+)
+
+var (
+	partShapes = []string{
+		partShapeOctagonal,
+		partShapeSquare}
+)
+
+var (
 	partSizes = []string{
 		partSizeLarge,
 		partSizeMedium,
@@ -108,9 +121,15 @@ var (
 
 var (
 	partGenderMap = map[string]string{
-		partGenderFemale: partGenderFemale,
-		partGenderMail:   partGenderMale,
-		partGenderMale:   partGenderMale}
+		partGenderFemale: strings.ToUpper(partGenderFemale),
+		partGenderMail:   strings.ToUpper(partGenderMale),
+		partGenderMale:   strings.ToUpper(partGenderMale)}
+)
+
+var (
+	partShapeMap = map[string]string{
+		partShapeOctagonal: strings.ToUpper(partShapeOctagonal),
+		partShapeSquare:    strings.ToUpper(partShapeSquare)}
 )
 
 var (
@@ -119,6 +138,14 @@ var (
 
 var (
 	partColorsExpression = fmt.Sprintf("(?i)(%s)", strings.Join(partColors, "|"))
+)
+
+var (
+	partGenderExpression = fmt.Sprintf("(?i)(%s)", strings.Join(partGenders, "|"))
+)
+
+var (
+	partShapeExpression = fmt.Sprintf("(?i)(%s", strings.Join(partShapes, "|"))
 )
 
 var (
@@ -134,7 +161,15 @@ var (
 )
 
 var (
+	regexpMatchGender = regexp.MustCompile(partGenderExpression)
+)
+
+var (
 	regexpMatchNumbers = regexp.MustCompile(`(\d+)`)
+)
+
+var (
+	regexpMatchShape = regexp.MustCompile(partShapeExpression)
 )
 
 var (

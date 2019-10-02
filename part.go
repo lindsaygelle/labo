@@ -7,6 +7,13 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const (
+	defaultPartColor  string = "NIL"
+	defaultPartGender string = "NIL"
+	defaultPartShape  string = "NIL"
+	defaultPartSize   string = "REGULAR"
+)
+
 type Part struct {
 	Amount int    `json:"amount"`
 	Color  string `json:"color"`
@@ -41,7 +48,7 @@ func getPartAmount(s string) int {
 
 func getPartColor(s string) string {
 	var (
-		color     string
+		color     = defaultPartColor
 		ok        bool
 		substring string
 	)
@@ -54,11 +61,37 @@ func getPartColor(s string) string {
 	return color
 }
 
-func getPartGender(s string) {}
+func getPartGender(s string) string {
+	var (
+		gender    = defaultPartGender
+		ok        bool
+		substring string
+	)
+	substring = regexpMatchGender.FindString(s)
+	substring = strings.ToLower(substring)
+	ok = (len(substring) > 0)
+	if ok {
+		gender = partGenderMap[substring]
+	}
+	return gender
+}
 
 func getPartName(s string) {}
 
-func getPartShape(s string) {}
+func getPartShape(s string) string {
+	var (
+		ok        bool
+		shape     = defaultPartShape
+		substring string
+	)
+	substring = regexpMatchShape.FindString(s)
+	substring = strings.ToLower(substring)
+	ok = (len(substring) > 0)
+	if ok {
+		shape = partShapeMap[substring]
+	}
+	return shape
+}
 
 func getPartSize(s string) {}
 
