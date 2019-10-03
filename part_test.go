@@ -54,3 +54,20 @@ func TestPartGender(t *testing.T) {
 		fmt.Println(getPartGender(s))
 	}
 }
+
+func TestPartName(t *testing.T) {
+	s := []string{"Long yellow grommets (female) x 11"}
+	for _, s := range s {
+		fmt.Println(getPartName(s))
+	}
+}
+
+func TestPartSpares(t *testing.T) {
+
+	s := []string{
+		"Rubber bands (large) x 3 + spares (latex)"}
+
+	for _, s := range s {
+		fmt.Println(getPartSpares(s))
+	}
+}

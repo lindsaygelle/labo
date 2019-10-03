@@ -1,6 +1,7 @@
 package labo
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -9,7 +10,7 @@ import (
 
 const (
 	defaultPartColor  string = "NIL"
-	defaultPartGender string = "NIL"
+	defaultPartGender string = "NEUTRAL"
 	defaultPartShape  string = "NIL"
 	defaultPartSize   string = "REGULAR"
 )
@@ -76,7 +77,25 @@ func getPartGender(s string) string {
 	return gender
 }
 
-func getPartName(s string) {}
+func getPartName(s string) string {
+
+	for _, r := range []*regexp.Regexp{
+		regexpMatchAmount,
+		regexpMatchColor,
+		regexpMatchGender,
+		regexpMatchNonAlphaNumeric,
+		regexpMatchNumbers,
+		regexpMatchShape,
+		regexpMatchSize,
+		regexpMatchSpares} {
+
+		s = r.ReplaceAllString(s, "")
+	}
+	s = regexpMatchMultipleSpaces.ReplaceAllString(s, " ")
+	s = regexp.MustCompile(`(?i)(\sx\s$)`).ReplaceAllString(s, "")
+	s = strings.ToUpper(s)
+	return s
+}
 
 func getPartShape(s string) string {
 	var (
@@ -93,8 +112,41 @@ func getPartShape(s string) string {
 	return shape
 }
 
-func getPartSize(s string) {}
+func getPartSize(s string) string {
+	var (
+		ok        bool
+		size      = defaultPartSize
+		substring string
+	)
+	substring = regexpMatchSize.FindString(s)
+	substring = strings.ToLower(substring)
+	ok = (len(substring) > 0)
+	if ok {
+		size = partShapeMap[substring]
+	}
+	return size
+}
 
-func getPartSpares(s string) {}
+func getPartSpares(s string) bool {
+	var (
+		ok        bool
+		substring string
+	)
+	substring = regexpMatchSpares.FindString(s)
+	ok = (len(substring) > 0)
+	return ok
+}
 
-func newPart(s *goquery.Selection) {}
+func newPart(s *goquery.Selection) {
+	var (
+		substring = strings.TrimSpace(s.Text())
+	)
+	Part{
+		Amount: getPartAmount(substring),
+		Color:  getPartColor(substring),
+		Gender: getPartGender(substring),
+		Name:   getPartName(substring),
+		Shape:  getPartShape(substring),
+		Size:   getPartSize(substring),
+		Spares: getPartSpares(substring)}
+}
