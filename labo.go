@@ -7,6 +7,10 @@ import (
 )
 
 const (
+	patternIgnorecase string = "(?i)(%s)"
+)
+
+const (
 	partAmountOne      string = "one"
 	partAmountTwo      string = "two"
 	partAmountThree    string = "three"
@@ -133,23 +137,27 @@ var (
 )
 
 var (
-	partAmountExpression = fmt.Sprintf("(?i)(%s)", strings.Join(partAmounts, "|"))
+	partAmountExpression = fmt.Sprintf(patternIgnorecase, strings.Join(partAmounts, "|"))
 )
 
 var (
-	partColorsExpression = fmt.Sprintf("(?i)(%s)", strings.Join(partColors, "|"))
+	partColorsExpression = fmt.Sprintf(patternIgnorecase, strings.Join(partColors, "|"))
 )
 
 var (
-	partGenderExpression = fmt.Sprintf("(?i)(%s)", strings.Join(partGenders, "|"))
+	partGenderExpression = fmt.Sprintf(patternIgnorecase, strings.Join(partGenders, "|"))
 )
 
 var (
-	partShapeExpression = fmt.Sprintf("(?i)(%s", strings.Join(partShapes, "|"))
+	partShapeExpression = fmt.Sprintf(patternIgnorecase, strings.Join(partShapes, "|"))
 )
 
 var (
-	partSizeExpression = fmt.Sprintf("(?i)(%s)", strings.Join(partSizes, "|"))
+	partSizeExpression = fmt.Sprintf(patternIgnorecase, strings.Join(partSizes, "|"))
+)
+
+var (
+	partSparesExpression = fmt.Sprintf(patternIgnorecase, "spares")
 )
 
 var (
@@ -169,6 +177,10 @@ var (
 )
 
 var (
+	regexpMatchNonAlphaNumeric = regexp.MustCompile(`[^a-zA-Z0-9\s]+`)
+)
+
+var (
 	regexpMatchShape = regexp.MustCompile(partShapeExpression)
 )
 
@@ -177,5 +189,9 @@ var (
 )
 
 var (
-	regexpMatchSpares = regexp.MustCompile(`(?i)spares`)
+	regexpMatchMultipleSpaces = regexp.MustCompile(`\s{2,}`)
+)
+
+var (
+	regexpMatchSpares = regexp.MustCompile(partSparesExpression)
 )
