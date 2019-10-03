@@ -3,7 +3,32 @@ package labo
 import (
 	"fmt"
 	"testing"
+
+	"github.com/PuerkitoBio/goquery"
 )
+
+func TestNewPart(t *testing.T) {
+	for _, URL := range []string{
+		"prod940728",
+		"prod940731"} {
+
+		URL := fmt.Sprintf("https://store.nintendo.com/ng3/us/po/browse/productDetailColorSizePicker.jsp?productId=%s", URL)
+
+		doc, _ := goquery.NewDocument(URL)
+
+		body := doc.Find("body")
+
+		prodDescBtm := body.Find("#prodDescBtm ul li")
+
+		prodDescBtm.Each(func(i int, s *goquery.Selection) {
+			p := newPart(s)
+			fmt.Println(p)
+			if p.Href != nil {
+				fmt.Println(p.Href.URL)
+			}
+		})
+	}
+}
 
 func TestPartAmount(t *testing.T) {
 

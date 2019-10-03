@@ -94,6 +94,7 @@ func getPartName(s string) string {
 	s = regexpMatchMultipleSpaces.ReplaceAllString(s, " ")
 	s = regexp.MustCompile(`(?i)(\sx\s$)`).ReplaceAllString(s, "")
 	s = strings.ToUpper(s)
+	s = strings.TrimSpace(s)
 	return s
 }
 
@@ -137,14 +138,15 @@ func getPartSpares(s string) bool {
 	return ok
 }
 
-func newPart(s *goquery.Selection) {
+func newPart(s *goquery.Selection) Part {
 	var (
 		substring = strings.TrimSpace(s.Text())
 	)
-	Part{
+	return Part{
 		Amount: getPartAmount(substring),
 		Color:  getPartColor(substring),
 		Gender: getPartGender(substring),
+		Href:   newHref(s),
 		Name:   getPartName(substring),
 		Shape:  getPartShape(substring),
 		Size:   getPartSize(substring),
