@@ -138,11 +138,11 @@ func getPartSpares(s string) bool {
 	return ok
 }
 
-func newPart(s *goquery.Selection) Part {
+func newPart(s *goquery.Selection) *Part {
 	var (
 		substring = strings.TrimSpace(s.Text())
 	)
-	return Part{
+	return &Part{
 		Amount: getPartAmount(substring),
 		Color:  getPartColor(substring),
 		Gender: getPartGender(substring),
@@ -151,4 +151,18 @@ func newPart(s *goquery.Selection) Part {
 		Shape:  getPartShape(substring),
 		Size:   getPartSize(substring),
 		Spares: getPartSpares(substring)}
+}
+
+func newParts(s *goquery.Selection) []*Part {
+	var (
+		parts []*Part
+	)
+	s.Each(func(i int, s *goquery.Selection) {
+		part := newPart(s)
+		if part == nil {
+			return
+		}
+		parts = append(parts, part)
+	})
+	return parts
 }
