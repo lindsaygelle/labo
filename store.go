@@ -1,50 +1,70 @@
 package labo
 
 import (
+	"net/http"
 	"net/url"
 	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
+const (
+	selectorStoreImages string = "#product-thumbs img"
+	selectorStoreParts  string = "#prodDescBtm ul li"
+)
+
 type Store struct {
-	Images []*Image `json:"images"`
-	Parts  []*Part  `json:"parts"`
-	URL    *url.URL `json:"URL"`
+	Images     []*Image `json:"images"`
+	Status     string   `json:"http_status"`
+	StatusCode int      `json:"http_status_code"`
+	Parts      []*Part  `json:"parts"`
+	URL        *url.URL `json:"URL"`
 }
 
-func newStore(d *goquery.Document) *Store {
-	const (
-		CSS string = "body"
-	)
+func getStoreImages(b *goquery.Selection) []*Image {
 	var (
-		b = d.Find(CSS)
+		s = b.Find(selectorStoreImages)
 	)
-	var (
-		images []*Image
-		parts  []*Part
+	return newImages(s)
+}
 
-		wg sync.WaitGroup
+func getStoreParts(b *goquery.Selection) []*Part {
+	var (
+		s = b.Find(selectorStoreParts)
 	)
+	return newParts(s)
+}
+
+func newStore(URL string) *Store {
+	var (
+		store Store
+		wg    sync.WaitGroup
+	)
+	req, _ := http.NewRequest(http.MethodGet, URL, nil)
+	res, _ := client.Do(req)
+	if res != nil {
+		res = &http.Response{
+			Status:     http.StatusText(http.StatusBadRequest),
+			StatusCode: http.StatusBadRequest}
+	}
+	store.Status = res.Status
+	store.StatusCode = res.StatusCode
+	doc, err := goquery.NewDocumentFromResponse(res)
+	if err != nil {
+		return &store
+	}
+	store.URL = doc.Url
+	b := doc.Find(selectorBody)
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		const (
-			CSS = "#product-thumbs img"
-		)
-		images = newImages(b.Find(CSS))
+		store.Images = getStoreImages(b)
 	}()
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		const (
-			CSS = "#prodDescBtm ul li"
-		)
-		parts = newParts(b.Find(CSS))
+		store.Parts = getStoreParts(b)
 	}()
 	wg.Wait()
-	return &Store{
-		Images: images,
-		Parts:  parts,
-		URL:    d.Url}
+	return &store
 }

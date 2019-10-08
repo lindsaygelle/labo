@@ -7,54 +7,65 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const (
-	defaultImageAlt string = "NIL"
-)
-
 type Image struct {
-	Alt  string   `json:"alt"`
-	Link string   `json:"link"`
-	URL  *url.URL `json:"URL"`
+	Alt      string
+	Link     string
+	URL      *url.URL
+	Variants []*Image
 }
 
 func newImage(s *goquery.Selection) *Image {
+	const (
+		dataPrefix string = "data:image"
+		HTML       string = "img"
+	)
 	var (
-		alt  = defaultImageAlt
-		link string
-		ok   bool
-		URL  *url.URL
+		alt      = defaultAttrAlt
+		err      error
+		link     string
+		ok       bool
+		URL      *url.URL
+		variants []*Image
 	)
 	ok = (s.Length() > 0)
 	if !ok {
 		return nil
 	}
-	ok = (strings.ToUpper(s.Nodes[0].Data) == "IMG")
+	ok = (strings.ToLower(s.Nodes[0].Data) == HTML)
 	if !ok {
-		return newImage(s.Find("img"))
+		return newImage(s.Find(HTML))
 	}
-	link, _ = s.Attr("src")
-	ok = (strings.HasPrefix(link, "data:image") == false)
+	link, _ = s.Attr(attrSrc)
+	ok = (strings.HasPrefix(link, dataPrefix) == false)
 	if !ok {
-		link, _ = s.Attr("data-src")
+		link, _ = s.Attr(attrDataSrc)
 	}
 	ok = (len(link) > 0)
 	if !ok {
 		return nil
 	}
-	URL, _ = url.Parse(link)
+	URL, err = url.Parse(link)
+	ok = (err == nil)
+	if !ok {
+		return nil
+	}
 	return &Image{
-		Alt:  alt,
-		Link: link,
-		URL:  URL}
+		Alt:      alt,
+		Link:     link,
+		URL:      URL,
+		Variants: variants}
 }
 
 func newImages(s *goquery.Selection) []*Image {
 	var (
+		image  *Image
 		images []*Image
+		ok     bool
 	)
 	s.Each(func(i int, s *goquery.Selection) {
-		image := newImage(s)
-		if image == nil {
+		image = newImage(s)
+		ok = (image != nil)
+		if !ok {
 			return
 		}
 		images = append(images, image)

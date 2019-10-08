@@ -7,10 +7,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const (
-	defaultTargetAttr string = "self"
-)
-
 type Href struct {
 	Link   string   `json:"link"`
 	Target string   `json:"target"`
@@ -18,30 +14,38 @@ type Href struct {
 }
 
 func newHref(s *goquery.Selection) *Href {
+	const (
+		HTML string = "a"
+	)
 	var (
+		err    error
 		link   string
 		ok     bool
-		target = defaultTargetAttr
+		target = defaultAttrTarget
 		URL    *url.URL
 	)
 	ok = (s.Length() > 0)
 	if !ok {
 		return nil
 	}
-	ok = (strings.ToUpper(s.Nodes[0].Data) == "A")
+	ok = (strings.ToLower(s.Nodes[0].Data) == HTML)
 	if !ok {
-		return newHref(s.Find("a"))
+		return newHref(s.Find(HTML))
 	}
-	link, ok = s.Attr("href")
+	link, ok = s.Attr(attrHref)
 	if !ok {
 		return nil
 	}
-	_, ok = s.Attr("target")
+	_, ok = s.Attr(attrTarget)
 	if ok {
-		target, _ = s.Attr("target")
+		target, _ = s.Attr(attrTarget)
 		target = strings.ToUpper(target)
 	}
-	URL, _ = url.Parse(link)
+	URL, err = url.Parse(link)
+	ok = (err == nil)
+	if !ok {
+		return nil
+	}
 	return &Href{
 		Link:   link,
 		Target: target,

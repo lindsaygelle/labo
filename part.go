@@ -8,13 +8,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const (
-	defaultPartColor  string = "NIL"
-	defaultPartGender string = "NEUTRAL"
-	defaultPartShape  string = "NIL"
-	defaultPartSize   string = "REGULAR"
-)
-
 type Part struct {
 	Amount int    `json:"amount"`
 	Color  string `json:"color"`
@@ -155,11 +148,14 @@ func newPart(s *goquery.Selection) *Part {
 
 func newParts(s *goquery.Selection) []*Part {
 	var (
+		part  *Part
 		parts []*Part
+		ok    bool
 	)
 	s.Each(func(i int, s *goquery.Selection) {
-		part := newPart(s)
-		if part == nil {
+		part = newPart(s)
+		ok = (part != nil)
+		if !ok {
 			return
 		}
 		parts = append(parts, part)
