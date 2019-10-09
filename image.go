@@ -1,117 +1,73 @@
 package labo
 
 import (
-	"fmt"
-	"path/filepath"
-	"regexp"
+	"net/url"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-const (
-	defaultImageAttrAlt   string = "NIL"
-	defaultImageAttrSizes string = "NIL"
-	defaultImageAttrSrc   string = "NIL"
-)
-
-const (
-	errorImageEmptyAttrAlt    string = "argument (*%p) does not contain an alt attribute"
-	errorImageEmptyAttrSrc    string = "argument (*%p) does not contain a src attribute"
-	errorImageEmptyAttrSrcSet string = "argument (*%p) does not contain a src-set attribute"
-	errorImageEmptyFileExt    string = "argument (*%p) does not contain a file extension"
-)
-
-const (
-	imageBase64Prefix string = "data:image"
-)
-
-var (
-	regexpImageMatchFileExt = regexp.MustCompile(`\W`)
-	regexpImageMatchFolder  = regexp.MustCompile(`\.{2}\/`)
-)
-
-// Image is a image resource that contains a related image for Nintendo Labo.
 type Image struct {
 	Alt      string
-	Format   string
-	Size     int
-	Sizes    string
-	Src      string
-	Variants []*ImageVariant
+	Link     string
+	URL      *url.URL
+	Variants []*Image
 }
 
-// NewImage is a constructor function that instantiates and returns a new Image pointer.
-func NewImage(s *goquery.Selection) (*Image, error) {
-	var (
-		ok bool
+func newImage(s *goquery.Selection) *Image {
+	const (
+		dataPrefix string = "data:image"
 	)
-	ok = (s != nil)
-	if !ok {
-		return nil, fmt.Errorf(errorGoQuerySelectionNil)
-	}
+	var (
+		alt      = defaultAttrAlt
+		err      error
+		link     string
+		ok       bool
+		URL      *url.URL
+		variants []*Image
+	)
 	ok = (s.Length() > 0)
 	if !ok {
-		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
+		return nil
 	}
-	var (
-		alt      string
-		format   string
-		sizes    string
-		src      string
-		srcset   string
-		variants []*ImageVariant
-	)
-	alt = s.AttrOr(attrAlt, defaultImageAttrAlt)
-	alt = strings.ToUpper(alt)
-	src, ok = s.Attr(attrSrc)
+	ok = (strings.ToLower(s.Nodes[0].Data) == htmlImage)
 	if !ok {
-		return nil, fmt.Errorf(errorImageEmptyAttrSrc, s)
+		return newImage(s.Find(htmlImage))
 	}
-	ok = strings.HasPrefix(src, imageBase64Prefix)
-	if _, exists := s.Attr(attrDataSrc); ok && exists {
-		src, _ = s.Attr(attrDataSrc)
+	link, _ = s.Attr(attrSrc)
+	ok = (strings.HasPrefix(link, dataPrefix) == false)
+	if !ok {
+		link, _ = s.Attr(attrDataSrc)
 	}
-	ok = strings.HasPrefix(src, imageBase64Prefix)
-	if ok {
-		return nil, fmt.Errorf(errorImageEmptyAttrSrcSet, s)
+	ok = (len(link) > 0)
+	if !ok {
+		return nil
 	}
-	format = filepath.Ext(src)
-	format = regexpImageMatchFileExt.ReplaceAllString(format, "")
-	if ok = (len(format) > 0); !ok {
-		return nil, fmt.Errorf(errorImageEmptyFileExt, s)
+	URL, err = url.Parse(link)
+	ok = (err == nil)
+	if !ok {
+		return nil
 	}
-	format = strings.ToUpper(format)
-	src = regexpImageMatchFolder.ReplaceAllString(src, "")
-	src = fmt.Sprintf("%s/%s", laboURL, src)
-	_, ok = s.Attr(attrSrcSet)
-	if ok {
-		srcset, _ = s.Attr(attrSrc)
-	}
-	_, ok = s.Attr(attrDataSrcSet)
-	ok = (ok && (len(srcset) == 0))
-	if ok {
-		srcset, _ = s.Attr(attrDataSrcSet)
-	}
-	for _, src := range strings.Split(srcset, ",") {
-		imageVariant, err := NewImageVariant(src)
-		if err != nil {
-			continue
-		}
-		variants = append(variants, imageVariant)
-	}
-	sizes, ok = s.Attr(attrSizes)
-	_, exists := s.Attr(attrDataSizes)
-	ok = (!ok && exists)
-	if ok {
-		sizes = s.AttrOr(attrDataSizes, defaultImageAttrSizes)
-	}
-	sizes = strings.ToUpper(sizes)
-	image := Image{
+	return &Image{
 		Alt:      alt,
-		Format:   format,
-		Sizes:    sizes,
-		Src:      src,
+		Link:     link,
+		URL:      URL,
 		Variants: variants}
-	return &image, nil
+}
+
+func newImages(s *goquery.Selection) []*Image {
+	var (
+		image  *Image
+		images []*Image
+		ok     bool
+	)
+	s.Each(func(i int, s *goquery.Selection) {
+		image = newImage(s)
+		ok = (image != nil)
+		if !ok {
+			return
+		}
+		images = append(images, image)
+	})
+	return images
 }

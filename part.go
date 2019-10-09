@@ -1,7 +1,6 @@
 package labo
 
 import (
-	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -9,97 +8,147 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const (
-	defaultPartAmount int    = 1
-	defaultPartColor  string = "NIL"
-	defaultPartSize   string = "STANDARD"
-)
-
-const (
-	errorPartEmptyText     string = "argument (*%p) does not contain text nodes"
-	errorPartEmptyPartName string = "argument (*%p) does not contain a part name"
-)
-
-var (
-	regexpPartFindColor    = regexp.MustCompile(`(\(blue|gray|orange|red\))`)
-	regexpPartFindPartName = regexp.MustCompile(`^[^0-9]+`)
-	regexpPartFindSize     = regexp.MustCompile(`(\(small|medium|large\))`)
-	regexpPartFindSpares   = regexp.MustCompile(`\+\s{1}spares`)
-)
-
-// Part is a struct that represents a unique building component used to complete a Nintendo Labo ToyCon kit.
 type Part struct {
 	Amount int    `json:"amount"`
 	Color  string `json:"color"`
-	Index  int    `json:"index"`
+	Gender string `json:"gender"`
+	Href   *Href  `json:"href"`
 	Name   string `json:"name"`
+	Shape  string `json:"shape"`
 	Size   string `json:"size"`
 	Spares bool   `json:"spares"`
 }
 
-// NewPart is a Part constructor that takes a single goquery.Selection pointer. It scrubs
-// the contents of the HTML element contents and attempts to parse the required
-// and optional fields that describes a Nintendo Labo kit part.
-func NewPart(s *goquery.Selection) (*Part, error) {
-	if ok := (s != nil); !ok {
-		return nil, fmt.Errorf(errorGoQuerySelectionNil)
-	}
-	if ok := (s.Length() > 0); !ok {
-		return nil, fmt.Errorf(errorGoQuerySelectionEmptyHTMLNodes, s)
-	}
+func getPartAmount(s string) int {
 	var (
-		name string
-		ok   bool
+		amount    = 1
+		ok        bool
+		substring string
 	)
-	var (
-		amount = defaultPartAmount
-		color  = defaultPartColor
-		size   = defaultPartSize
-		spares = false
-	)
-	contents := strings.TrimSpace(s.Text())
-	ok = (len(contents) > 0)
-	if !ok {
-		return nil, fmt.Errorf(errorPartEmptyText, s)
-	}
-	substring := regexpPartFindPartName.FindString(contents)
-	ok = (len(substring) > 0)
-	if !ok {
-		return nil, fmt.Errorf(errorPartEmptyPartName, s)
-	}
-	substring = strings.TrimSpace(substring)
-	substring = strings.TrimSuffix(substring, "x")
-	substring = regexpMatchParenthesis.ReplaceAllString(substring, "")
-	name = regexpMatchSequenceWhitespace.ReplaceAllString(substring, "")
-	name = strings.TrimSpace(name)
-	name = strings.ToUpper(name)
-	substring = regexpMatchNumeric.FindString(contents)
+	substring = regexpMatchNumbers.FindString(s)
 	ok = (len(substring) > 0)
 	if ok {
 		amount, _ = strconv.Atoi(substring)
+		return amount
 	}
-	substring = regexpPartFindSize.FindString(contents)
+	substring = regexpMatchAmount.FindString(s)
+	substring = strings.ToLower(substring)
 	ok = (len(substring) > 0)
 	if ok {
-		substring = regexpMatchNonAlpha.ReplaceAllString(substring, "")
-		size = strings.ToUpper(substring)
+		amount = partAmountMap[substring]
 	}
-	substring = regexpPartFindColor.FindString(contents)
+	return amount
+}
+
+func getPartColor(s string) string {
+	var (
+		color     = defaultPartColor
+		ok        bool
+		substring string
+	)
+	substring = regexpMatchColor.FindString(s)
+	substring = strings.ToLower(substring)
 	ok = (len(substring) > 0)
 	if ok {
-		substring = regexpMatchNonAlpha.ReplaceAllString(substring, "")
-		color = strings.ToUpper(substring)
+		color = partColorMap[substring]
 	}
-	substring = regexpPartFindSpares.FindString(contents)
+	return color
+}
+
+func getPartGender(s string) string {
+	var (
+		gender    = defaultPartGender
+		ok        bool
+		substring string
+	)
+	substring = regexpMatchGender.FindString(s)
+	substring = strings.ToLower(substring)
 	ok = (len(substring) > 0)
 	if ok {
-		spares = true
+		gender = partGenderMap[substring]
 	}
-	part := Part{
-		Amount: amount,
-		Color:  color,
-		Name:   name,
-		Size:   size,
-		Spares: spares}
-	return &part, nil
+	return gender
+}
+
+func getPartName(s string) string {
+	for _, r := range partRegexps {
+		s = r.ReplaceAllString(s, emptyString)
+	}
+	s = regexpMatchMultipleSpaces.ReplaceAllString(s, whitespaceString)
+	s = regexp.MustCompile(`(?i)(\sx\s$)`).ReplaceAllString(s, emptyString)
+	s = strings.ToUpper(s)
+	s = strings.TrimSpace(s)
+	return s
+}
+
+func getPartShape(s string) string {
+	var (
+		ok        bool
+		shape     = defaultPartShape
+		substring string
+	)
+	substring = regexpMatchShape.FindString(s)
+	substring = strings.ToLower(substring)
+	ok = (len(substring) > 0)
+	if ok {
+		shape = partShapeMap[substring]
+	}
+	return shape
+}
+
+func getPartSize(s string) string {
+	var (
+		ok        bool
+		size      = defaultPartSize
+		substring string
+	)
+	substring = regexpMatchSize.FindString(s)
+	substring = strings.ToLower(substring)
+	ok = (len(substring) > 0)
+	if ok {
+		size = partShapeMap[substring]
+	}
+	return size
+}
+
+func getPartSpares(s string) bool {
+	var (
+		ok        bool
+		substring string
+	)
+	substring = regexpMatchSpares.FindString(s)
+	ok = (len(substring) > 0)
+	return ok
+}
+
+func newPart(s *goquery.Selection) *Part {
+	var (
+		substring = strings.TrimSpace(s.Text())
+	)
+	return &Part{
+		Amount: getPartAmount(substring),
+		Color:  getPartColor(substring),
+		Gender: getPartGender(substring),
+		Href:   newHref(s),
+		Name:   getPartName(substring),
+		Shape:  getPartShape(substring),
+		Size:   getPartSize(substring),
+		Spares: getPartSpares(substring)}
+}
+
+func newParts(s *goquery.Selection) []*Part {
+	var (
+		part  *Part
+		parts []*Part
+		ok    bool
+	)
+	s.Each(func(i int, s *goquery.Selection) {
+		part = newPart(s)
+		ok = (part != nil)
+		if !ok {
+			return
+		}
+		parts = append(parts, part)
+	})
+	return parts
 }
