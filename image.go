@@ -17,7 +17,6 @@ type Image struct {
 func newImage(s *goquery.Selection) *Image {
 	const (
 		dataPrefix string = "data:image"
-		HTML       string = "img"
 	)
 	var (
 		alt      = defaultAttrAlt
@@ -31,9 +30,9 @@ func newImage(s *goquery.Selection) *Image {
 	if !ok {
 		return nil
 	}
-	ok = (strings.ToLower(s.Nodes[0].Data) == HTML)
+	ok = (strings.ToLower(s.Nodes[0].Data) == htmlImage)
 	if !ok {
-		return newImage(s.Find(HTML))
+		return newImage(s.Find(htmlImage))
 	}
 	link, _ = s.Attr(attrSrc)
 	ok = (strings.HasPrefix(link, dataPrefix) == false)

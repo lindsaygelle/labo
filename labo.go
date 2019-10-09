@@ -3,268 +3,351 @@ package labo
 import (
 	"fmt"
 	"net/http"
-	"regexp"
+	"net/url"
+	"strconv"
 	"strings"
 	"time"
-)
 
-const (
-	// attrHref is the HTML href attribute.
-	attrHref string = "href"
-	// attrDataSrc is the HTML data-attribute src.
-	attrDataSrc string = "data-src"
-	// attrSrc is the HTML src attribute.
-	attrSrc string = "src"
-	// attrTarget is the HTML target attribute.
-	attrTarget string = "target"
-)
+	"github.com/PuerkitoBio/goquery"
 
-const (
-	// laboDNS is the domain name reference for the Nintendo Labo website.
-	laboDNS string = ("labo" + "." + nintendoDNS)
-)
-const (
-	// laboURI is the URI directive to perform a Nintendo Labo site search for Nintendo Labo kits.
-	laboURI string = (laboURL + "/" + "kits")
-)
-const (
-	// laboURL is the RFC2616 compliant address for the Nintendo Labo website.
-	laboURL string = ("https://" + laboDNS)
-)
-const (
-	// nintendoDNS is the domain name reference for the Nintendo official website.
-	nintendoDNS string = "nintendo.com"
-)
-const (
-	// nintendoURL is the RFC2616 compliant address for the Nintendo official website.
-	nintendoURL string = ("https://" + nintendoDNS)
-)
-const (
-	// storeDNS is the domain name reference for the Nintendo store website.
-	storeDNS string = ("store" + "." + nintendoDNS)
-)
-const (
-	// storeURI is the URI directive to perform a Nintendo store search for Nintendo Labo kits.
-	storeURI string = (storeURL + "/" + "ng3/us/po/browse/subcategory.jsp?viewAll=true&categoryId=")
-)
-const (
-	// storeURIKits is the URI directive to request all Nintendo Labo full kits from the Nintendo store.
-	storeURIKits string = (storeURI + "cat" + kitsID)
-)
-const (
-	// storeURILabo is the URI directive to request all Nintendo Labo full kits and parts from the Nintendo store.
-	storeURILabo string = (storeURI + "cat" + laboID)
-)
-const (
-	// storeURIParts is the URI directive to request all Nintendo Labo part kits from the Nintendo store.
-	storeURIParts string = (storeURI + "cat" + partsID)
-)
-const (
-	// storeURL is the RFC2616 compliant address for the Nintendo store website.
-	storeURL string = ("https://" + storeDNS)
-)
-const (
-	// kitsID is the product ID for all Nintendo Labo full kits.
-	kitsID string = "970105"
-	// laboID is the product ID for both Nintendo Labo full kits and parts.
-	laboID string = "960195"
-	// partsID is the product ID for all Nintendo Labo parts kits.
-	partsID string = "970106"
-)
-
-const (
-	patternIgnorecase string = "(?i)(%s)"
-)
-
-const (
-	partAmountOne      string = "one"
-	partAmountTwo      string = "two"
-	partAmountThree    string = "three"
-	partAmountFour     string = "four"
-	partAmountFive     string = "five"
-	partAmountSix      string = "six"
-	partAmountSeven    string = "seven"
-	partAmountEight    string = "eight"
-	partAmountNine     string = "nine"
-	partAmountTen      string = "ten"
-	partAmountEleven   string = "eleven"
-	partAmountTwelve   string = "twelve"
-	partAmountThirteen string = "thirteen"
-)
-
-const (
-	partColorBlue   string = "blue"
-	partColorGray   string = "gray"
-	partColorOrange string = "orange"
-	partColorRed    string = "red"
-	partColorYellow string = "yellow"
-)
-
-const (
-	// partGenderFemale is the namespace for parts that are of the female configuration.
-	partGenderFemale string = "female"
-	// partGenderMail is the alias namespace for a known typo for male parts.
-	partGenderMail string = "mail"
-	// partsGenderMale is the namespace for parts that of the male configuration.
-	partGenderMale string = "male"
-)
-
-const (
-	// defaultAttrAlt is the default namespace for HTML alt attributes.
-	defaultAttrAlt string = "NIL"
-	// defaultAttrTarget is the default namespace for HTML target attributes.
-	defaultAttrTarget string = "NIL"
-)
-
-const (
-	// defaultPartColor is the default color namespace for parts.
-	defaultPartColor string = "NIL"
-	// defaultPartGender is the default gender namespace for parts.
-	defaultPartGender string = "NEUTRAL"
-	// defaultPartShape is the default shape namespace for parts.
-	defaultPartShape string = "NIL"
-	// defaultPartSize is the default size namespace for parts.
-	defaultPartSize string = "REGULAR"
-)
-
-const (
-	// partShapeOctagonal is the namespace for parts that are of octagonal shape.
-	partShapeOctagonal string = "octagonal"
-	// partShapeSquare is the namespace for parts that are a square shape.
-	partShapeSquare string = "square"
-)
-
-const (
-	// partSizeLarge is the namespace for parts that are of large size.
-	partSizeLarge string = "large"
-	// partSizeMedium is the namespace for parts that are of medium size.
-	partSizeMedium string = "medium"
-	// partSizeSmall is the namespace for parts that are of smaller size.
-	partSizeSmall string = "small"
+	"golang.org/x/text/currency"
+	"golang.org/x/text/language"
 )
 
 var (
-	// client is the HTTP client used throughout the Nintendo Labo package.
-	client = &http.Client{Timeout: (time.Second * 10)}
+	laboFn = [](func(s *goquery.Selection, l *Labo)){
+		getLaboStorePageDescription,
+		getLaboStorePageImages,
+		getLaboStorePageName,
+		getLaboStorePageParts,
+		getLaboStorePagePrice,
+		getLaboStorePageRef,
+		getLaboStorePageTitle}
 )
 
-var (
-	// kitsRequest is a HTTP GET request for all Nintendo Labo full kits.
-	kitsRequest, _ = http.NewRequest(http.MethodGet, storeURIKits, nil)
-	// laboRequest is a HTTP GET request for both Nintendo Labo full kits and parts.
-	laboRequest, _ = http.NewRequest(http.MethodGet, storeURILabo, nil)
-	// partsRequest is a HTTP GET request for all Nintendo Labo parts kits.
-	partsRequest, _ = http.NewRequest(http.MethodGet, storeURIParts, nil)
-)
+func Get(ID string) *Labo {
+	var (
+		doc *goquery.Document
+		err error
+		ok  bool
+		q   url.Values
+		req *http.Request
+		res *http.Response
+		s   *goquery.Selection
 
-var (
-	// partsAmounts is the collection of all defined part amount namespaces.
-	partAmounts = []string{
-		partAmountOne,
-		partAmountTwo,
-		partAmountThree,
-		partAmountFour,
-		partAmountFive,
-		partAmountSix,
-		partAmountSeven,
-		partAmountEight,
-		partAmountNine,
-		partAmountTen,
-		partAmountEleven,
-		partAmountTwelve,
-		partAmountThirteen}
-)
+		l = &Labo{
+			Currency:   currency.USD,
+			Language:   language.AmericanEnglish,
+			Name:       defaultLaboName,
+			Ref:        defaultLaboRef,
+			Status:     http.StatusText(http.StatusBadRequest),
+			StatusCode: http.StatusBadRequest,
+			Time:       time.Now()}
+	)
+	req, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", storeProductURI, ID), nil)
+	ok = (err == nil)
+	if !ok {
+		return nil
+	}
+	res, err = client.Do(req)
+	ok = (err == nil)
+	if !ok {
+		return nil
+	}
+	l.Status = res.Status
+	l.StatusCode = res.StatusCode
+	l.URL = req.URL
+	ok = (res.StatusCode == http.StatusOK)
+	if !ok {
+		return nil
+	}
+	q = req.URL.Query()
+	l.CategoryID = q.Get(uriQueryParamCategoryID)
+	ok = (len(l.CategoryID) > 0)
+	if !ok {
 
-var (
-	// partColors is the collection of all defined part color namespaces.
-	partColors = []string{
-		partColorBlue,
-		partColorGray,
-		partColorOrange,
-		partColorRed,
-		partColorYellow}
-)
+	}
+	l.ProductID = q.Get(uriQueryParamProductID)
+	ok = (len(l.ProductID) > 0)
+	if !ok {
 
-var (
-	// partsGenders is the collection of all defined part gender namespaces.
-	partGenders = []string{
-		partGenderFemale,
-		partGenderMail,
-		partGenderMale}
-)
+	}
+	doc, err = goquery.NewDocumentFromResponse(res)
+	ok = (err == nil)
+	if !ok {
+		return l
+	}
+	s = doc.Find(htmlBody)
+	ok = (s.Length() > 0)
+	if !ok {
+		return l
+	}
+	return newLabo(s, l)
+}
 
-var (
-	// partShapes is the collection all defined part shape namespaces.
-	partShapes = []string{
-		partShapeOctagonal,
-		partShapeSquare}
-)
+func GetAll(ID string) []*Labo {
+	const (
+		CSS string = ".product-listing .product-container > p a"
+	)
+	var (
+		doc *goquery.Document
+		err error
+		ok  bool
+		req *http.Request
+		res *http.Response
+		s   *goquery.Selection
 
-var (
-	// partSizes is the collection of all defined part size namespaces.
-	partSizes = []string{
-		partSizeLarge,
-		partSizeMedium,
-		partSizeSmall}
-)
+		l = []*Labo{}
+	)
+	req, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%scat%s", storeURI, ID), nil)
+	res, err = client.Do(req)
+	ok = (err == nil)
+	if !ok {
+		return nil
+	}
+	ok = (res.StatusCode == http.StatusOK)
+	if !ok {
+		return nil
+	}
+	doc, err = goquery.NewDocumentFromResponse(res)
+	ok = (err == nil)
+	if !ok {
+		return nil
+	}
+	s = doc.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return nil
+	}
+	return l
+}
 
-var (
-	partAmountMap = map[string]int{
-		partAmountOne:      1,
-		partAmountTwo:      2,
-		partAmountThree:    3,
-		partAmountFour:     4,
-		partAmountFive:     5,
-		partAmountSix:      6,
-		partAmountSeven:    7,
-		partAmountEight:    8,
-		partAmountNine:     9,
-		partAmountTen:      10,
-		partAmountEleven:   11,
-		partAmountTwelve:   12,
-		partAmountThirteen: 13}
-)
+type Labo struct {
+	Category         string        `json:"category"`
+	CategoryID       string        `json:"category_ID"`
+	Currency         currency.Unit `json:"currency"`
+	ID               int           `json:"ID"`
+	Language         language.Tag  `json:"language"`
+	Name             string        `json:"name"`
+	Parts            []*Part       `json:"parts"`
+	Price            float32       `json:"price"`
+	ProductID        string        `json:"product_ID"`
+	Ref              string        `json:"ref"`
+	Status           string        `json:"http_status"`
+	StatusCode       int           `json:"http_status_code"`
+	StoreDescription string        `json:"store_description"`
+	StoreImages      []*Image      `json:"store_images"`
+	StoreTitle       string        `json:"store_title"`
+	Time             time.Time     `json:"time"`
+	URL              *url.URL      `json:"URL"`
+}
 
-var (
-	partColorMap = map[string]string{
-		partColorBlue:   strings.ToUpper(partColorBlue),
-		partColorGray:   strings.ToUpper(partColorGray),
-		partColorOrange: strings.ToUpper(partColorOrange),
-		partColorRed:    strings.ToUpper(partColorRed),
-		partColorYellow: strings.ToUpper(partColorYellow)}
-)
+func newLabo(s *goquery.Selection, l *Labo) *Labo {
+	for _, fn := range laboFn {
+		fn(s, l)
+	}
+	return l
+}
 
-var (
-	partGenderMap = map[string]string{
-		partGenderFemale: strings.ToUpper(partGenderFemale),
-		partGenderMail:   strings.ToUpper(partGenderMale),
-		partGenderMale:   strings.ToUpper(partGenderMale)}
-)
+func getLaboStorePageDescription(s *goquery.Selection, l *Labo) {
+	const (
+		CSS string = "#main-content #prodDescBtm p:nth-child(2)"
+	)
+	var (
+		ok        bool
+		substring string
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	substring = strings.TrimSpace(s.Text())
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	l.StoreDescription = substring
+}
 
-var (
-	partShapeMap = map[string]string{
-		partShapeOctagonal: strings.ToUpper(partShapeOctagonal),
-		partShapeSquare:    strings.ToUpper(partShapeSquare)}
-)
+func getLaboStorePageID(s *goquery.Selection, l *Labo) {
+	const (
+		CSS string = "#main-content .results-header"
+	)
+	var (
+		err       error
+		ID        int
+		substring string
+		ok        bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	substring = strings.TrimSpace(s.Text())
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	substring = regexpMatchNonNumeric.ReplaceAllString(substring, emptyString)
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	ID, err = strconv.Atoi(substring)
+	ok = (err == nil)
+	if !ok {
+		return
+	}
+	l.ID = ID
+}
 
-var (
-	partAmountExpression = fmt.Sprintf(patternIgnorecase, strings.Join(partAmounts, "|"))
-	partColorsExpression = fmt.Sprintf(patternIgnorecase, strings.Join(partColors, "|"))
-	partGenderExpression = fmt.Sprintf(patternIgnorecase, strings.Join(partGenders, "|"))
-	partShapeExpression  = fmt.Sprintf(patternIgnorecase, strings.Join(partShapes, "|"))
-	partSizeExpression   = fmt.Sprintf(patternIgnorecase, strings.Join(partSizes, "|"))
-	partSparesExpression = fmt.Sprintf(patternIgnorecase, "spares")
-)
-var (
-	regexpMatchAmount                 = regexp.MustCompile(partAmountExpression)
-	regexpMatchColor                  = regexp.MustCompile(partColorsExpression)
-	regexpMatchGender                 = regexp.MustCompile(partGenderExpression)
-	regexpMatchNonAlphaNumeric        = regexp.MustCompile(`[^a-zA-Z0-9\s]+`)
-	regexpMatchNonAlphaNumericNoSpace = regexp.MustCompile(`[^a-zA-Z0-9]+`)
-	regexpMatchNonNumeric             = regexp.MustCompile(`[^0-9]+`)
-	regexpMatchNumbers                = regexp.MustCompile(`(\d+)`)
-	regexpMatchShape                  = regexp.MustCompile(partShapeExpression)
-	regexpMatchSize                   = regexp.MustCompile(partSizeExpression)
-	regexpMatchMultipleSpaces         = regexp.MustCompile(`\s{2,}`)
-	regexpMatchSpares                 = regexp.MustCompile(partSparesExpression)
-)
+func getLaboStorePageImages(s *goquery.Selection, l *Labo) {
+	const (
+		CSS string = "#main-content #product-thumbs img"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	l.StoreImages = newImages(s)
+}
+
+func getLaboStorePageName(s *goquery.Selection, l *Labo) {
+	const (
+		CSS string = "#main-content .results-header"
+	)
+	var (
+		substring string
+		ok        bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	substring = strings.TrimSpace(s.Text())
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	l.Name = substring
+}
+
+func getLaboStorePageParts(s *goquery.Selection, l *Labo) {
+	const (
+		CSS string = "#main-content #prodDescBtm ul li"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	l.Parts = newParts(s)
+}
+
+func getLaboStorePagePrice(s *goquery.Selection, l *Labo) {
+	const (
+		CSS string = "#main-content #addToCart > p .txt-bold"
+	)
+	var (
+		err       error
+		price     float64
+		substring string
+		ok        bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	substring = strings.TrimSpace(s.Text())
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	substring = regexpMatchNumbers.FindString(substring)
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	price, err = strconv.ParseFloat(substring, 32)
+	ok = (err == nil)
+	if !ok {
+		return
+	}
+	l.Price = float32(price)
+}
+
+func getLaboStorePageRef(s *goquery.Selection, l *Labo) {
+	const (
+		CSS string = "#main-content .results-header"
+	)
+	var (
+		substring  string
+		substrings []string
+		ok         bool
+	)
+	ok = strings.Contains(substring, colonString)
+	if !ok {
+		return
+	}
+	substrings = strings.Split(substring, colonString)
+	ok = (len(substrings) >= 2)
+	if !ok {
+		return
+	}
+	substring = strings.TrimSpace(substrings[1])
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	substring = strings.ToLower(substring)
+	ok = (strings.Contains(substring, plusString))
+	if ok {
+		substrings = strings.Split(substring, plusString)
+		substring = strings.ReplaceAll(substring, substrings[1], emptyString)
+	}
+	substring = regexpMatchNonAlphaNumericNoSpace.ReplaceAllString(substring, minusString)
+	substring = strings.TrimSpace(substring)
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	substring = regexpMatchMultipleSpaces.ReplaceAllString(substring, minusString)
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	substring = strings.TrimSuffix(substring, minusString)
+	l.Ref = substring
+}
+
+func getLaboStorePageTitle(s *goquery.Selection, l *Labo) {
+	const (
+		CSS string = "#main-content #prodDescBtm p:nth-child(1)"
+	)
+	var (
+		ok        bool
+		substring string
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	substring = strings.TrimSpace(s.Text())
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
+	l.StoreTitle = substring
+}

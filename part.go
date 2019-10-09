@@ -21,7 +21,7 @@ type Part struct {
 
 func getPartAmount(s string) int {
 	var (
-		amount    int
+		amount    = 1
 		ok        bool
 		substring string
 	)
@@ -71,21 +71,11 @@ func getPartGender(s string) string {
 }
 
 func getPartName(s string) string {
-
-	for _, r := range []*regexp.Regexp{
-		regexpMatchAmount,
-		regexpMatchColor,
-		regexpMatchGender,
-		regexpMatchNonAlphaNumeric,
-		regexpMatchNumbers,
-		regexpMatchShape,
-		regexpMatchSize,
-		regexpMatchSpares} {
-
-		s = r.ReplaceAllString(s, "")
+	for _, r := range partRegexps {
+		s = r.ReplaceAllString(s, emptyString)
 	}
-	s = regexpMatchMultipleSpaces.ReplaceAllString(s, " ")
-	s = regexp.MustCompile(`(?i)(\sx\s$)`).ReplaceAllString(s, "")
+	s = regexpMatchMultipleSpaces.ReplaceAllString(s, whitespaceString)
+	s = regexp.MustCompile(`(?i)(\sx\s$)`).ReplaceAllString(s, emptyString)
 	s = strings.ToUpper(s)
 	s = strings.TrimSpace(s)
 	return s

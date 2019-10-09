@@ -1,16 +1,13 @@
-package labo
+package labo_test
 
 import (
 	"fmt"
 	"testing"
+
+	"github.com/gellel/labo"
 )
 
 func Test(t *testing.T) {
-	for _, k := range getKits() {
-		if len(k.Ref) > 0 {
-			fmt.Println(k.Name)
-			fmt.Println(k.Ref)
-			fmt.Println("-")
-		}
-	}
+
+	fmt.Println(labo.Get("prod1000951"))
 }

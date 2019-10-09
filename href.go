@@ -14,9 +14,6 @@ type Href struct {
 }
 
 func newHref(s *goquery.Selection) *Href {
-	const (
-		HTML string = "a"
-	)
 	var (
 		err    error
 		link   string
@@ -28,9 +25,9 @@ func newHref(s *goquery.Selection) *Href {
 	if !ok {
 		return nil
 	}
-	ok = (strings.ToLower(s.Nodes[0].Data) == HTML)
+	ok = (strings.ToLower(s.Nodes[0].Data) == htmlAnchor)
 	if !ok {
-		return newHref(s.Find(HTML))
+		return newHref(s.Find(htmlAnchor))
 	}
 	link, ok = s.Attr(attrHref)
 	if !ok {
