@@ -14,6 +14,26 @@ import (
 	"golang.org/x/text/language"
 )
 
+type Labo struct {
+	Category         string        `json:"category"`
+	CategoryID       string        `json:"category_ID"`
+	Currency         currency.Unit `json:"currency"`
+	ID               int           `json:"ID"`
+	Language         language.Tag  `json:"language"`
+	Name             string        `json:"name"`
+	Parts            []*Part       `json:"parts"`
+	Price            float32       `json:"price"`
+	ProductID        string        `json:"product_ID"`
+	Ref              string        `json:"ref"`
+	Status           string        `json:"http_status"`
+	StatusCode       int           `json:"http_status_code"`
+	StoreDescription string        `json:"store_description"`
+	StoreImages      []*Image      `json:"store_images"`
+	StoreTitle       string        `json:"store_title"`
+	Time             time.Time     `json:"time"`
+	URL              *url.URL      `json:"URL"`
+}
+
 var (
 	laboFn = [](func(s *goquery.Selection, l *Labo)){
 		getLaboStorePageDescription,
@@ -25,6 +45,7 @@ var (
 		getLaboStorePageTitle}
 )
 
+// Get gets a specific Nintendo Labo product by the Nintendo stores product ID.
 func Get(ID string) *Labo {
 	var (
 		doc *goquery.Document
@@ -85,6 +106,13 @@ func Get(ID string) *Labo {
 	return newLabo(s, l)
 }
 
+// GetAll gets all available Nintendo Labo from the Nintendo store by the argument labo ID.
+//
+// Requires the argument ID to be one of the three exported labo.(*ID)'s.
+// Each of the exported labo ID's queries and returns a specific set of Nintendo Labo products.
+// Using the labo.LaboID will collect all Nintendo Labo products.
+// The labo.KitsID will only collect and return Nintendo Labo products that are kits and not parts.
+// The labo.PartsID will only collect and return Nintendo Labo products that are parts or accessories.
 func GetAll(ID string) []*Labo {
 	const (
 		CSS string = ".product-listing .product-container > p a"
@@ -92,14 +120,13 @@ func GetAll(ID string) []*Labo {
 	var (
 		doc *goquery.Document
 		err error
+		l   []*Labo
 		ok  bool
 		req *http.Request
 		res *http.Response
 		s   *goquery.Selection
-
-		l = []*Labo{}
 	)
-	req, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%scat%s", storeURI, ID), nil)
+	req, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", storeURI, ID), nil)
 	res, err = client.Do(req)
 	ok = (err == nil)
 	if !ok {
@@ -119,29 +146,30 @@ func GetAll(ID string) []*Labo {
 	if !ok {
 		return nil
 	}
+	s.Each(func(i int, s *goquery.Selection) {
+		href, exists := s.Attr(attrHref)
+		if !exists {
+			return
+		}
+		URL, err := url.Parse(href)
+		if err != nil {
+			return
+		}
+		ID := URL.Query().Get(uriQueryParamProductID)
+		labo := Get(ID)
+		if labo == nil {
+			return
+		}
+		l = append(l, labo)
+	})
 	return l
 }
 
-type Labo struct {
-	Category         string        `json:"category"`
-	CategoryID       string        `json:"category_ID"`
-	Currency         currency.Unit `json:"currency"`
-	ID               int           `json:"ID"`
-	Language         language.Tag  `json:"language"`
-	Name             string        `json:"name"`
-	Parts            []*Part       `json:"parts"`
-	Price            float32       `json:"price"`
-	ProductID        string        `json:"product_ID"`
-	Ref              string        `json:"ref"`
-	Status           string        `json:"http_status"`
-	StatusCode       int           `json:"http_status_code"`
-	StoreDescription string        `json:"store_description"`
-	StoreImages      []*Image      `json:"store_images"`
-	StoreTitle       string        `json:"store_title"`
-	Time             time.Time     `json:"time"`
-	URL              *url.URL      `json:"URL"`
-}
-
+// newLabo is a constructor function that take an argument goquery.Selection pointer
+// and runs a collection of helper functions to extract and assign all the
+// required properties for the pending labo.Labo pointer. Should any of the
+// helper functions fail to find the required property, the default property is not
+// overriden.
 func newLabo(s *goquery.Selection, l *Labo) *Labo {
 	for _, fn := range laboFn {
 		fn(s, l)
@@ -149,6 +177,9 @@ func newLabo(s *goquery.Selection, l *Labo) *Labo {
 	return l
 }
 
+// getLaboStorePageDescription searches the argument goquery.Selection pointer
+// for the Nintendo Labo product description and assigns it to
+// the argument labo.Labo pointer if found..
 func getLaboStorePageDescription(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #prodDescBtm p:nth-child(2)"
@@ -170,6 +201,9 @@ func getLaboStorePageDescription(s *goquery.Selection, l *Labo) {
 	l.StoreDescription = substring
 }
 
+// getLaboStorePageID searches the argument goquery.Selection pointer
+// for the Nintendo Labo product numerical ID and assigns it to
+// the argument labo.Labo pointer if found..
 func getLaboStorePageID(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content .results-header"
@@ -190,7 +224,7 @@ func getLaboStorePageID(s *goquery.Selection, l *Labo) {
 	if !ok {
 		return
 	}
-	substring = regexpMatchNonNumeric.ReplaceAllString(substring, emptyString)
+	substring = regexpMatchNonNumeric.ReplaceAllString(substring, stringEmpty)
 	ok = (len(substring) > 0)
 	if !ok {
 		return
@@ -203,6 +237,9 @@ func getLaboStorePageID(s *goquery.Selection, l *Labo) {
 	l.ID = ID
 }
 
+// getLaboStorePageImages searches the argument goquery.Selection pointer
+// for the Nintendo Labo product images and assigns them to
+// the argument labo.Labo pointer if found.
 func getLaboStorePageImages(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #product-thumbs img"
@@ -218,6 +255,9 @@ func getLaboStorePageImages(s *goquery.Selection, l *Labo) {
 	l.StoreImages = newImages(s)
 }
 
+// getLaboStorePageName searches the argument goquery.Selection pointer
+// for the Nintendo Labo product name and assigns the unformatted string to
+// the argument labo.Labo pointer if found.
 func getLaboStorePageName(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content .results-header"
@@ -239,6 +279,10 @@ func getLaboStorePageName(s *goquery.Selection, l *Labo) {
 	l.Name = substring
 }
 
+// getLaboStorePageParts searches the argument goquery.Selection pointer
+// for the Nintendo Labo product parts and components used to build
+// the Nintendo Labo product and assigns them to
+// the argument labo.Labo pointer if they are found.
 func getLaboStorePageParts(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #prodDescBtm ul li"
@@ -254,6 +298,9 @@ func getLaboStorePageParts(s *goquery.Selection, l *Labo) {
 	l.Parts = newParts(s)
 }
 
+// getLaboStorePagePrice searches the argument goquery.Selection pointer
+// for the Nintendo Labo product price and assigns the floating point value to
+// the argument labo.Labo pointer if found.
 func getLaboStorePagePrice(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #addToCart > p .txt-bold"
@@ -287,6 +334,9 @@ func getLaboStorePagePrice(s *goquery.Selection, l *Labo) {
 	l.Price = float32(price)
 }
 
+// getLaboStorePageRef searches the argument goquery.Selection pointer
+// for the Nintendo Labo product name alias (used to search the offical Labo site)
+// and assigns the formatted string to the argument labo.Labo pointer if found.
 func getLaboStorePageRef(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content .results-header"
@@ -296,11 +346,11 @@ func getLaboStorePageRef(s *goquery.Selection, l *Labo) {
 		substrings []string
 		ok         bool
 	)
-	ok = strings.Contains(substring, colonString)
+	ok = strings.Contains(substring, stringColon)
 	if !ok {
 		return
 	}
-	substrings = strings.Split(substring, colonString)
+	substrings = strings.Split(substring, stringColon)
 	ok = (len(substrings) >= 2)
 	if !ok {
 		return
@@ -311,26 +361,29 @@ func getLaboStorePageRef(s *goquery.Selection, l *Labo) {
 		return
 	}
 	substring = strings.ToLower(substring)
-	ok = (strings.Contains(substring, plusString))
+	ok = (strings.Contains(substring, stringPlus))
 	if ok {
-		substrings = strings.Split(substring, plusString)
-		substring = strings.ReplaceAll(substring, substrings[1], emptyString)
+		substrings = strings.Split(substring, stringPlus)
+		substring = strings.ReplaceAll(substring, substrings[1], stringEmpty)
 	}
-	substring = regexpMatchNonAlphaNumericNoSpace.ReplaceAllString(substring, minusString)
+	substring = regexpMatchNonAlphaNumericNoSpace.ReplaceAllString(substring, stringMinus)
 	substring = strings.TrimSpace(substring)
 	ok = (len(substring) > 0)
 	if !ok {
 		return
 	}
-	substring = regexpMatchMultipleSpaces.ReplaceAllString(substring, minusString)
+	substring = regexpMatchMultipleSpaces.ReplaceAllString(substring, stringMinus)
 	ok = (len(substring) > 0)
 	if !ok {
 		return
 	}
-	substring = strings.TrimSuffix(substring, minusString)
+	substring = strings.TrimSuffix(substring, stringMinus)
 	l.Ref = substring
 }
 
+// getLaboStorePageTitle searches the argument goquery.Selection pointer
+// for the Nintendo Labo product headline and assigns the unformatted string to
+// the argument labo.Labo pointer if found.
 func getLaboStorePageTitle(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #prodDescBtm p:nth-child(1)"

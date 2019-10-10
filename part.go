@@ -72,10 +72,10 @@ func getPartGender(s string) string {
 
 func getPartName(s string) string {
 	for _, r := range partRegexps {
-		s = r.ReplaceAllString(s, emptyString)
+		s = r.ReplaceAllString(s, stringEmpty)
 	}
-	s = regexpMatchMultipleSpaces.ReplaceAllString(s, whitespaceString)
-	s = regexp.MustCompile(`(?i)(\sx\s$)`).ReplaceAllString(s, emptyString)
+	s = regexpMatchMultipleSpaces.ReplaceAllString(s, stringWhitespace)
+	s = regexp.MustCompile(`(?i)(\sx\s$)`).ReplaceAllString(s, stringEmpty)
 	s = strings.ToUpper(s)
 	s = strings.TrimSpace(s)
 	return s

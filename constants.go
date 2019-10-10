@@ -1,11 +1,11 @@
 package labo
 
 const (
-	colonString      string = ":"
-	emptyString      string = ""
-	minusString      string = "-"
-	plusString       string = "+"
-	whitespaceString string = " "
+	stringColon      string = ":"
+	stringEmpty      string = ""
+	stringMinus      string = "-"
+	stringPlus       string = "+"
+	stringWhitespace string = " "
 )
 
 const (
@@ -72,40 +72,32 @@ const (
 
 const (
 	// storeURI is the URI directive to perform a Nintendo store search for Nintendo Labo kits.
-	storeURI string = (storeURL + "/" + "ng3/us/po/browse/subcategory.jsp?viewAll=true&categoryId=")
+	storeURI string = (storeURL + "/" + "ng3/us/po/browse/subcategory.jsp?viewAll=true&categoryId=cat")
 )
 
 const (
-	storeProductURI string = (storeURL + "/" + "ng3/us/po/browse/productDetailColorSizePicker.jsp?productId=")
+	// storeProductURI is the URI to perform a Nintendo product search by providing the URI a valid product ID.
+	storeProductURI string = (storeURL + "/" + "ng3/us/po/browse/productDetailColorSizePicker.jsp?productId=prod")
 )
 
 const (
 	// storeURIKits is the URI directive to request all Nintendo Labo full kits from the Nintendo store.
-	storeURIKits string = (storeURI + "cat" + kitsID)
+	storeURIKits string = (storeURI + KitsID)
 )
 
 const (
 	// storeURILabo is the URI directive to request all Nintendo Labo full kits and parts from the Nintendo store.
-	storeURILabo string = (storeURI + "cat" + laboID)
+	storeURILabo string = (storeURI + LaboID)
 )
 
 const (
 	// storeURIParts is the URI directive to request all Nintendo Labo part kits from the Nintendo store.
-	storeURIParts string = (storeURI + "cat" + partsID)
+	storeURIParts string = (storeURI + PartsID)
 )
 
 const (
 	// storeURL is the RFC2616 compliant address for the Nintendo store website.
 	storeURL string = ("https://" + storeDNS)
-)
-
-const (
-	// kitsID is the product ID for all Nintendo Labo full kits.
-	kitsID string = "970105"
-	// laboID is the product ID for both Nintendo Labo full kits and parts.
-	laboID string = "960195"
-	// partsID is the product ID for all Nintendo Labo parts kits.
-	partsID string = "970106"
 )
 
 const (
@@ -158,8 +150,10 @@ const (
 )
 
 const (
+	// defaultLaboName is the default namespace for Nintendo Labo kits.
 	defaultLaboName string = "NIL"
-	defaultLaboRef  string = "NIL"
+	// defaultLaboRef is the default namespace for Nintendo Labo wesbite URL references.
+	defaultLaboRef string = "NIL"
 )
 
 const (
@@ -190,6 +184,17 @@ const (
 )
 
 const (
+	// uriQueryParamCategoryID is the known namespace to find the Nintendo store category ID from a URI.
 	uriQueryParamCategoryID string = "categoryId"
-	uriQueryParamProductID  string = "productId"
+	// uriQueryParamProductID is the known namespace to find the Nintendo store product ID from a URI.
+	uriQueryParamProductID string = "productId"
+)
+
+const (
+	// KitsID is the product ID for all Nintendo Labo full kits.
+	KitsID string = "970105"
+	// LaboID is the product ID for both Nintendo Labo full kits and parts.
+	LaboID string = "960195"
+	// PartsID is the product ID for all Nintendo Labo parts kits.
+	PartsID string = "970106"
 )
