@@ -132,7 +132,7 @@ func GetAll(ID string) []*Labo {
 		res *http.Response
 		s   *goquery.Selection
 	)
-	req, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", storeURI, ID), nil)
+	req, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", storeCategoryURI, ID), nil)
 	res, err = client.Do(req)
 	ok = (err == nil)
 	if !ok {
