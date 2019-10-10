@@ -32,6 +32,31 @@ const (
 )
 
 const (
+	// defaultAttrAlt is the default namespace for HTML alt attributes.
+	defaultAttrAlt string = "NIL"
+	// defaultAttrTarget is the default namespace for HTML target attributes.
+	defaultAttrTarget string = "NIL"
+)
+
+const (
+	// defaultLaboName is the default namespace for Nintendo Labo kits.
+	defaultLaboName string = "NIL"
+	// defaultLaboRef is the default namespace for Nintendo Labo wesbite URL references.
+	defaultLaboRef string = "NIL"
+)
+
+const (
+	// defaultPartColor is the default color namespace for Nintendo Labo parts.
+	defaultPartColor string = "NIL"
+	// defaultPartGender is the default gender namespace for Nintendo Labo parts.
+	defaultPartGender string = "NEUTRAL"
+	// defaultPartShape is the default shape namespace for Nintendo Labo parts.
+	defaultPartShape string = "NIL"
+	// defaultPartSize is the default size namespace for Nintendo Labo parts.
+	defaultPartSize string = "REGULAR"
+)
+
+const (
 	// htmlAnchor is the HTML element namespace for anchor tags.
 	htmlAnchor string = "a"
 	// htmlBody is the HTML element namespace for the body tag.
@@ -43,14 +68,8 @@ const (
 const (
 	// laboDNS is the domain name reference for the Nintendo Labo website.
 	laboDNS string = ("labo" + "." + nintendoDNS)
-)
-
-const (
 	// laboURI is the URI directive to perform a Nintendo Labo site search for Nintendo Labo kits.
 	laboURI string = (laboURL + "/" + "kits")
-)
-
-const (
 	// laboURL is the RFC2616 compliant address for the Nintendo Labo website.
 	laboURL string = ("https://" + laboDNS)
 )
@@ -58,50 +77,8 @@ const (
 const (
 	// nintendoDNS is the domain name reference for the Nintendo official website.
 	nintendoDNS string = "nintendo.com"
-)
-
-const (
 	// nintendoURL is the RFC2616 compliant address for the Nintendo official website.
 	nintendoURL string = ("https://" + nintendoDNS)
-)
-
-const (
-	// storeDNS is the domain name reference for the Nintendo store website.
-	storeDNS string = ("store" + "." + nintendoDNS)
-)
-
-const (
-	// storeURI is the URI directive to perform a Nintendo store search for Nintendo Labo kits.
-	storeURI string = (storeURL + "/" + "ng3/us/po/browse/subcategory.jsp?viewAll=true&categoryId=cat")
-)
-
-const (
-	// storeProductURI is the URI to perform a Nintendo product search by providing the URI a valid product ID.
-	storeProductURI string = (storeURL + "/" + "ng3/us/po/browse/productDetailColorSizePicker.jsp?productId=prod")
-)
-
-const (
-	// storeURIKits is the URI directive to request all Nintendo Labo full kits from the Nintendo store.
-	storeURIKits string = (storeURI + KitsID)
-)
-
-const (
-	// storeURILabo is the URI directive to request all Nintendo Labo full kits and parts from the Nintendo store.
-	storeURILabo string = (storeURI + LaboID)
-)
-
-const (
-	// storeURIParts is the URI directive to request all Nintendo Labo part kits from the Nintendo store.
-	storeURIParts string = (storeURI + PartsID)
-)
-
-const (
-	// storeURL is the RFC2616 compliant address for the Nintendo store website.
-	storeURL string = ("https://" + storeDNS)
-)
-
-const (
-	patternIgnorecase string = "(?i)(%s)"
 )
 
 const (
@@ -143,31 +120,6 @@ const (
 )
 
 const (
-	// defaultAttrAlt is the default namespace for HTML alt attributes.
-	defaultAttrAlt string = "NIL"
-	// defaultAttrTarget is the default namespace for HTML target attributes.
-	defaultAttrTarget string = "NIL"
-)
-
-const (
-	// defaultLaboName is the default namespace for Nintendo Labo kits.
-	defaultLaboName string = "NIL"
-	// defaultLaboRef is the default namespace for Nintendo Labo wesbite URL references.
-	defaultLaboRef string = "NIL"
-)
-
-const (
-	// defaultPartColor is the default color namespace for Nintendo Labo parts.
-	defaultPartColor string = "NIL"
-	// defaultPartGender is the default gender namespace for Nintendo Labo parts.
-	defaultPartGender string = "NEUTRAL"
-	// defaultPartShape is the default shape namespace for Nintendo Labo parts.
-	defaultPartShape string = "NIL"
-	// defaultPartSize is the default size namespace for Nintendo Labo parts.
-	defaultPartSize string = "REGULAR"
-)
-
-const (
 	// partShapeOctagonal is the namespace for Nintendo Labo parts that are of octagonal shape.
 	partShapeOctagonal string = "octagonal"
 	// partShapeSquare is the namespace for Nintendo Labo parts that are a square shape.
@@ -181,6 +133,27 @@ const (
 	partSizeMedium string = "medium"
 	// partSizeSmall is the namespace for Nintendo Labo parts that are of smaller size.
 	partSizeSmall string = "small"
+)
+
+const (
+	patternIgnorecase string = "(?i)(%s)"
+)
+
+const (
+	// storeDNS is the domain name reference for the Nintendo store website.
+	storeDNS string = ("store" + "." + nintendoDNS)
+	// storeURIKits is the URI directive to request all Nintendo Labo full kits from the Nintendo store.
+	storeURIKits string = (storeURI + KitsID)
+	// storeURILabo is the URI directive to request all Nintendo Labo full kits and parts from the Nintendo store.
+	storeURILabo string = (storeURI + LaboID)
+	// storeURIParts is the URI directive to request all Nintendo Labo part kits from the Nintendo store.
+	storeURIParts string = (storeURI + PartsID)
+	// storeProductURI is the URI to perform a Nintendo product search by providing the URI a valid product ID.
+	storeProductURI string = (storeURL + "/" + "ng3/us/po/browse/productDetailColorSizePicker.jsp?productId=prod")
+	// storeURI is the URI directive to perform a Nintendo store search for Nintendo Labo kits.
+	storeURI string = (storeURL + "/" + "ng3/us/po/browse/subcategory.jsp?viewAll=true&categoryId=cat")
+	// storeURL is the RFC2616 compliant address for the Nintendo store website.
+	storeURL string = ("https://" + storeDNS)
 )
 
 const (
