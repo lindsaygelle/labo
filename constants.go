@@ -46,6 +46,8 @@ const (
 )
 
 const (
+	// defaultPartAmount is the default number of Nintendo Labo parts for a Nintendo Labo part.
+	defaultPartAmount int = 1
 	// defaultPartColor is the default color namespace for Nintendo Labo parts.
 	defaultPartColor string = "NIL"
 	// defaultPartGender is the default gender namespace for Nintendo Labo parts.
@@ -140,18 +142,20 @@ const (
 )
 
 const (
+	// storeCategoryURI is the URI to perform a Nintendo product search by providing the URI a valid category ID.
+	storeCategoryURI string = (storeURI + "cat")
 	// storeDNS is the domain name reference for the Nintendo store website.
 	storeDNS string = ("store" + "." + nintendoDNS)
 	// storeURIKits is the URI directive to request all Nintendo Labo full kits from the Nintendo store.
-	storeURIKits string = (storeURI + KitsID)
+	storeURIKits string = (storeCategoryURI + KitsID)
 	// storeURILabo is the URI directive to request all Nintendo Labo full kits and parts from the Nintendo store.
-	storeURILabo string = (storeURI + LaboID)
+	storeURILabo string = (storeCategoryURI + LaboID)
 	// storeURIParts is the URI directive to request all Nintendo Labo part kits from the Nintendo store.
-	storeURIParts string = (storeURI + PartsID)
+	storeURIParts string = (storeCategoryURI + PartsID)
 	// storeProductURI is the URI to perform a Nintendo product search by providing the URI a valid product ID.
-	storeProductURI string = (storeURL + "/" + "ng3/us/po/browse/productDetailColorSizePicker.jsp?productId=prod")
+	storeProductURI string = (storeURL + "/" + "ng3/us/po/browse/productDetailColorSizePicker.jsp?productId=")
 	// storeURI is the URI directive to perform a Nintendo store search for Nintendo Labo kits.
-	storeURI string = (storeURL + "/" + "ng3/us/po/browse/subcategory.jsp?viewAll=true&categoryId=cat")
+	storeURI string = (storeURL + "/" + "ng3/us/po/browse/subcategory.jsp?viewAll=true&categoryId=")
 	// storeURL is the RFC2616 compliant address for the Nintendo store website.
 	storeURL string = ("https://" + storeDNS)
 )
