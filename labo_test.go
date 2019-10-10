@@ -9,5 +9,5 @@ import (
 
 func Test(t *testing.T) {
 
-	fmt.Println(labo.Get("prod1000951"))
+	fmt.Println(labo.GetAll(labo.LaboID))
 }
