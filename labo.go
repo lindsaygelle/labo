@@ -14,6 +14,10 @@ import (
 	"golang.org/x/text/language"
 )
 
+// Labo is a Nintendo Labo product. Labo structs may either be a full Nintendo Labo kit or collections of parts.
+//
+// Nintendo Labo products are provided by the Nintendo store website and contain only surface
+// level data about the Nintendo Labo product.
 type Labo struct {
 	Category         string        `json:"category"`
 	CategoryID       string        `json:"category_ID"`
@@ -35,6 +39,8 @@ type Labo struct {
 }
 
 var (
+	// laboFn are the required functions used to collect all required data points for a Nintendo Labo product
+	// from the Nintendo store.
 	laboFn = [](func(s *goquery.Selection, l *Labo)){
 		getLaboStorePageDescription,
 		getLaboStorePageImages,
