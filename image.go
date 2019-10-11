@@ -7,17 +7,21 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Image is a snapshot of an image resource belonging to a Nintendo Labo product.
 type Image struct {
-	Alt      string
-	Link     string
-	URL      *url.URL
-	Variants []*Image
+	Alt      string   `json:"alt"`
+	Link     string   `json:"link"`
+	URL      *url.URL `json:"URL"`
+	Variants []*Image `json:"variants"`
 }
 
+// newImage is a constructor function that instantiates a new Image struct pointer.
+//
+// newImage requires the argument goquery.Selection pointer to be a valid
+// HTML anchor element that contains a reference to an attribute that points
+// to a image resource. Should no image resource be found no Image struct
+// is returned.
 func newImage(s *goquery.Selection) *Image {
-	const (
-		dataPrefix string = "data:image"
-	)
 	var (
 		alt      = defaultAttrAlt
 		err      error
@@ -35,8 +39,8 @@ func newImage(s *goquery.Selection) *Image {
 		return newImage(s.Find(htmlImage))
 	}
 	link, _ = s.Attr(attrSrc)
-	ok = (strings.HasPrefix(link, dataPrefix) == false)
-	if !ok {
+	ok = (link == imageBase64)
+	if ok {
 		link, _ = s.Attr(attrDataSrc)
 	}
 	ok = (len(link) > 0)
@@ -55,6 +59,7 @@ func newImage(s *goquery.Selection) *Image {
 		Variants: variants}
 }
 
+// newImages is a constructor function that instantiates and returns a slice of Image struct pointers.
 func newImages(s *goquery.Selection) []*Image {
 	var (
 		image  *Image
