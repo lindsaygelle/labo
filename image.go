@@ -15,11 +15,12 @@ type Image struct {
 	Variants []*Image `json:"variants"`
 }
 
-// newImage is a constructor function that take an argument goquery.Selection pointer
-// to build a new Image pointer. When building a new Image struct
-// the function checks whether the argument goquery.Selection pointer
-// contains a valid HTML src attribute or its derivatives. If no corresponding image
-// reference address can be found, no pointer is returned.
+// newImage is a constructor function that instantiates a new Image struct pointer.
+//
+// newImage requires the argument goquery.Selection pointer to be a valid
+// HTML anchor element that contains a reference to an attribute that points
+// to a image resource. Should no image resource be found no Image struct
+// is returned.
 func newImage(s *goquery.Selection) *Image {
 	var (
 		alt      = defaultAttrAlt
@@ -58,6 +59,7 @@ func newImage(s *goquery.Selection) *Image {
 		Variants: variants}
 }
 
+// newImages is a constructor function that instantiates and returns a slice of Image struct pointers.
 func newImages(s *goquery.Selection) []*Image {
 	var (
 		image  *Image
