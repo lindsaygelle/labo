@@ -68,6 +68,10 @@ const (
 )
 
 const (
+	imageBase64 string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="
+)
+
+const (
 	// laboDNS is the domain name reference for the Nintendo Labo website.
 	laboDNS string = ("labo" + "." + nintendoDNS)
 	// laboURI is the URI directive to perform a Nintendo Labo site search for Nintendo Labo kits.
