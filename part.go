@@ -26,6 +26,7 @@ type Part struct {
 
 // getPartAmount searches the argument string for substrings that describe the quantity
 // of a Nintendo Labo kit part.
+//
 // getPartAmount relies on the argument string containing some
 // form of numeric pattern or numeric namespace that can be used
 // to determine the value of the parts provided. When the argument string contains
@@ -53,6 +54,13 @@ func getPartAmount(s string) int {
 	return amount
 }
 
+// getPartColor searches the argument string for substrings that describe the color
+// of a Nintendo Labo kit part.
+//
+// getPartColor relies on the argument string containing some
+// form of color namespace that can be used to determine the color of the part.
+// When the argument string does not contain a known Nintendo Labo part color,
+// the default part color is assigned.
 func getPartColor(s string) string {
 	var (
 		color     = defaultPartColor
@@ -68,6 +76,13 @@ func getPartColor(s string) string {
 	return color
 }
 
+// getPartGender searches the argument string for substrings that describe the gender
+// of a Nintendo Labo kit part.
+//
+// getPartGender relies on the argument string containing some
+// form of gender namespace that can be used to determine the gender of the part.
+// When the argument string does not contain a known Nintendo Labo part gender,
+// the default part gender is assigned.
 func getPartGender(s string) string {
 	var (
 		gender    = defaultPartGender
@@ -83,6 +98,10 @@ func getPartGender(s string) string {
 	return gender
 }
 
+// getPartName returns the Nintendo Labo part name.
+//
+// getPartName works by substituting all potential part properties from
+// within the Nintendo Labo kit name.
 func getPartName(s string) string {
 	for _, r := range partRegexps {
 		s = r.ReplaceAllString(s, stringEmpty)
