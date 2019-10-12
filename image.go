@@ -18,7 +18,7 @@ type Image struct {
 // newImage is a constructor function that instantiates a new Image struct pointer.
 //
 // newImage requires the argument goquery.Selection pointer to be a valid
-// HTML anchor element that contains a reference to an attribute that points
+// HTML image element that contains a reference to an attribute that points
 // to a image resource. Should no image resource be found no Image struct
 // is returned.
 func newImage(s *goquery.Selection) *Image {
