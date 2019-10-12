@@ -7,12 +7,19 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Href is a hyperlink reference to a Nintendo Labo product resource provided by Nintendo.
 type Href struct {
 	Link   string   `json:"link"`
 	Target string   `json:"target"`
 	URL    *url.URL `json:"URL"`
 }
 
+// newHref is a constructor function that instantiates a new Href struct pointer.
+//
+// newHref requires the argument goquery.Selection pointer to be a valid
+// HTML anchor element that contains a reference to an attribute that points
+// to a URL. Should no URL be found no Href struct
+// is returned.
 func newHref(s *goquery.Selection) *Href {
 	var (
 		err    error
