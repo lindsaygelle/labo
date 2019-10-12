@@ -113,6 +113,13 @@ func getPartName(s string) string {
 	return s
 }
 
+// getPartShape searches the argument string for substrings that describe the shape
+// of a Nintendo Labo kit part.
+//
+// getPartShape relies on the argument string containing some
+// form of shape namespace that can be used to determine the shape of the part.
+// When the argument string does not contain a known Nintendo Labo part shape,
+// the default part shape is assigned.
 func getPartShape(s string) string {
 	var (
 		ok        bool
@@ -128,6 +135,13 @@ func getPartShape(s string) string {
 	return shape
 }
 
+// getPartSize searches the argument string for substrings that describe the size
+// of a Nintendo Labo kit part.
+//
+// getPartSize relies on the argument string containing some
+// form of size namespace that can be used to determine the size of the part.
+// When the argument string does not contain a known Nintendo Labo part size,
+// the default part size is assigned.
 func getPartSize(s string) string {
 	var (
 		ok        bool
@@ -143,6 +157,8 @@ func getPartSize(s string) string {
 	return size
 }
 
+// getPartSpares searches the argument string for substrings that indicates
+// whether the Nintendo Labo part kit has spares.
 func getPartSpares(s string) bool {
 	var (
 		ok        bool
@@ -153,6 +169,9 @@ func getPartSpares(s string) bool {
 	return ok
 }
 
+// newPart is a constructor function that instantiates and returns a new Part struct pointer.
+//
+// newPart requires a valid goquery.Selection pointer to instantiate a new Part.
 func newPart(s *goquery.Selection) *Part {
 	var (
 		substring = strings.TrimSpace(s.Text())
