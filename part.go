@@ -8,6 +8,11 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Part is a snapshot of a Nintendo Labo part that is used in the construction of a Nintendo Labo kit.
+//
+// Parts are built from reading Nintendo Labo product descriptions and contain varying levels
+// of detail and verbosity. A part, depending on the content read, may contain mostly
+// default part amounts, colors, genders, shapes and sizes.
 type Part struct {
 	Amount int    `json:"amount"`
 	Color  string `json:"color"`
@@ -19,9 +24,17 @@ type Part struct {
 	Spares bool   `json:"spares"`
 }
 
+// getPartAmount searches the argument string for substrings that describe the quantity
+// of a Nintendo Labo kit part.
+// getPartAmount relies on the argument string containing some
+// form of numeric pattern or numeric namespace that can be used
+// to determine the value of the parts provided. When the argument string contains
+// no numeric pattern, the function performs a lookup against the current known
+// max number of Nintendo Labo parts per kit. Should a value exceed the known range,
+// the default value of one is assigned.
 func getPartAmount(s string) int {
 	var (
-		amount    = 1
+		amount    = defaultPartAmount
 		ok        bool
 		substring string
 	)
