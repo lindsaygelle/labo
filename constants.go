@@ -39,6 +39,10 @@ const (
 )
 
 const (
+	defaultRetailerName string = "NIL"
+)
+
+const (
 	// defaultLaboName is the default namespace for Nintendo Labo kits.
 	defaultLaboName string = "NIL"
 	// defaultLaboRef is the default namespace for Nintendo Labo wesbite URL references.
