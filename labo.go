@@ -74,19 +74,19 @@ func Get(ID string) *Labo {
 	req, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", storeProductURI, ID), nil)
 	ok = (err == nil)
 	if !ok {
-		return nil
+		return l
 	}
 	res, err = client.Do(req)
 	ok = (err == nil)
 	if !ok {
-		return nil
+		return l
 	}
 	l.Status = res.Status
 	l.StatusCode = res.StatusCode
 	l.URL = req.URL
 	ok = (res.StatusCode == http.StatusOK)
 	if !ok {
-		return nil
+		return l
 	}
 	q = req.URL.Query()
 	l.CategoryID = q.Get(uriQueryParamCategoryID)
