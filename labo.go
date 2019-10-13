@@ -209,7 +209,7 @@ func getLaboStorePageDescription(s *goquery.Selection, l *Labo) {
 
 // getLaboStorePageID searches the argument goquery.Selection pointer
 // for the Nintendo Labo product numerical ID and assigns it to
-// the argument labo.Labo pointer if found..
+// the argument labo.Labo pointer if found.
 func getLaboStorePageID(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content .results-header"
@@ -352,6 +352,16 @@ func getLaboStorePageRef(s *goquery.Selection, l *Labo) {
 		substrings []string
 		ok         bool
 	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	substring = s.Text()
+	ok = (len(substring) > 0)
+	if !ok {
+		return
+	}
 	ok = strings.Contains(substring, stringColon)
 	if !ok {
 		return
