@@ -9,15 +9,20 @@ import (
 )
 
 type Kit struct {
-	Hero       *Image
-	Retailers  []*Retailer
-	Status     string
-	StatusCode int
-	URL        *url.URL
+	BoxImage    *Image
+	KitImage    *Image
+	Retailers   []*Retailer
+	SoftwareBox *Image
+	Status      string
+	StatusCode  int
+	ToyCons     []*ToyCon
+	URL         *url.URL
 }
 
 var (
 	kitFn = [](func(s *goquery.Selection, k *Kit)){
+		getKitBoxImage,
+		getKitImage,
 		getKitRetailers}
 )
 
@@ -68,29 +73,79 @@ func GetKit(l *Labo) *Kit {
 	return newKit(s, k)
 }
 
-func getKitRetailers(s *goquery.Selection, k *Kit) {
+func getKitBoxImage(s *goquery.Selection, k *Kit) {
 	const (
-		CSS string = ".retailers ul li"
+		CSS string = ".product-hero .hero-content .kit.column .packshot picture img"
 	)
 	var (
-		ok        bool
-		r         *Retailer
-		retailers []*Retailer
+		ok bool
 	)
 	s = s.Find(CSS)
 	ok = (s.Length() > 0)
 	if !ok {
 		return
 	}
-	s.Each(func(i int, s *goquery.Selection) {
-		r = newRetailer(s)
-		ok = (r != nil)
-		if !ok {
-			return
-		}
-		retailers = append(retailers, r)
-	})
-	k.Retailers = retailers
+	k.BoxImage = newImage(s)
+}
+
+func getKitImage(s *goquery.Selection, k *Kit) {
+	const (
+		CSS string = ".kit-contents > picture:nth-child(1) > img:nth-child(1)"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	k.KitImage = newImage(s)
+}
+
+func getKitToyCons(s *goquery.Selection, k *Kit) {
+	const (
+		CSS string = ".toy-con-area > div:nth-child(1)"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+
+}
+
+func getKitRetailers(s *goquery.Selection, k *Kit) {
+	const (
+		CSS string = ".retailers > ul:nth-child(1) li"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	k.Retailers = newRetailers(s)
+}
+
+func getKitSoftwareBox(s *goquery.Selection, k *Kit) {
+	const (
+		CSS string = ".content:nth-child(2) > div:nth-child(1) > picture:nth-child(1) > img:nth-child(1)"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	k.SoftwareBox = newImage(s)
 }
 
 func newKit(s *goquery.Selection, k *Kit) *Kit {
