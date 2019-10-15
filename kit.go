@@ -15,7 +15,7 @@ type Kit struct {
 	SoftwareBox *Image
 	Status      string
 	StatusCode  int
-	ToyCons     []*ToyCon
+	Toycons     []*Toycon
 	URL         *url.URL
 }
 
@@ -23,7 +23,8 @@ var (
 	kitFn = [](func(s *goquery.Selection, k *Kit)){
 		getKitBoxImage,
 		getKitImage,
-		getKitRetailers}
+		getKitRetailers,
+		getKitToyCons}
 )
 
 func GetKit(l *Labo) *Kit {
@@ -105,7 +106,7 @@ func getKitImage(s *goquery.Selection, k *Kit) {
 
 func getKitToyCons(s *goquery.Selection, k *Kit) {
 	const (
-		CSS string = ".toy-con-area > div:nth-child(1)"
+		CSS string = ".toy-con-area > div:nth-child(1) > div"
 	)
 	var (
 		ok bool
@@ -115,7 +116,7 @@ func getKitToyCons(s *goquery.Selection, k *Kit) {
 	if !ok {
 		return
 	}
-
+	k.Toycons = newToycons(s)
 }
 
 func getKitRetailers(s *goquery.Selection, k *Kit) {

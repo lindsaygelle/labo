@@ -29,7 +29,8 @@ func newRetailer(s *goquery.Selection) *Retailer {
 
 	return &Retailer{
 		Href:  newHref(s),
-		Image: newImage(s)}
+		Image: newImage(s),
+		Name:  getRetailerName(s)}
 }
 
 func newRetailers(s *goquery.Selection) []*Retailer {
