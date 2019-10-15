@@ -116,7 +116,7 @@ func getKitToyCons(s *goquery.Selection, k *Kit) {
 	if !ok {
 		return
 	}
-	k.ToyCons = newToyCons(s)
+	k.Toycons = newToycons(s)
 }
 
 func getKitRetailers(s *goquery.Selection, k *Kit) {
