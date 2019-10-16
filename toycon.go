@@ -9,6 +9,7 @@ import (
 type Toycon struct {
 	About       string
 	Description string
+	Features    []*Feature
 	Icon        *Image
 	Image       *Image
 	Name        string
@@ -18,6 +19,7 @@ var (
 	toyconFn = [](func(s *goquery.Selection, t *Toycon)){
 		getToyconAbout,
 		getToyconDescription,
+		getToyconFeatures,
 		getToyconIcon,
 		getToyconImage,
 		getToyconName}
@@ -63,6 +65,21 @@ func getToyconDescription(s *goquery.Selection, t *Toycon) {
 		return
 	}
 	t.Description = substring
+}
+
+func getToyconFeatures(s *goquery.Selection, t *Toycon) {
+	const (
+		CSS string = ".left-column .toy-con-slider"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	t.Features = newFeatures(s)
 }
 
 func getToyconIcon(s *goquery.Selection, t *Toycon) {
