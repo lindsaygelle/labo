@@ -10,6 +10,12 @@ type Feature struct {
 	Name        string
 }
 
+func getFeatureDescription(s *goquery.Selection, f *Feature) {}
+
+func getFeatureIcon(s *goquery.Selection, f *Feature) {}
+
+func getFeatureName(s *goquery.Selection, f *Feature) {}
+
 func getFeatureSelection(CSS string, s *goquery.Selection) *goquery.Selection {
 	var (
 		ok bool
@@ -43,7 +49,13 @@ func getFeatureSelectionC(s *goquery.Selection) *goquery.Selection {
 	return getFeatureSelection(CSS, s)
 }
 
-func newFeature(a, b, c *goquery.Selection) {}
+func newFeature(a, b, c *goquery.Selection) *Feature {
+	var (
+		feature = &Feature{}
+	)
+
+	return feature
+}
 
 func newFeatures(s *goquery.Selection) []*Feature {
 	var (
@@ -52,6 +64,7 @@ func newFeatures(s *goquery.Selection) []*Feature {
 		c  = getFeatureSelectionC(s)
 		ok bool
 
+		feature  *Feature
 		features []*Feature
 	)
 	ok = (a != nil && b != nil && c != nil)
@@ -67,7 +80,12 @@ func newFeatures(s *goquery.Selection) []*Feature {
 		return features
 	}
 	a.Each(func(i int, _ *goquery.Selection) {
-
+		feature = newFeature(a.Eq(i), b.Eq(i), c.Eq(1))
+		ok = (feature != nil)
+		if !ok {
+			return
+		}
+		features = append(features, feature)
 	})
 	return features
 }
