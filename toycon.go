@@ -65,9 +65,35 @@ func getToyconDescription(s *goquery.Selection, t *Toycon) {
 	t.Description = substring
 }
 
-func getToyconIcon(s *goquery.Selection, t *Toycon) {}
+func getToyconIcon(s *goquery.Selection, t *Toycon) {
+	const (
+		CSS string = ".right-column .toy-con-info .icon > img:nth-child(1)"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	t.Icon = newImage(s)
+}
 
-func getToyconImage(s *goquery.Selection, t *Toycon) {}
+func getToyconImage(s *goquery.Selection, t *Toycon) {
+	const (
+		CSS string = ".right-column .main-image picture:nth-child(1) > img:nth-child(1)"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	t.Image = newImage(s)
+}
 
 func getToyconName(s *goquery.Selection, t *Toycon) {
 	const (
