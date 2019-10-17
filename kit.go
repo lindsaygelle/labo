@@ -106,7 +106,7 @@ func getKitImage(s *goquery.Selection, k *Kit) {
 
 func getKitToyCons(s *goquery.Selection, k *Kit) {
 	const (
-		CSS string = ".toy-con-area > div:nth-child(1) > div"
+		CSS string = ".toy-con-area .toy-con"
 	)
 	var (
 		ok bool
