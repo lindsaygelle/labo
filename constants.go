@@ -4,6 +4,7 @@ const (
 	stringColon      string = ":"
 	stringEmpty      string = ""
 	stringMinus      string = "-"
+	stringNil        string = "NIL"
 	stringPlus       string = "+"
 	stringWhitespace string = " "
 )
@@ -33,31 +34,36 @@ const (
 
 const (
 	// defaultAttrAlt is the default namespace for HTML alt attributes.
-	defaultAttrAlt string = "NIL"
+	defaultAttrAlt string = stringNil
 	// defaultAttrTarget is the default namespace for HTML target attributes.
-	defaultAttrTarget string = "NIL"
+	defaultAttrTarget string = stringNil
 )
 
 const (
-	defaultRetailerName string = "NIL"
+	defaultRetailerName string = stringNil
+)
+
+const (
+	defaultFeatureDescription string = stringNil
+	defaultFeatureName        string = stringNil
 )
 
 const (
 	// defaultLaboName is the default namespace for Nintendo Labo kits.
-	defaultLaboName string = "NIL"
+	defaultLaboName string = stringNil
 	// defaultLaboRef is the default namespace for Nintendo Labo wesbite URL references.
-	defaultLaboRef string = "NIL"
+	defaultLaboRef string = stringNil
 )
 
 const (
 	// defaultPartAmount is the default number of Nintendo Labo parts for a Nintendo Labo part.
 	defaultPartAmount int = 1
 	// defaultPartColor is the default color namespace for Nintendo Labo parts.
-	defaultPartColor string = "NIL"
+	defaultPartColor string = stringNil
 	// defaultPartGender is the default gender namespace for Nintendo Labo parts.
 	defaultPartGender string = "NEUTRAL"
 	// defaultPartShape is the default shape namespace for Nintendo Labo parts.
-	defaultPartShape string = "NIL"
+	defaultPartShape string = stringNil
 	// defaultPartSize is the default size namespace for Nintendo Labo parts.
 	defaultPartSize string = "REGULAR"
 )

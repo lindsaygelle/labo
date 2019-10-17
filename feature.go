@@ -1,6 +1,8 @@
 package labo
 
 import (
+	"strings"
+
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -10,13 +12,61 @@ type Feature struct {
 	Name        string
 }
 
-func getFeatureDescription(s *goquery.Selection, f *Feature) {}
+func getFeatureDescription(s *goquery.Selection, f *Feature) {
+	const (
+		CSS string = ".copy > p"
+	)
+	var (
+		description = defaultFeatureDescription
+		ok          bool
+		substring   string
+	)
+	s = s.Find(CSS)
+	substring = strings.TrimSpace(s.Text())
+	ok = (len(substring) > 0)
+	if ok {
+		description = substring
+	}
+	f.Description = description
+}
 
-func getFeatureIcon(s *goquery.Selection, f *Feature) {}
+func getFeatureIcon(s *goquery.Selection, f *Feature) {
+	const (
+		CSS string = "picture:nth-child(1) > img:nth-child(1)"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	f.Icon = newImage(s)
+}
 
-func getFeatureName(s *goquery.Selection, f *Feature) {}
+func getFeatureName(s *goquery.Selection, f *Feature) {
+	const (
+		CSS string = ".header span"
+	)
+	var (
+		name      = defaultFeatureName
+		ok        bool
+		substring string
+	)
+	s = s.Find(CSS)
+	substring = strings.TrimSpace(s.Text())
+	ok = (len(substring) > 0)
+	if ok {
+		name = substring
+	}
+	f.Name = name
+}
 
-func getFeatureSelection(CSS string, s *goquery.Selection) *goquery.Selection {
+func getFeatureSelectionA(s *goquery.Selection) *goquery.Selection {
+	const (
+		CSS string = ".slider-pagination:nth-child(1) > li"
+	)
 	var (
 		ok bool
 	)
@@ -28,31 +78,43 @@ func getFeatureSelection(CSS string, s *goquery.Selection) *goquery.Selection {
 	return s
 }
 
-func getFeatureSelectionA(s *goquery.Selection) *goquery.Selection {
-	const (
-		CSS string = ".slider-pagination:nth-child(1) > li"
-	)
-	return getFeatureSelection(CSS, s)
-}
-
 func getFeatureSelectionB(s *goquery.Selection) *goquery.Selection {
 	const (
-		CSS string = ".slider-content:nth-child(1) > div"
+		CSS string = ".slider-content > div"
 	)
-	return getFeatureSelection(CSS, s)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return nil
+	}
+	return s
 }
 
 func getFeatureSelectionC(s *goquery.Selection) *goquery.Selection {
 	const (
-		CSS string = ".caption-content:nth-child(1) > div"
+		CSS string = ".caption-content > div"
 	)
-	return getFeatureSelection(CSS, s)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return nil
+	}
+	return s
 }
 
 func newFeature(a, b, c *goquery.Selection) *Feature {
 	var (
 		feature = &Feature{}
 	)
+	getFeatureDescription(c, feature)
+	getFeatureIcon(a, feature)
+	getFeatureName(a, feature)
 
 	return feature
 }
@@ -80,7 +142,7 @@ func newFeatures(s *goquery.Selection) []*Feature {
 		return features
 	}
 	a.Each(func(i int, _ *goquery.Selection) {
-		feature = newFeature(a.Eq(i), b.Eq(i), c.Eq(1))
+		feature = newFeature(a.Eq(i), b.Eq(i), c.Eq(i))
 		ok = (feature != nil)
 		if !ok {
 			return
