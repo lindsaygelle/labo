@@ -11,6 +11,7 @@ import (
 type Kit struct {
 	BoxImage    *Image
 	KitImage    *Image
+	Projects    []*Project
 	Retailers   []*Retailer
 	SoftwareBox *Image
 	Status      string
@@ -23,6 +24,7 @@ var (
 	kitFn = [](func(s *goquery.Selection, k *Kit)){
 		getKitBoxImage,
 		getKitImage,
+		getKitProjects,
 		getKitRetailers,
 		getKitToyCons}
 )
@@ -102,6 +104,20 @@ func getKitImage(s *goquery.Selection, k *Kit) {
 		return
 	}
 	k.KitImage = newImage(s)
+}
+
+func getKitProjects(s *goquery.Selection, k *Kit) {
+	const (
+		CSS string = ".main-toycon:nth-child(1) > .toycon-tag"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
 }
 
 func getKitToyCons(s *goquery.Selection, k *Kit) {

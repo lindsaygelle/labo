@@ -47,7 +47,7 @@ func getFeatureIcon(s *goquery.Selection, f *Feature) {
 
 func getFeatureName(s *goquery.Selection, f *Feature) {
 	const (
-		CSS string = ".header span"
+		CSS string = ".header:nth-child(1) > span:nth-child(1)"
 	)
 	var (
 		name      = defaultFeatureName
@@ -114,7 +114,7 @@ func newFeature(a, b, c *goquery.Selection) *Feature {
 	)
 	getFeatureDescription(c, feature)
 	getFeatureIcon(a, feature)
-	getFeatureName(a, feature)
+	getFeatureName(c, feature)
 
 	return feature
 }
