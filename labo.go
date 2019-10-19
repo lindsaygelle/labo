@@ -1,6 +1,7 @@
 package labo
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -169,6 +170,12 @@ func GetAll(ID string) []*Labo {
 		l = append(l, labo)
 	})
 	return l
+}
+
+// Marshal marshals a Labo struct.
+func Marshal(l *Labo) (b []byte) {
+	b, _ = json.Marshal(l)
+	return b
 }
 
 // newLabo is a constructor function that take an argument goquery.Selection pointer
