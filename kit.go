@@ -1,6 +1,7 @@
 package labo
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -9,15 +10,16 @@ import (
 )
 
 type Kit struct {
-	BoxImage    *Image
-	KitImage    *Image
-	Projects    []*Project
-	Retailers   []*Retailer
-	SoftwareBox *Image
-	Status      string
-	StatusCode  int
-	Toycons     []*Toycon
-	URL         *url.URL
+	BoxImage    *Image      `json:"box_image"`
+	IsVR        bool        `json:"is_VR"`
+	KitImage    *Image      `json:"kit_image"`
+	Projects    []*Project  `json:"projects"`
+	Retailers   []*Retailer `json:"retailers"`
+	SoftwareBox *Image      `json:"software_box"`
+	Status      string      `json:"status"`
+	StatusCode  int         `json:"status_code"`
+	Toycons     []*Toycon   `json:"toycons"`
+	URL         *url.URL    `json:"URL"`
 }
 
 var (
@@ -76,6 +78,11 @@ func GetKit(l *Labo) *Kit {
 	return newKit(s, k)
 }
 
+func MarshalKit(k *Kit) (b []byte) {
+	b, _ = json.Marshal(k)
+	return b
+}
+
 func getKitBoxImage(s *goquery.Selection, k *Kit) {
 	const (
 		CSS string = ".product-hero .hero-content .kit.column .packshot picture img"
@@ -118,6 +125,7 @@ func getKitProjects(s *goquery.Selection, k *Kit) {
 	if !ok {
 		return
 	}
+	k.Projects = newProjects(s)
 }
 
 func getKitToyCons(s *goquery.Selection, k *Kit) {
