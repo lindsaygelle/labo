@@ -1,6 +1,7 @@
 package labo
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -8,16 +9,23 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Kit is a Nintendo Labo Kit. Kit structs are built from the Nintendo Labo official website.
+//
+// Kits contain extended information not found on the Nintendo Labo store and may contain
+// varying levels of detail depending on the type of page scraped and the category of
+// the Nintendo Labo Kit. Non VR kits will not contain the corresponding VR
+// information.
 type Kit struct {
-	BoxImage    *Image
-	KitImage    *Image
-	Projects    []*Project
-	Retailers   []*Retailer
-	SoftwareBox *Image
-	Status      string
-	StatusCode  int
-	Toycons     []*Toycon
-	URL         *url.URL
+	BoxImage    *Image      `json:"box_image"`
+	IsVR        bool        `json:"is_VR"`
+	KitImage    *Image      `json:"kit_image"`
+	Projects    []*Project  `json:"projects"`
+	Retailers   []*Retailer `json:"retailers"`
+	SoftwareBox *Image      `json:"software_box"`
+	Status      string      `json:"status"`
+	StatusCode  int         `json:"status_code"`
+	Toycons     []*Toycon   `json:"toycons"`
+	URL         *url.URL    `json:"URL"`
 }
 
 var (
@@ -29,6 +37,12 @@ var (
 		getKitToyCons}
 )
 
+// GetKit gets the extended Nintendo Labo Kit information from the official Nintendo Labo website.
+//
+// The argument Labo must contain a non NIL string Labo.Ref to perform the look-up on the Nintendo Labo website.
+// Some products on the Nintendo Labo store do not contain a official Nintendo Labo website
+// counterpart and will return a non-nil Kit pointer with the HTTP status code and status fields being
+// set to a http.StatusBadRequest. Successful lookups should contain a Labo.StatusCode value of http.StatusOK.
 func GetKit(l *Labo) *Kit {
 	var (
 		doc *goquery.Document
@@ -76,6 +90,13 @@ func GetKit(l *Labo) *Kit {
 	return newKit(s, k)
 }
 
+// MarshalKit marshals a Kit struct into an ordered byte sequence. On error returns an empty byte slice.
+func MarshalKit(k *Kit) (b []byte) {
+	b, _ = json.Marshal(k)
+	return b
+}
+
+// getKitBoxImage gets the Nintendo Labo Kits product box image.
 func getKitBoxImage(s *goquery.Selection, k *Kit) {
 	const (
 		CSS string = ".product-hero .hero-content .kit.column .packshot picture img"
@@ -118,6 +139,7 @@ func getKitProjects(s *goquery.Selection, k *Kit) {
 	if !ok {
 		return
 	}
+	k.Projects = newProjects(s)
 }
 
 func getKitToyCons(s *goquery.Selection, k *Kit) {

@@ -7,12 +7,12 @@ import (
 )
 
 type Toycon struct {
-	About       string
-	Description string
-	Features    []*Feature
-	Icon        *Image
-	Image       *Image
-	Name        string
+	About       string     `json:"about"`
+	Description string     `json:"description"`
+	Features    []*Feature `json:"features"`
+	Icon        *Image     `json:"icon"`
+	Image       *Image     `json:"image"`
+	Name        string     `json:"name"`
 }
 
 var (

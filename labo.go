@@ -1,6 +1,7 @@
 package labo
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -169,6 +170,12 @@ func GetAll(ID string) []*Labo {
 		l = append(l, labo)
 	})
 	return l
+}
+
+// MarshalKit marshals a Labo struct into an ordered byte sequence. On error returns an empty byte slice.
+func Marshal(l *Labo) (b []byte) {
+	b, _ = json.Marshal(l)
+	return b
 }
 
 // newLabo is a constructor function that take an argument goquery.Selection pointer
