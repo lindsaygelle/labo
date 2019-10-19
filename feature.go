@@ -7,9 +7,9 @@ import (
 )
 
 type Feature struct {
-	Description string
-	Icon        *Image
-	Name        string
+	Description string `json:"description"`
+	Icon        *Image `json:"icon"`
+	Name        string `json:"name"`
 }
 
 func getFeatureDescription(s *goquery.Selection, f *Feature) {
