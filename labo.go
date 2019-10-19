@@ -172,7 +172,7 @@ func GetAll(ID string) []*Labo {
 	return l
 }
 
-// Marshal marshals a Labo struct.
+// MarshalKit marshals a Labo struct into an ordered byte sequence. On error returns an empty byte slice.
 func Marshal(l *Labo) (b []byte) {
 	b, _ = json.Marshal(l)
 	return b
