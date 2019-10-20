@@ -15,20 +15,68 @@ type Image struct {
 	Variants []*Image `json:"variants"`
 }
 
+var (
+	imageFn = [](func(*goquery.Selection, *Image)){
+		getImageAlt,
+		getImageLink,
+		getImageURL,
+		getImageVariants}
+)
+
+// getImageAlt searches the *goquery.Selection for the alt attribute required for a labo.Image struct.
+func getImageAlt(s *goquery.Selection, i *Image) {
+	var (
+		alt = defaultAttrAlt
+		ok  bool
+	)
+	_, ok = s.Attr(attrSrc)
+	if ok {
+		alt, _ = s.Attr(attrSrc)
+	}
+	i.Alt = alt
+}
+
+// getImageLink searches the *goquery.Selection for the link resource required for a labo.Image struct.
+func getImageLink(s *goquery.Selection, i *Image) {
+	var (
+		link string
+		ok   bool
+	)
+	link, _ = s.Attr(attrSrc)
+	ok = (link == imageBase64)
+	if ok {
+		link, _ = s.Attr(attrDataSrc)
+	}
+	ok = (len(link) > 0)
+	if !ok {
+		return
+	}
+	i.Link = link
+}
+
+// getImageURL searches the *goquery.Selection for the *url.URL required for a labo.Image struct.
+func getImageURL(s *goquery.Selection, i *Image) {
+	var (
+		err     error
+		link, _ = s.Attr(attrSrc)
+		ok      bool
+		URL     *url.URL
+	)
+	URL, err = url.Parse(link)
+	ok = (err == nil)
+	if !ok {
+		return
+	}
+	i.URL = URL
+}
+
+func getImageVariants(s *goquery.Selection, i *Image) {}
+
 // newImage is a constructor function that instantiates a new Image struct pointer.
-//
-// newImage requires the argument goquery.Selection pointer to be a valid
-// HTML image element that contains a reference to an attribute that points
-// to a image resource. Should no image resource be found no Image struct
-// is returned.
 func newImage(s *goquery.Selection) *Image {
 	var (
-		alt      = defaultAttrAlt
-		err      error
-		link     string
-		ok       bool
-		URL      *url.URL
-		variants []*Image
+		ok    bool
+		image = &Image{}
 	)
 	ok = (s.Length() > 0)
 	if !ok {
@@ -38,25 +86,10 @@ func newImage(s *goquery.Selection) *Image {
 	if !ok {
 		return newImage(s.Find(htmlImage))
 	}
-	link, _ = s.Attr(attrSrc)
-	ok = (link == imageBase64)
-	if ok {
-		link, _ = s.Attr(attrDataSrc)
+	for _, fn := range imageFn {
+		fn(s, image)
 	}
-	ok = (len(link) > 0)
-	if !ok {
-		return nil
-	}
-	URL, err = url.Parse(link)
-	ok = (err == nil)
-	if !ok {
-		return nil
-	}
-	return &Image{
-		Alt:      alt,
-		Link:     link,
-		URL:      URL,
-		Variants: variants}
+	return image
 }
 
 // newImages is a constructor function that instantiates and returns a slice of Image struct pointers.
