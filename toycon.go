@@ -8,7 +8,7 @@ import (
 
 // Toycon is a snapshot of a Nintendo Labo Toycon.
 //
-// Toycon's are the products built from a Nintendo Labo kit. Each Toycon
+// Toycon's are the cardboard products built from a Nintendo Labo kit. Each Toycon
 // contains a series of features that are unique to the Nintendo Labo Kit.
 type Toycon struct {
 	About       string     `json:"about"`
