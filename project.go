@@ -24,7 +24,7 @@ var (
 		getProjectScreenshots}
 )
 
-// getProjectIcon searches the *goquery.Selection for the *labo.Image required for a labo.Project
+// getProjectIcon searches the *goquery.Selection for the *labo.Image required for a labo.Project.
 func getProjectIcon(s *goquery.Selection, p *Project) {
 	const (
 		CSS string = ".toycon-icon:nth-child(1) > .icon:nth-child(1) > img:nth-child(1)"
@@ -40,27 +40,24 @@ func getProjectIcon(s *goquery.Selection, p *Project) {
 	p.Icon = newImage(s)
 }
 
-// getProjectIcon searches the *goquery.Selection for the *labo.Image required for a labo.Project
+// getProjectIcon searches the *goquery.Selection for the *labo.Image required for a labo.Project.
 func getProjectImage(s *goquery.Selection, p *Project) {
 	const (
-		CSS string = ".toycon-image:nth-child(1) > picture:nth-child(1) > img:nth-child(1)"
+		CSS   string = ".toycon-image:nth-child(1)"
+		CSSVR string = ".project__item:nth-child(1)"
 	)
 	var (
 		ok bool
 	)
-	s = s.Find(CSS)
-	ok = (s.Length() > 0)
-	if !ok {
-		s = s.Find(".project__item:nth-child(1) > picture:nth-child(1) > img:nth-child(1)")
-		ok = (s.Length() > 0)
-		if !ok {
-			return
-		}
+	ok = (s.Find(CSS).Length() > 0)
+	if ok {
+		p.Image = newImage(s.Find("picture:nth-child(1) > img:nth-child(1)"))
+	} else {
+		p.Image = newImage(s.Find("picture:nth-child(1) > img:nth-child(1)"))
 	}
-	p.Image = newImage(s)
 }
 
-// getProjectName searches the *goquery.Selection for the name of the project required for a labo.Project
+// getProjectName searches the *goquery.Selection for the name of the project required for a labo.Project.
 func getProjectName(s *goquery.Selection, p *Project) {
 	const (
 		CSS string = ".toycon-icon:nth-child(1) > p:nth-child(1)"
@@ -83,7 +80,7 @@ func getProjectName(s *goquery.Selection, p *Project) {
 	p.Name = name
 }
 
-// getProjectScreenshots searches the *goquery.Selection for the slice of *labo.Image required for a labo.Project
+// getProjectScreenshots searches the *goquery.Selection for the slice of *labo.Image required for a labo.Project.
 func getProjectScreenshots(s *goquery.Selection, p *Project) {
 	const (
 		CSS string = ".toycon-icon:nth-child(1) > .screenshot"
