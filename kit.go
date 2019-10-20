@@ -156,7 +156,11 @@ func getKitProjects(s *goquery.Selection, k *Kit) {
 	s = s.Find(CSS)
 	ok = (s.Length() > 0)
 	if !ok {
-		return
+		s = s.Find(".project-list:nth-child(1) > .project")
+		ok = (s.Length() > 0)
+		if !ok {
+			return
+		}
 	}
 	k.Projects = newProjects(s)
 }

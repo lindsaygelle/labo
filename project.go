@@ -7,6 +7,8 @@ import (
 )
 
 // Project is a snapshot of a Nintendo Labo Kit project that can be built with the contents of a Nintendo Labo kit.
+//
+// Projects are provided from the Nintendo Labo official website.
 type Project struct {
 	Icon        *Image   `json:"icon"`
 	Image       *Image   `json:"image"`
@@ -49,7 +51,11 @@ func getProjectImage(s *goquery.Selection, p *Project) {
 	s = s.Find(CSS)
 	ok = (s.Length() > 0)
 	if !ok {
-		return
+		s = s.Find(".project__item:nth-child(1) > picture:nth-child(1) > img:nth-child(1)")
+		ok = (s.Length() > 0)
+		if !ok {
+			return
+		}
 	}
 	p.Image = newImage(s)
 }
@@ -60,13 +66,19 @@ func getProjectName(s *goquery.Selection, p *Project) {
 		CSS string = ".toycon-icon:nth-child(1) > p:nth-child(1)"
 	)
 	var (
-		name string
-		ok   bool
+		name      = stringNil
+		ok        bool
+		substring string
 	)
 	s = s.Find(CSS)
 	ok = (s.Length() > 0)
+	if !ok {
+		s = s.Find(".project__name:nth-child(1) > span:nth-child(2)")
+	}
+	substring = strings.TrimSpace(s.Text())
+	ok = (len(substring) > 0)
 	if ok {
-		name = strings.TrimSpace(s.Text())
+		name = substring
 	}
 	p.Name = name
 }
@@ -82,7 +94,7 @@ func getProjectScreenshots(s *goquery.Selection, p *Project) {
 	s = s.Find(CSS)
 	ok = (s.Length() > 0)
 	if !ok {
-		return
+		s = s.Find(".project__img")
 	}
 	p.Screenshots = newImages(s)
 }
