@@ -7,24 +7,31 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-// Href is a hyperlink reference to a Nintendo Labo product resource provided by Nintendo.
+// Href is a snapshot of HTTP reference that contains information about a Nintendo Labo product.
 type Href struct {
 	Link   string   `json:"link"`
 	Target string   `json:"target"`
 	URL    *url.URL `json:"URL"`
 }
 
-// getHrefLink inspects the argument *goquery.Selection and attempts to return the URL provided by the HTML anchor tag.
-func getHrefLink(s *goquery.Selection) string {
+var (
+	hrefFn = [](func(*goquery.Selection, *Href)){
+		getHrefLink,
+		getHrefTarget,
+		getHrefURL}
+)
+
+// getHrefLink searches the *goquery.Selection for the HTML href attribute required for a labo.Href struct.
+func getHrefLink(s *goquery.Selection, h *Href) {
 	var (
 		link string
 	)
 	link, _ = s.Attr(attrHref)
-	return link
+	h.Link = link
 }
 
-// getHrefTarget inspects the argument *goquery.Selection and attempts to return a normalized HTML target attribute.
-func getHrefTarget(s *goquery.Selection) string {
+// getHrefTarget searches the *goquery.Selection for the HTML target attribute required for a labo.Href struct.
+func getHrefTarget(s *goquery.Selection, h *Href) {
 	var (
 		ok     bool
 		t      string
@@ -34,14 +41,11 @@ func getHrefTarget(s *goquery.Selection) string {
 	if ok {
 		target = strings.ToUpper(t)
 	}
-	return target
+	h.Target = target
 }
 
-// getHrefURL inspects the argument *goquery.Selection and attempts to return a new url.URL struct pointer.
-//
-// getHrefURL assumes the argument *goquery.Selection is a valid HTML anchor element and contains
-// a href attribute.
-func getHrefURL(s *goquery.Selection) *url.URL {
+// getHrefURL searches the *goquery.Selection for *url.URL required for a labo.Href struct.
+func getHrefURL(s *goquery.Selection, h *Href) {
 	var (
 		err  error
 		href string
@@ -50,26 +54,21 @@ func getHrefURL(s *goquery.Selection) *url.URL {
 	)
 	href, ok = s.Attr(attrHref)
 	if !ok {
-		return nil
+		return
 	}
 	URL, err = url.Parse(href)
 	ok = (err == nil)
 	if !ok {
-		return nil
+		return
 	}
-	return URL
+	h.URL = URL
 }
 
 // newHref is a constructor function that instantiates a new Href struct pointer.
-//
-// newHref requires the argument *goquery.Selection to be a valid
-// HTML anchor element that contains a reference to an attribute that points
-// to a URL. Should no URL be found no Href struct
-// is returned. Assumes that the calling function will require the return
-// nil struct pointer case.
 func newHref(s *goquery.Selection) *Href {
 	var (
-		ok bool
+		ok   bool
+		href = &Href{}
 	)
 	ok = (s.Length() > 0)
 	if !ok {
@@ -79,8 +78,8 @@ func newHref(s *goquery.Selection) *Href {
 	if !ok {
 		return newHref(s.Find(htmlAnchor))
 	}
-	return &Href{
-		Link:   getHrefLink(s),
-		Target: getHrefTarget(s),
-		URL:    getHrefURL(s)}
+	for _, fn := range hrefFn {
+		fn(s, href)
+	}
+	return href
 }

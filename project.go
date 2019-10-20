@@ -6,6 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Project is a snapshot of a Nintendo Labo Kit project that can be built with the contents of a Nintendo Labo kit.
 type Project struct {
 	Icon        *Image   `json:"icon"`
 	Image       *Image   `json:"image"`
@@ -21,6 +22,7 @@ var (
 		getProjectScreenshots}
 )
 
+// getProjectIcon searches the *goquery.Selection for the *labo.Image required for a labo.Project struct.
 func getProjectIcon(s *goquery.Selection, p *Project) {
 	const (
 		CSS string = ".toycon-icon:nth-child(1) > .icon:nth-child(1) > img:nth-child(1)"
@@ -36,6 +38,7 @@ func getProjectIcon(s *goquery.Selection, p *Project) {
 	p.Icon = newImage(s)
 }
 
+// getProjectIcon searches the *goquery.Selection for the *labo.Image required for a labo.Project struct.
 func getProjectImage(s *goquery.Selection, p *Project) {
 	const (
 		CSS string = ".toycon-image:nth-child(1) > picture:nth-child(1) > img:nth-child(1)"
@@ -51,6 +54,7 @@ func getProjectImage(s *goquery.Selection, p *Project) {
 	p.Image = newImage(s)
 }
 
+// getProjectName searches the *goquery.Selection for the name of the project required for a labo.Project struct.
 func getProjectName(s *goquery.Selection, p *Project) {
 	const (
 		CSS string = ".toycon-icon:nth-child(1) > p:nth-child(1)"
@@ -67,6 +71,7 @@ func getProjectName(s *goquery.Selection, p *Project) {
 	p.Name = name
 }
 
+// getProjectScreenshots searches the *goquery.Selection for the slice of *labo.Image required for a labo.Project struct.
 func getProjectScreenshots(s *goquery.Selection, p *Project) {
 	const (
 		CSS string = ".toycon-icon:nth-child(1) > .screenshot"
@@ -82,6 +87,7 @@ func getProjectScreenshots(s *goquery.Selection, p *Project) {
 	p.Screenshots = newImages(s)
 }
 
+// newProject is a constructor function that instantiates and returns a new *labo.Project.
 func newProject(s *goquery.Selection) *Project {
 	var (
 		p = &Project{}
@@ -92,6 +98,7 @@ func newProject(s *goquery.Selection) *Project {
 	return p
 }
 
+// newProjects is a constructor function that instantiates and returns a new slice of *labo.Project.
 func newProjects(s *goquery.Selection) []*Project {
 	var (
 		ok       bool

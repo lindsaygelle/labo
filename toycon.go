@@ -6,6 +6,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Toycon is a snapshot of a Nintendo Labo Toycon.
+//
+// Toycon's are the cardboard products built from a Nintendo Labo kit. Each Toycon
+// contains a series of features that are unique to the Nintendo Labo Kit.
 type Toycon struct {
 	About       string     `json:"about"`
 	Description string     `json:"description"`
@@ -25,6 +29,7 @@ var (
 		getToyconName}
 )
 
+// getToyconAbout searches the *goquery.Selection for the about string required for a labo.Toycon struct.
 func getToyconAbout(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".toy-con-sub-header p"
@@ -46,6 +51,7 @@ func getToyconAbout(s *goquery.Selection, t *Toycon) {
 	t.About = substring
 }
 
+// getToyconDescription searches the *goquery.Selection for the description required for a labo.Toycon struct.
 func getToyconDescription(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".right-column .toy-con-info .copy p"
@@ -67,6 +73,7 @@ func getToyconDescription(s *goquery.Selection, t *Toycon) {
 	t.Description = substring
 }
 
+// getToyconFeatures searches the *goquery.Selection for the *labo.Feature slice required for a labo.Toycon struct.
 func getToyconFeatures(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".left-column .toy-con-slider"
@@ -82,6 +89,7 @@ func getToyconFeatures(s *goquery.Selection, t *Toycon) {
 	t.Features = newFeatures(s)
 }
 
+// getToyconIcon searches the *goquery.Selection for the icon *labo.Image struct required for a labo.Toycon struct.
 func getToyconIcon(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".right-column .toy-con-info .icon > img:nth-child(1)"
@@ -97,6 +105,7 @@ func getToyconIcon(s *goquery.Selection, t *Toycon) {
 	t.Icon = newImage(s)
 }
 
+// getToyconImage searches the *goquery.Selection for the *labo.Image struct required for a labo.Toycon struct.
 func getToyconImage(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".right-column .main-image picture:nth-child(1) > img:nth-child(1)"
@@ -112,6 +121,7 @@ func getToyconImage(s *goquery.Selection, t *Toycon) {
 	t.Image = newImage(s)
 }
 
+// getToyconName searches the *goquery.Selection for the name of the Toycon required for a labo.Toycon struct.
 func getToyconName(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".toy-con-header h3"
@@ -133,6 +143,7 @@ func getToyconName(s *goquery.Selection, t *Toycon) {
 	t.Name = substring
 }
 
+// newToycon is a constructor function that instantiates and returns a new *labo.Toycon.
 func newToycon(s *goquery.Selection) *Toycon {
 	var (
 		t = &Toycon{}
@@ -143,6 +154,7 @@ func newToycon(s *goquery.Selection) *Toycon {
 	return t
 }
 
+// newToycons is a constructor function that instantiates and returns a new slice of *labo.Toycon.
 func newToycons(s *goquery.Selection) []*Toycon {
 	var (
 		toycon  *Toycon
