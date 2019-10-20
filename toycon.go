@@ -29,7 +29,7 @@ var (
 		getToyconName}
 )
 
-// getToyconAbout searches the *goquery.Selection for the about string required for a labo.Toycon
+// getToyconAbout searches the *goquery.Selection for the about string required for a labo.Toycon.
 func getToyconAbout(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".toy-con-sub-header p"
@@ -51,7 +51,7 @@ func getToyconAbout(s *goquery.Selection, t *Toycon) {
 	t.About = substring
 }
 
-// getToyconDescription searches the *goquery.Selection for the description required for a labo.Toycon
+// getToyconDescription searches the *goquery.Selection for the description required for a labo.Toycon.
 func getToyconDescription(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".right-column .toy-con-info .copy p"
@@ -73,7 +73,7 @@ func getToyconDescription(s *goquery.Selection, t *Toycon) {
 	t.Description = substring
 }
 
-// getToyconFeatures searches the *goquery.Selection for the *labo.Feature slice required for a labo.Toycon
+// getToyconFeatures searches the *goquery.Selection for the *labo.Feature slice required for a labo.Toycon.
 func getToyconFeatures(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".left-column .toy-con-slider"
@@ -89,7 +89,7 @@ func getToyconFeatures(s *goquery.Selection, t *Toycon) {
 	t.Features = newFeatures(s)
 }
 
-// getToyconIcon searches the *goquery.Selection for the icon *labo.Image struct required for a labo.Toycon
+// getToyconIcon searches the *goquery.Selection for the icon *labo.Image struct required for a labo.Toycon.
 func getToyconIcon(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".right-column .toy-con-info .icon > img:nth-child(1)"
@@ -105,7 +105,7 @@ func getToyconIcon(s *goquery.Selection, t *Toycon) {
 	t.Icon = newImage(s)
 }
 
-// getToyconImage searches the *goquery.Selection for the *labo.Image struct required for a labo.Toycon
+// getToyconImage searches the *goquery.Selection for the *labo.Image struct required for a labo.Toycon.
 func getToyconImage(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".right-column .main-image picture:nth-child(1) > img:nth-child(1)"
@@ -121,7 +121,7 @@ func getToyconImage(s *goquery.Selection, t *Toycon) {
 	t.Image = newImage(s)
 }
 
-// getToyconName searches the *goquery.Selection for the name of the Toycon required for a labo.Toycon
+// getToyconName searches the *goquery.Selection for the name of the Toycon required for a labo.Toycon.
 func getToyconName(s *goquery.Selection, t *Toycon) {
 	const (
 		CSS string = ".toy-con-header h3"
