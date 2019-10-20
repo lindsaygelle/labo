@@ -6,12 +6,14 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Feature is a snapshot of a unique Nintendo Labo kit mechanic provided by a Nintendo Labo Toycon.
 type Feature struct {
 	Description string `json:"description"`
 	Icon        *Image `json:"icon"`
 	Name        string `json:"name"`
 }
 
+// getFeatureDescription searches the *goquery.Selection for the description required for a labo.Feature struct.
 func getFeatureDescription(s *goquery.Selection, f *Feature) {
 	const (
 		CSS string = ".copy > p"
@@ -30,6 +32,7 @@ func getFeatureDescription(s *goquery.Selection, f *Feature) {
 	f.Description = description
 }
 
+// getFeatureIcon searches the *goquery.Selection for the *labo.Image required for a labo.Feature struct.
 func getFeatureIcon(s *goquery.Selection, f *Feature) {
 	const (
 		CSS string = "picture:nth-child(1) > img:nth-child(1)"
@@ -45,6 +48,7 @@ func getFeatureIcon(s *goquery.Selection, f *Feature) {
 	f.Icon = newImage(s)
 }
 
+// getFeatureName searches the *goquery.Selection for the name required for a labo.Feature struct.
 func getFeatureName(s *goquery.Selection, f *Feature) {
 	const (
 		CSS string = ".header:nth-child(1) > span:nth-child(1)"
@@ -63,6 +67,8 @@ func getFeatureName(s *goquery.Selection, f *Feature) {
 	f.Name = name
 }
 
+// getFeatureSelectionA searches the *goquery.Selection for the HTML content
+// needed to get the Nintendo Labo feature icons.
 func getFeatureSelectionA(s *goquery.Selection) *goquery.Selection {
 	const (
 		CSS string = ".slider-pagination:nth-child(1) > li"
@@ -78,6 +84,8 @@ func getFeatureSelectionA(s *goquery.Selection) *goquery.Selection {
 	return s
 }
 
+// getFeatureSelectionB searches the *goquery.Selection for the HTML content
+// needed to get the Nintendo Labo feature main body.
 func getFeatureSelectionB(s *goquery.Selection) *goquery.Selection {
 	const (
 		CSS string = ".slider-content > div"
@@ -93,6 +101,8 @@ func getFeatureSelectionB(s *goquery.Selection) *goquery.Selection {
 	return s
 }
 
+// getFeatureSelectionC searches the *goquery.Selection for the HTML content
+// needed to get the Nintendo Labo feature name and description.
 func getFeatureSelectionC(s *goquery.Selection) *goquery.Selection {
 	const (
 		CSS string = ".caption-content > div"
@@ -108,6 +118,11 @@ func getFeatureSelectionC(s *goquery.Selection) *goquery.Selection {
 	return s
 }
 
+// newFeature is a constructor function that instantiates and returns a new Feature struct pointer from
+// the Nintendo Labo official website.
+//
+// newFeature requires a collection of specific HTML fragments that make up the entire contents
+// of a Nintendo Labo Toycon feature. These are built from the getFeatureSelection lookups.
 func newFeature(a, b, c *goquery.Selection) *Feature {
 	var (
 		feature = &Feature{}
@@ -119,6 +134,7 @@ func newFeature(a, b, c *goquery.Selection) *Feature {
 	return feature
 }
 
+// newFeatures is a constructor function that instantiates and returns a slice of Feature struct pointers.
 func newFeatures(s *goquery.Selection) []*Feature {
 	var (
 		a  = getFeatureSelectionA(s)
