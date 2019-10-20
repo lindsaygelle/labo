@@ -9,5 +9,17 @@ import (
 
 func Test(t *testing.T) {
 
-	fmt.Println(labo.GetAll(labo.LaboID))
+	for _, l := range labo.GetAll(labo.KitsID) {
+
+		k := labo.GetKit(l)
+
+		fmt.Println(string(labo.Marshal(l)))
+
+		fmt.Println(string(labo.MarshalKit(k)))
+
+		fmt.Println("-")
+		fmt.Println("")
+		fmt.Println("")
+	}
+
 }

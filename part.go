@@ -187,6 +187,7 @@ func newPart(s *goquery.Selection) *Part {
 		Spares: getPartSpares(substring)}
 }
 
+// newParts is a consturctor function that instantiates and returns a new Part slice.
 func newParts(s *goquery.Selection) []*Part {
 	var (
 		part  *Part

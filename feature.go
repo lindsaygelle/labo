@@ -7,13 +7,21 @@ import (
 )
 
 // Feature is a snapshot of a unique Nintendo Labo kit mechanic provided by a Nintendo Labo Toycon.
+//
+// Features are provided from the official Nintendo Labo website.
 type Feature struct {
 	Description string `json:"description"`
 	Icon        *Image `json:"icon"`
 	Name        string `json:"name"`
 }
 
-// getFeatureDescription searches the *goquery.Selection for the description required for a labo.Feature struct.
+// getFeatureDescription searches the *goquery.Selection for the description required for a labo.Feature.
+//
+// Description is a short overview about the Nintendo Labo Toycon integration and the
+// gameplay mechanics it offers. The description is provided from the official Nintendo Labo website.
+//
+// getFeatureDescription assigns a default description placeholder string if a description substring
+// cannot be found.
 func getFeatureDescription(s *goquery.Selection, f *Feature) {
 	const (
 		CSS string = ".copy > p"
@@ -32,7 +40,12 @@ func getFeatureDescription(s *goquery.Selection, f *Feature) {
 	f.Description = description
 }
 
-// getFeatureIcon searches the *goquery.Selection for the *labo.Image required for a labo.Feature struct.
+// getFeatureIcon searches the *goquery.Selection for the *labo.Image required for a labo.Feature.
+//
+// Image is a HTML img reference that is provided from the official Nintendo Labo website. Icons
+// are generally SVG image files.
+//
+// getFeatureIcon does not assign an empty *labo.Image should no HTML img tag can be found.
 func getFeatureIcon(s *goquery.Selection, f *Feature) {
 	const (
 		CSS string = "picture:nth-child(1) > img:nth-child(1)"
@@ -48,7 +61,13 @@ func getFeatureIcon(s *goquery.Selection, f *Feature) {
 	f.Icon = newImage(s)
 }
 
-// getFeatureName searches the *goquery.Selection for the name required for a labo.Feature struct.
+// getFeatureName searches the *goquery.Selection for the name required for a labo.Feature.
+//
+// Name is the namespace of the Nintendo Labo Toycon feature. Name may be a shorthand caption
+// that gives a broad summary of the feature but not as verbose as the description.
+//
+// getFeatureName assigns a default name placeholder string if a name substring
+// cannot be found.
 func getFeatureName(s *goquery.Selection, f *Feature) {
 	const (
 		CSS string = ".header:nth-child(1) > span:nth-child(1)"

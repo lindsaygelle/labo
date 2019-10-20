@@ -9,19 +9,38 @@ import (
 
 // Href is a snapshot of HTTP reference that contains information about a Nintendo Labo product.
 type Href struct {
-	Link   string   `json:"link"`
-	Target string   `json:"target"`
-	URL    *url.URL `json:"URL"`
+	IsRelative bool     `json:"is_relative"`
+	Link       string   `json:"link"`
+	Target     string   `json:"target"`
+	URL        *url.URL `json:"URL"`
 }
 
 var (
 	hrefFn = [](func(*goquery.Selection, *Href)){
+		getHrefIsRelative,
 		getHrefLink,
 		getHrefTarget,
 		getHrefURL}
 )
 
-// getHrefLink searches the *goquery.Selection for the HTML href attribute required for a labo.Href struct.
+// getHrefIsRelative searches the *goquery.Selection for the bool required for a labo.Href.
+//
+// IsRelative indicates whether the Href.Link property contains a relative URL and requires processing.
+func getHrefIsRelative(s *goquery.Selection, h *Href) {
+	var (
+		href       string
+		isRelative bool
+	)
+	href, _ = s.Attr(attrHref)
+	isRelative = ((len(href) > 0) && strings.HasPrefix(href, stringPeriod))
+	h.IsRelative = isRelative
+}
+
+// getHrefLink searches the *goquery.Selection for the HTML href attribute required for a labo.Href.
+//
+// Link is the HTTP GET URL that is provided by the HTML anchor tag href element.
+//
+// getHrefLink does not assign a default link string if a href attribut cannot be found.
 func getHrefLink(s *goquery.Selection, h *Href) {
 	var (
 		link string
@@ -30,7 +49,7 @@ func getHrefLink(s *goquery.Selection, h *Href) {
 	h.Link = link
 }
 
-// getHrefTarget searches the *goquery.Selection for the HTML target attribute required for a labo.Href struct.
+// getHrefTarget searches the *goquery.Selection for the HTML target attribute required for a labo.Href.
 func getHrefTarget(s *goquery.Selection, h *Href) {
 	var (
 		ok     bool
@@ -44,7 +63,7 @@ func getHrefTarget(s *goquery.Selection, h *Href) {
 	h.Target = target
 }
 
-// getHrefURL searches the *goquery.Selection for *url.URL required for a labo.Href struct.
+// getHrefURL searches the *goquery.Selection for *url.URL required for a labo.Href.
 func getHrefURL(s *goquery.Selection, h *Href) {
 	var (
 		err  error
