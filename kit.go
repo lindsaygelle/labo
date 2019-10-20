@@ -13,9 +13,9 @@ import (
 
 // Kit is a Nintendo Labo Kit. Kit structs are built from the Nintendo Labo official website.
 //
-// Kits contain extended information not found on the Nintendo Labo store and may contain
+// Kits contain extended information not found on the Nintendo Labo store and may have
 // varying levels of detail depending on the type of page scraped and the category of
-// the Nintendo Labo Kit. Non VR kits will not contain the corresponding VR
+// the Nintendo Labo kit. Non VR kits will not contain the corresponding VR
 // information.
 type Kit struct {
 	Category    string       `json:"category"`
@@ -25,6 +25,7 @@ type Kit struct {
 	IsVR        bool         `json:"is_VR"`
 	KitImage    *Image       `json:"kit_image"`
 	Language    language.Tag `json:"language"`
+	Price       float32      `json:"price"`
 	Projects    []*Project   `json:"projects"`
 	Retailers   []*Retailer  `json:"retailers"`
 	SoftwareBox *Image       `json:"software_box"`
@@ -71,6 +72,7 @@ func GetKit(l *Labo) *Kit {
 	k.ID = l.ID
 	k.IsVR = strings.Contains(l.Name, "vr")
 	k.Language = l.Language
+	k.Price = l.Price
 	ok = (l.Ref != "NIL")
 	if !ok {
 		return k
@@ -111,9 +113,7 @@ func MarshalKit(k *Kit) (b []byte) {
 	return b
 }
 
-// getKitBoxImage searches the argument goquery.Selection pointer
-// for the Nintendo Labo Kit product box image and assign it to
-// the argument labo.Kit pointer if found.
+// getKitBoxImage searches the *goquery.Selection for the *labo.Image required for a labo.Kit.
 func getKitBoxImage(s *goquery.Selection, k *Kit) {
 	const (
 		CSS string = ".product-hero .hero-content .kit.column .packshot picture img"
@@ -129,9 +129,7 @@ func getKitBoxImage(s *goquery.Selection, k *Kit) {
 	k.BoxImage = newImage(s)
 }
 
-// getKitImage searches the argument goquery.Selection pointer
-// for the Nintendo Labo Kit image and assign it to
-// the argument labo.Kit pointer if found.
+// getKitImage searches the *goquery.Selection for the *labo.Image required for a labo.Kit.
 func getKitImage(s *goquery.Selection, k *Kit) {
 	const (
 		CSS string = ".kit-contents > picture:nth-child(1) > img:nth-child(1)"
@@ -147,9 +145,7 @@ func getKitImage(s *goquery.Selection, k *Kit) {
 	k.KitImage = newImage(s)
 }
 
-// getKitProjects searches the argument *goquery.Selection
-// for the Nintendo Labo Kit project information hosted by the Nintendo Labo
-// official website.
+// getKitProjects searches the *goquery.Selection for the *labo.Project slice required for a labo.Kit.
 func getKitProjects(s *goquery.Selection, k *Kit) {
 	const (
 		CSS string = ".main-toycon:nth-child(1) > .toycon-tag"
@@ -165,9 +161,7 @@ func getKitProjects(s *goquery.Selection, k *Kit) {
 	k.Projects = newProjects(s)
 }
 
-// getKitToycons searches the argument *goquery.Selection
-// for the Nintendo Labo Kit Toycon information hosted by the Nintendo Labo
-// official website.
+// getKitToycons searches the *goquery.Selection for the *labo.Toycon slice required for a labo.Kit.
 func getKitToycons(s *goquery.Selection, k *Kit) {
 	const (
 		CSS string = ".toy-con-area .toy-con"
@@ -183,9 +177,7 @@ func getKitToycons(s *goquery.Selection, k *Kit) {
 	k.Toycons = newToycons(s)
 }
 
-// getKitRetailers searches the argument *goquery.Selection
-// for the Nintendo Labo Kit retailers hosted by the Nintendo Labo
-// official website.
+// getKitRetailers searches the *goquery.Selection for the *labo.Retailer slice required for a labo.Kit.
 func getKitRetailers(s *goquery.Selection, k *Kit) {
 	const (
 		CSS string = ".retailers > ul:nth-child(1) li"
@@ -201,6 +193,7 @@ func getKitRetailers(s *goquery.Selection, k *Kit) {
 	k.Retailers = newRetailers(s)
 }
 
+// getKitSoftwareBox searches the *goquery.Selection for the *labo.Image required for a labo.Kit.
 func getKitSoftwareBox(s *goquery.Selection, k *Kit) {
 	const (
 		CSS string = ".content:nth-child(2) > div:nth-child(1) > picture:nth-child(1) > img:nth-child(1)"

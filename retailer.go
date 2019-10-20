@@ -20,17 +20,17 @@ var (
 		getRetailerName}
 )
 
-// getRetailerHref searches the *goquery.Selection for the *labo.Href required for a labo.Toycon struct.
+// getRetailerHref searches the *goquery.Selection for the *labo.Href required for a labo.Toycon
 func getRetailerHref(s *goquery.Selection, r *Retailer) {
 	r.Href = newHref(s)
 }
 
-// getRetailerImage searches the *goquery.Selection for the *labo.Image struct required for a labo.Retailer struct.
+// getRetailerImage searches the *goquery.Selection for the *labo.Image struct required for a labo.Retailer
 func getRetailerImage(s *goquery.Selection, r *Retailer) {
 	r.Image = newImage(s)
 }
 
-// getRetailerName searches the *goquery.Selection for the name of the retailer required for a labo.Retailer struct.
+// getRetailerName searches the *goquery.Selection for the name of the retailer required for a labo.Retailer
 func getRetailerName(s *goquery.Selection, r *Retailer) {
 	var (
 		name      = defaultRetailerName

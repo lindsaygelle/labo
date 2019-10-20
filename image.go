@@ -23,7 +23,7 @@ var (
 		getImageVariants}
 )
 
-// getImageAlt searches the *goquery.Selection for the alt attribute required for a labo.Image struct.
+// getImageAlt searches the *goquery.Selection for the alt attribute required for a labo.Image
 func getImageAlt(s *goquery.Selection, i *Image) {
 	var (
 		alt = defaultAttrAlt
@@ -36,7 +36,7 @@ func getImageAlt(s *goquery.Selection, i *Image) {
 	i.Alt = alt
 }
 
-// getImageLink searches the *goquery.Selection for the link resource required for a labo.Image struct.
+// getImageLink searches the *goquery.Selection for the link resource required for a labo.Image
 func getImageLink(s *goquery.Selection, i *Image) {
 	var (
 		link string
@@ -54,7 +54,7 @@ func getImageLink(s *goquery.Selection, i *Image) {
 	i.Link = link
 }
 
-// getImageURL searches the *goquery.Selection for the *url.URL required for a labo.Image struct.
+// getImageURL searches the *goquery.Selection for the *url.URL required for a labo.Image
 func getImageURL(s *goquery.Selection, i *Image) {
 	var (
 		err     error
@@ -72,7 +72,7 @@ func getImageURL(s *goquery.Selection, i *Image) {
 
 func getImageVariants(s *goquery.Selection, i *Image) {}
 
-// newImage is a constructor function that instantiates a new Image struct pointer.
+// newImage is a constructor function that instantiates a new labo.Image struct pointer.
 func newImage(s *goquery.Selection) *Image {
 	var (
 		ok    bool

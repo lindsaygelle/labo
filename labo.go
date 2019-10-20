@@ -20,36 +20,36 @@ import (
 // Nintendo Labo products are provided by the Nintendo store website and contain only surface
 // level data about the Nintendo Labo product.
 type Labo struct {
-	Category         string        `json:"category"`
-	CategoryID       string        `json:"category_ID"`
-	Currency         currency.Unit `json:"currency"`
-	ID               int           `json:"ID"`
-	Language         language.Tag  `json:"language"`
-	Name             string        `json:"name"`
-	Parts            []*Part       `json:"parts"`
-	Price            float32       `json:"price"`
-	ProductID        string        `json:"product_ID"`
-	Ref              string        `json:"ref"`
-	Status           string        `json:"http_status"`
-	StatusCode       int           `json:"http_status_code"`
-	StoreDescription string        `json:"store_description"`
-	StoreImages      []*Image      `json:"store_images"`
-	StoreTitle       string        `json:"store_title"`
-	Time             time.Time     `json:"time"`
-	URL              *url.URL      `json:"URL"`
+	Category    string        `json:"category"`
+	CategoryID  string        `json:"category_ID"`
+	Currency    currency.Unit `json:"currency"`
+	Description string        `json:"description"`
+	ID          int           `json:"ID"`
+	Images      []*Image      `json:"images"`
+	Language    language.Tag  `json:"language"`
+	Name        string        `json:"name"`
+	Parts       []*Part       `json:"parts"`
+	Price       float32       `json:"price"`
+	ProductID   string        `json:"product_ID"`
+	Ref         string        `json:"ref"`
+	Status      string        `json:"http_status"`
+	StatusCode  int           `json:"http_status_code"`
+	Time        time.Time     `json:"time"`
+	Title       string        `json:"title"`
+	URL         *url.URL      `json:"URL"`
 }
 
 var (
 	// laboFn are the required functions used to collect all required data points for a Nintendo Labo product
 	// from the Nintendo store.
 	laboFn = [](func(s *goquery.Selection, l *Labo)){
-		getLaboStorePageDescription,
-		getLaboStorePageImages,
-		getLaboStorePageName,
-		getLaboStorePageParts,
-		getLaboStorePagePrice,
-		getLaboStorePageRef,
-		getLaboStorePageTitle}
+		getLaboDescription,
+		getLaboImages,
+		getLaboName,
+		getLaboParts,
+		getLaboPrice,
+		getLaboRef,
+		getLaboTitle}
 )
 
 // Get gets a specific Nintendo Labo product by the Nintendo stores product ID.
@@ -178,22 +178,10 @@ func Marshal(l *Labo) (b []byte) {
 	return b
 }
 
-// newLabo is a constructor function that take an argument goquery.Selection pointer
-// and runs a collection of helper functions to extract and assign all the
-// required properties for the pending labo.Labo pointer. Should any of the
-// helper functions fail to find the required property, the default property is not
-// overriden.
-func newLabo(s *goquery.Selection, l *Labo) *Labo {
-	for _, fn := range laboFn {
-		fn(s, l)
-	}
-	return l
-}
-
-// getLaboStorePageDescription searches the argument goquery.Selection pointer
+// getLaboDescription searches the argument goquery.Selection pointer
 // for the Nintendo Labo product description and assigns it to
 // the argument labo.Labo pointer if found..
-func getLaboStorePageDescription(s *goquery.Selection, l *Labo) {
+func getLaboDescription(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #prodDescBtm p:nth-child(2)"
 	)
@@ -211,13 +199,13 @@ func getLaboStorePageDescription(s *goquery.Selection, l *Labo) {
 	if !ok {
 		return
 	}
-	l.StoreDescription = substring
+	l.Description = substring
 }
 
-// getLaboStorePageID searches the argument goquery.Selection pointer
+// getLaboPageID searches the argument goquery.Selection pointer
 // for the Nintendo Labo product numerical ID and assigns it to
 // the argument labo.Labo pointer if found.
-func getLaboStorePageID(s *goquery.Selection, l *Labo) {
+func getLaboPageID(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content .results-header"
 	)
@@ -250,10 +238,10 @@ func getLaboStorePageID(s *goquery.Selection, l *Labo) {
 	l.ID = ID
 }
 
-// getLaboStorePageImages searches the argument goquery.Selection pointer
+// getLaboImages searches the argument goquery.Selection pointer
 // for the Nintendo Labo product images and assigns them to
 // the argument labo.Labo pointer if found.
-func getLaboStorePageImages(s *goquery.Selection, l *Labo) {
+func getLaboImages(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #product-thumbs img"
 	)
@@ -265,13 +253,13 @@ func getLaboStorePageImages(s *goquery.Selection, l *Labo) {
 	if !ok {
 		return
 	}
-	l.StoreImages = newImages(s)
+	l.Images = newImages(s)
 }
 
-// getLaboStorePageName searches the argument goquery.Selection pointer
+// getLaboName searches the argument goquery.Selection pointer
 // for the Nintendo Labo product name and assigns the unformatted string to
 // the argument labo.Labo pointer if found.
-func getLaboStorePageName(s *goquery.Selection, l *Labo) {
+func getLaboName(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content .results-header"
 	)
@@ -292,11 +280,11 @@ func getLaboStorePageName(s *goquery.Selection, l *Labo) {
 	l.Name = substring
 }
 
-// getLaboStorePageParts searches the argument goquery.Selection pointer
+// getLaboParts searches the argument goquery.Selection pointer
 // for the Nintendo Labo product parts and components used to build
 // the Nintendo Labo product and assigns them to
 // the argument labo.Labo pointer if they are found.
-func getLaboStorePageParts(s *goquery.Selection, l *Labo) {
+func getLaboParts(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #prodDescBtm ul li"
 	)
@@ -311,10 +299,10 @@ func getLaboStorePageParts(s *goquery.Selection, l *Labo) {
 	l.Parts = newParts(s)
 }
 
-// getLaboStorePagePrice searches the argument goquery.Selection pointer
+// getLaboPrice searches the argument goquery.Selection pointer
 // for the Nintendo Labo product price and assigns the floating point value to
 // the argument labo.Labo pointer if found.
-func getLaboStorePagePrice(s *goquery.Selection, l *Labo) {
+func getLaboPrice(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #addToCart > p .txt-bold"
 	)
@@ -347,10 +335,10 @@ func getLaboStorePagePrice(s *goquery.Selection, l *Labo) {
 	l.Price = float32(price)
 }
 
-// getLaboStorePageRef searches the argument goquery.Selection pointer
+// getLaboRef searches the argument goquery.Selection pointer
 // for the Nintendo Labo product name alias (used to search the offical Labo site)
 // and assigns the formatted string to the argument labo.Labo pointer if found.
-func getLaboStorePageRef(s *goquery.Selection, l *Labo) {
+func getLaboRef(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content .results-header"
 	)
@@ -404,10 +392,10 @@ func getLaboStorePageRef(s *goquery.Selection, l *Labo) {
 	l.Ref = substring
 }
 
-// getLaboStorePageTitle searches the argument goquery.Selection pointer
+// getLaboTitle searches the argument goquery.Selection pointer
 // for the Nintendo Labo product headline and assigns the unformatted string to
 // the argument labo.Labo pointer if found.
-func getLaboStorePageTitle(s *goquery.Selection, l *Labo) {
+func getLaboTitle(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content #prodDescBtm p:nth-child(1)"
 	)
@@ -425,5 +413,17 @@ func getLaboStorePageTitle(s *goquery.Selection, l *Labo) {
 	if !ok {
 		return
 	}
-	l.StoreTitle = substring
+	l.Title = substring
+}
+
+// newLabo is a constructor function that take an argument goquery.Selection pointer
+// and runs a collection of helper functions to extract and assign all the
+// required properties for the pending labo.Labo pointer. Should any of the
+// helper functions fail to find the required property, the default property is not
+// overriden.
+func newLabo(s *goquery.Selection, l *Labo) *Labo {
+	for _, fn := range laboFn {
+		fn(s, l)
+	}
+	return l
 }

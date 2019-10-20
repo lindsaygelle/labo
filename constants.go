@@ -5,6 +5,7 @@ const (
 	stringEmpty      string = ""
 	stringMinus      string = "-"
 	stringNil        string = "NIL"
+	stringPeriod     string = "."
 	stringPlus       string = "+"
 	stringWhitespace string = " "
 )

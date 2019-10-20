@@ -1,1 +1,3 @@
 # Nintendo Labo
+
+Labo is a fan project that fetches and wrangles information about the Nintendo Labo product suite. Package draws upon the Nintendo official store and Labo official website to built out the package contents. Functions are built to try collect the contextual information for each Nintendo Labo product. Nintendo Labo information is presented at two levels of detail. A `labo.Labo` struct contains the common fields for a Nintendo Labo product that is sold on the Nintendo store. The second is the `labo.Kit` which contains the unique information found on the official website. 
