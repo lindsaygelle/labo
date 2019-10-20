@@ -72,7 +72,7 @@ func getImageURL(s *goquery.Selection, i *Image) {
 
 func getImageVariants(s *goquery.Selection, i *Image) {}
 
-// newImage is a constructor function that instantiates a new Image struct pointer.
+// newImage is a constructor function that instantiates a new labo.Image struct pointer.
 func newImage(s *goquery.Selection) *Image {
 	var (
 		ok    bool

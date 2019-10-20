@@ -50,6 +50,11 @@ func getHrefLink(s *goquery.Selection, h *Href) {
 }
 
 // getHrefTarget searches the *goquery.Selection for the HTML target attribute required for a labo.Href.
+//
+// Target is the opening context the HTML anchor tag is associated to the page.
+//
+// getHrefTarget assigns a default target placeholder string if a taget HTML attribute
+// cannot be found.
 func getHrefTarget(s *goquery.Selection, h *Href) {
 	var (
 		ok     bool
@@ -83,7 +88,7 @@ func getHrefURL(s *goquery.Selection, h *Href) {
 	h.URL = URL
 }
 
-// newHref is a constructor function that instantiates a new Href struct pointer.
+// newHref is a constructor function that instantiates a new labo.Href struct pointer.
 func newHref(s *goquery.Selection) *Href {
 	var (
 		ok   bool
