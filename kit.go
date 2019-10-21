@@ -23,6 +23,7 @@ type Kit struct {
 	BoxImage    *Image       `json:"box_image"`
 	ID          int          `json:"ID"`
 	IsVR        bool         `json:"is_VR"`
+	Games       []*Game      `json:"games"`
 	KitImage    *Image       `json:"kit_image"`
 	Language    language.Tag `json:"language"`
 	Price       float32      `json:"price"`
@@ -38,6 +39,7 @@ type Kit struct {
 var (
 	kitFn = [](func(s *goquery.Selection, k *Kit)){
 		getKitBoxImage,
+		getKitGames,
 		getKitImage,
 		getKitProjects,
 		getKitRetailers,
@@ -127,6 +129,21 @@ func getKitBoxImage(s *goquery.Selection, k *Kit) {
 		return
 	}
 	k.BoxImage = newImage(s)
+}
+
+func getKitGames(s *goquery.Selection, k *Kit) {
+	const (
+		CSS string = ".compatible-games__listing .compatible-games__item"
+	)
+	var (
+		ok bool
+	)
+	s = s.Find(CSS)
+	ok = (s.Length() > 0)
+	if !ok {
+		return
+	}
+	k.Games = newGames(s)
 }
 
 // getKitImage searches the *goquery.Selection for the *labo.Image required for a labo.Kit.
