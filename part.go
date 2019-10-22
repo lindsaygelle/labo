@@ -108,7 +108,6 @@ func getPartName(s string) string {
 	}
 	s = regexpMatchMultipleSpaces.ReplaceAllString(s, stringWhitespace)
 	s = regexp.MustCompile(`(?i)(\sx\s$)`).ReplaceAllString(s, stringEmpty)
-	s = strings.ToUpper(s)
 	s = strings.TrimSpace(s)
 	return s
 }

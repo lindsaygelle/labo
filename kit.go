@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -33,7 +32,7 @@ type Kit struct {
 	Status      string       `json:"status"`
 	StatusCode  int          `json:"status_code"`
 	Toycons     []*Toycon    `json:"toycons"`
-	URL         *url.URL     `json:"URL"`
+	URL         *URL         `json:"URL"`
 }
 
 var (
@@ -91,7 +90,7 @@ func GetKit(l *Labo) *Kit {
 	}
 	k.Status = res.Status
 	k.StatusCode = res.StatusCode
-	k.URL = req.URL
+	k.URL = newURL(req.URL)
 	ok = (res.StatusCode == http.StatusOK)
 	if !ok {
 		return k

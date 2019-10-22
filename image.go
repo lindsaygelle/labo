@@ -11,7 +11,7 @@ import (
 type Image struct {
 	Alt      string   `json:"alt"`
 	Link     string   `json:"link"`
-	URL      *url.URL `json:"URL"`
+	URL      *URL     `json:"URL"`
 	Variants []*Image `json:"variants"`
 }
 
@@ -67,7 +67,7 @@ func getImageURL(s *goquery.Selection, i *Image) {
 	if !ok {
 		return
 	}
-	i.URL = URL
+	i.URL = newURL(URL)
 }
 
 func getImageVariants(s *goquery.Selection, i *Image) {}
