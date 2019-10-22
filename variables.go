@@ -76,6 +76,20 @@ var (
 )
 
 var (
+	categoryMap = map[string]string{
+		KitsID:  categoryKit,
+		LaboID:  categoryLabo,
+		PartsID: categoryParts}
+)
+
+var (
+	categoryIDMap = map[string]string{
+		categoryKit:   KitsID,
+		categoryLabo:  LaboID,
+		categoryParts: PartsID}
+)
+
+var (
 	// partAmountMap is the lookup used to return the correct numeric value for a string number expression.
 	partAmountMap = map[string]int{
 		partAmountOne:      1,
@@ -96,26 +110,26 @@ var (
 var (
 	// partColorMap is the lookup used to return the correct Nintendo Labo part color value for a string.
 	partColorMap = map[string]string{
-		partColorBlue:   strings.ToUpper(partColorBlue),
-		partColorGray:   strings.ToUpper(partColorGray),
-		partColorOrange: strings.ToUpper(partColorOrange),
-		partColorRed:    strings.ToUpper(partColorRed),
-		partColorYellow: strings.ToUpper(partColorYellow)}
+		partColorBlue:   (partColorBlue),
+		partColorGray:   (partColorGray),
+		partColorOrange: (partColorOrange),
+		partColorRed:    (partColorRed),
+		partColorYellow: (partColorYellow)}
 )
 
 var (
 	// partGenderMap is the lookup used to return the correct Nintendo Labo part gender value for a string.
 	partGenderMap = map[string]string{
-		partGenderFemale: strings.ToUpper(partGenderFemale),
-		partGenderMail:   strings.ToUpper(partGenderMale),
-		partGenderMale:   strings.ToUpper(partGenderMale)}
+		partGenderFemale: (partGenderFemale),
+		partGenderMail:   (partGenderMale),
+		partGenderMale:   (partGenderMale)}
 )
 
 var (
 	// partShapeMap is the lookup used to return the correct Nintendo Labo part shape value for a string.
 	partShapeMap = map[string]string{
-		partShapeOctagonal: strings.ToUpper(partShapeOctagonal),
-		partShapeSquare:    strings.ToUpper(partShapeSquare)}
+		partShapeOctagonal: (partShapeOctagonal),
+		partShapeSquare:    (partShapeSquare)}
 )
 
 var (
