@@ -9,10 +9,10 @@ import (
 
 // Href is a snapshot of HTTP reference that contains information about a Nintendo Labo product.
 type Href struct {
-	IsRelative bool     `json:"is_relative"`
-	Link       string   `json:"link"`
-	Target     string   `json:"target"`
-	URL        *url.URL `json:"URL"`
+	IsRelative bool   `json:"is_relative"`
+	Link       string `json:"link"`
+	Target     string `json:"target"`
+	URL        *URL   `json:"URL"`
 }
 
 var (
@@ -85,7 +85,7 @@ func getHrefURL(s *goquery.Selection, h *Href) {
 	if !ok {
 		return
 	}
-	h.URL = URL
+	h.URL = newURL(URL)
 }
 
 // newHref is a constructor function that instantiates a new labo.Href struct pointer.
