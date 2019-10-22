@@ -34,6 +34,12 @@ const (
 )
 
 const (
+	categoryKit   string = "kit"
+	categoryLabo  string = "labo"
+	categoryParts string = "parts"
+)
+
+const (
 	// defaultAttrAlt is the default namespace for HTML alt attributes.
 	defaultAttrAlt string = stringNil
 	// defaultAttrTarget is the default namespace for HTML target attributes.
@@ -62,11 +68,11 @@ const (
 	// defaultPartColor is the default color namespace for Nintendo Labo parts.
 	defaultPartColor string = stringNil
 	// defaultPartGender is the default gender namespace for Nintendo Labo parts.
-	defaultPartGender string = "NEUTRAL"
+	defaultPartGender string = "neutral"
 	// defaultPartShape is the default shape namespace for Nintendo Labo parts.
 	defaultPartShape string = stringNil
 	// defaultPartSize is the default size namespace for Nintendo Labo parts.
-	defaultPartSize string = "REGULAR"
+	defaultPartSize string = "regular"
 )
 
 const (
