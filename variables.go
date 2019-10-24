@@ -77,16 +77,16 @@ var (
 
 var (
 	categoryMap = map[string]string{
-		KitsID:  categoryKit,
-		LaboID:  categoryLabo,
-		PartsID: categoryParts}
+		kitsID:  categoryKit,
+		laboID:  categoryLabo,
+		partsID: categoryParts}
 )
 
 var (
 	categoryIDMap = map[string]string{
-		categoryKit:   KitsID,
-		categoryLabo:  LaboID,
-		categoryParts: PartsID}
+		categoryKit:   kitsID,
+		categoryLabo:  laboID,
+		categoryParts: partsID}
 )
 
 var (
