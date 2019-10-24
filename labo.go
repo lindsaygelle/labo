@@ -181,6 +181,13 @@ func Marshal(l *Labo) (b []byte) {
 	return b
 }
 
+// Unmarshal unmarshals a ordered byte sequence.
+func Unmarshal(b []byte) *Labo {
+	var l *Labo
+	json.Unmarshal(b, l)
+	return l
+}
+
 func getLaboCategory(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content .results-header"

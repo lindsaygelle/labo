@@ -1,7 +1,7 @@
 package labo_test
 
 import (
-	"fmt"
+	"net/http"
 	"testing"
 
 	"github.com/gellel/labo"
@@ -13,13 +13,17 @@ func Test(t *testing.T) {
 
 		k := labo.GetKit(l)
 
-		fmt.Println(string(labo.Marshal(l)))
+		if k.StatusCode == http.StatusOK {
+			/*
+				fmt.Println(string(labo.Marshal(l)))
 
-		fmt.Println(string(labo.MarshalKit(k)))
+				fmt.Println(string(labo.MarshalKit(k)))
 
-		fmt.Println("-")
-		fmt.Println("")
-		fmt.Println("")
+				fmt.Println("-")
+				fmt.Println("")
+				fmt.Println("")
+			*/
+		}
 	}
 
 }
