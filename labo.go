@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -46,7 +47,7 @@ var (
 	laboFn = [](func(s *goquery.Selection, l *Labo)){
 		getLaboCategory,
 		getLaboDescription,
-		getLaboID,
+		getlaboID,
 		getLaboImages,
 		getLaboName,
 		getLaboParts,
@@ -55,7 +56,17 @@ var (
 		getLaboTitle}
 )
 
-// Get gets a specific Nintendo Labo product by the Nintendo stores product ID.
+// Get gets a specific Nintendo Labo product from the Nintendo Labo store and returns
+// the scraped information as a labo.Labo.
+//
+// To get a Labo, the Nintendo Labo ID must be provided to the function
+// as a normalized ID. The ID should resemble a sequence of numbers and
+// not contain the product prefix.
+//
+// Get will always return a labo.Labo, even if the product ID is invalid or not found.
+// To identify whether the corresponding Labo was found, the HTTP status code
+// or HTTP status can be checked. Successfully scraped Labo's will
+// always contain a http.StatusOK.
 func Get(ID string) *Labo {
 	var (
 		doc *goquery.Document
@@ -96,7 +107,7 @@ func Get(ID string) *Labo {
 	l.CategoryID = q.Get(uriQueryParamCategoryID)
 	ok = (len(l.CategoryID) > 0)
 	if !ok {
-
+		l.CategoryID = stringNil
 	}
 	l.ProductID = q.Get(uriQueryParamProductID)
 	ok = (len(l.ProductID) > 0)
@@ -116,14 +127,36 @@ func Get(ID string) *Labo {
 	return newLabo(s, l)
 }
 
-// GetAll gets all available Nintendo Labo from the Nintendo store by the argument labo ID.
-//
-// Requires the argument ID to be one of the three exported labo.(*ID)'s.
-// Each of the exported labo ID's queries and returns a specific set of Nintendo Labo products.
-// Using the labo.LaboID will collect all Nintendo Labo products.
-// The labo.KitsID will only collect and return Nintendo Labo products that are kits and not parts.
-// The labo.PartsID will only collect and return Nintendo Labo products that are parts or accessories.
-func GetAll(ID string) []*Labo {
+// GetAllLabo gets all Nintendo Labo products from the Nintendo store.
+func GetAllLabo() []*Labo {
+	return getAll(laboID)
+}
+
+// GetAllKits gets all Nintendo Labo products that are full kits from the Nintendo store.
+func GetAllKits() []*Labo {
+	return getAll(kitsID)
+}
+
+// GetAllParts get all Nintendo Labo products that are parts and accessories from the Nintendo store.
+func GetAllParts() []*Labo {
+	return getAll(partsID)
+}
+
+// Marshal marshals a Labo struct into an ordered byte sequence. On error returns an empty byte slice.
+func Marshal(l *Labo) (b []byte) {
+	b, _ = json.Marshal(l)
+	return b
+}
+
+// Unmarshal unmarshals a ordered byte sequence.
+func Unmarshal(b []byte) *Labo {
+	var l *Labo
+	json.Unmarshal(b, l)
+	return l
+}
+
+// getAll gets all Nintendo Labo from the Nintendo store based on the argument ID.
+func getAll(ID string) []*Labo {
 	const (
 		CSS string = ".product-listing .product-container > p a"
 	)
@@ -135,6 +168,7 @@ func GetAll(ID string) []*Labo {
 		req *http.Request
 		res *http.Response
 		s   *goquery.Selection
+		wg  sync.WaitGroup
 	)
 	req, err = http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", storeCategoryURI, ID), nil)
 	res, err = client.Do(req)
@@ -166,19 +200,18 @@ func GetAll(ID string) []*Labo {
 			return
 		}
 		ID := URL.Query().Get(uriQueryParamProductID)
-		labo := Get(ID)
-		if labo == nil {
-			return
-		}
-		l = append(l, labo)
+		wg.Add(1)
+		go func(ID string) {
+			defer wg.Done()
+			labo := Get(ID)
+			if labo == nil {
+				return
+			}
+			l = append(l, labo)
+		}(ID)
 	})
+	wg.Wait()
 	return l
-}
-
-// Marshal marshals a Labo struct into an ordered byte sequence. On error returns an empty byte slice.
-func Marshal(l *Labo) (b []byte) {
-	b, _ = json.Marshal(l)
-	return b
 }
 
 func getLaboCategory(s *goquery.Selection, l *Labo) {
@@ -235,7 +268,7 @@ func getLaboDescription(s *goquery.Selection, l *Labo) {
 // getLaboPageID searches the argument goquery.Selection pointer
 // for the Nintendo Labo product numerical ID and assigns it to
 // the argument labo.Labo pointer if found.
-func getLaboID(s *goquery.Selection, l *Labo) {
+func getlaboID(s *goquery.Selection, l *Labo) {
 	const (
 		CSS string = "#main-content .results-header"
 	)
@@ -455,6 +488,5 @@ func newLabo(s *goquery.Selection, l *Labo) *Labo {
 	for _, fn := range laboFn {
 		fn(s, l)
 	}
-	fmt.Println(string(Marshal(l)))
 	return l
 }

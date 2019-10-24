@@ -168,11 +168,11 @@ const (
 	// storeDNS is the domain name reference for the Nintendo store website.
 	storeDNS string = ("store" + "." + nintendoDNS)
 	// storeURIKits is the URI directive to request all Nintendo Labo full kits from the Nintendo store.
-	storeURIKits string = (storeCategoryURI + KitsID)
+	storeURIKits string = (storeCategoryURI + kitsID)
 	// storeURILabo is the URI directive to request all Nintendo Labo full kits and parts from the Nintendo store.
-	storeURILabo string = (storeCategoryURI + LaboID)
+	storeURILabo string = (storeCategoryURI + laboID)
 	// storeURIParts is the URI directive to request all Nintendo Labo part kits from the Nintendo store.
-	storeURIParts string = (storeCategoryURI + PartsID)
+	storeURIParts string = (storeCategoryURI + partsID)
 	// storeProductURI is the URI to perform a Nintendo product search by providing the URI a valid product ID.
 	storeProductURI string = (storeURL + "/" + "ng3/us/po/browse/productDetailColorSizePicker.jsp?productId=")
 	// storeURI is the URI directive to perform a Nintendo store search for Nintendo Labo kits.
@@ -189,10 +189,10 @@ const (
 )
 
 const (
-	// KitsID is the product ID for all Nintendo Labo full kits.
-	KitsID string = "970105"
-	// LaboID is the product ID for both Nintendo Labo full kits and parts.
-	LaboID string = "960195"
-	// PartsID is the product ID for all Nintendo Labo parts kits.
-	PartsID string = "970106"
+	// kitsID is the product ID for all Nintendo Labo full kits.
+	kitsID string = "970105"
+	// laboID is the product ID for both Nintendo Labo full kits and parts.
+	laboID string = "960195"
+	// partsID is the product ID for all Nintendo Labo parts kits.
+	partsID string = "970106"
 )
