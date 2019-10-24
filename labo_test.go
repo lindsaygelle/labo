@@ -9,7 +9,7 @@ import (
 
 func Test(t *testing.T) {
 
-	for _, l := range labo.GetAll(labo.KitsID) {
+	for _, l := range labo.GetAllLabo() {
 
 		k := labo.GetKit(l)
 
